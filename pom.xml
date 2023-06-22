@@ -13,7 +13,7 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <modules>
-        <module>contract-facade</module>
+        <module>contract-compare-service</module>
         <module>contract-api</module>
     </modules>
 

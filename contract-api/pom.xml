@@ -19,7 +19,7 @@
     <dependencies>
         <dependency>
             <groupId>com.jsnjwj</groupId>
-            <artifactId>contract-facade</artifactId>
+            <artifactId>contract-compare-service</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
