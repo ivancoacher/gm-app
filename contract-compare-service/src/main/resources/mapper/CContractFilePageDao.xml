@@ -83,7 +83,7 @@
         values (#{fileId}, #{pageNo}, #{pagePath}, #{createTime}, #{updateTime})
     </insert>
 
-    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+    <insert id="insertBatch" parameterType="com.jsnjwj.compare.entity.CContractFilePage" useGeneratedKeys="true" keyColumn="id" keyProperty="entities.id">
         insert into c_contract_file_page(file_id, page_no, page_path, create_time, update_time)
         values
         <foreach collection="entities" item="entity" separator=",">
@@ -104,6 +104,7 @@
         create_time = values(create_time),
         update_time = values(update_time)
     </insert>
+    <insert id="insertList"></insert>
 
     <!--通过主键修改数据-->
     <update id="update">

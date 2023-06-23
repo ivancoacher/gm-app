@@ -1,5 +1,6 @@
 package com.jsnjwj.compare.service.impl;
 
+import com.alibaba.fastjson2.JSONArray;
 import com.jsnjwj.compare.dao.CContractFileDao;
 import com.jsnjwj.compare.dao.CContractFilePageDao;
 import com.jsnjwj.compare.dao.CContractRecordDao;
@@ -9,8 +10,8 @@ import com.jsnjwj.compare.entity.CContractFilePage;
 import com.jsnjwj.compare.entity.CContractRecord;
 import com.jsnjwj.compare.service.ContractService;
 import com.jsnjwj.compare.utils.FileUtils;
+import com.jsnjwj.compare.utils.HttpUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,6 +20,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 合同比对service
@@ -55,7 +57,6 @@ public class ContractServiceImpl implements ContractService {
         sourceFileEntity.setCreateTime(new Date());
 
         Integer sourceFileId = cContractFileDao.insertOne(sourceFileEntity);
-//        Integer sourceFileId = 1;
 
         CContractFile compareFileEntity = new CContractFile();
         compareFileEntity.setFileName(compareFile.getOriginalFilename());
@@ -64,8 +65,6 @@ public class ContractServiceImpl implements ContractService {
         compareFileEntity.setCreateTime(new Date());
 
         Integer compareFileId = cContractFileDao.insertOne(compareFileEntity);
-//        Integer compareFileId = 2;
-
 
         CContractRecord cContractRecord = new CContractRecord();
         cContractRecord.setUserId(userId);
@@ -77,14 +76,14 @@ public class ContractServiceImpl implements ContractService {
 
 
         // 2、文档转图片
-        saveFilePage(sourceFilePath, sourceFileId);
-        saveFilePage(compareFilePath, sourceFileId);
-
-
+        List<Integer> sourceFilePagePathList = saveFilePage(sourceFilePath, sourceFileId);
+        List<Integer> compareFilePagePathList = saveFilePage(compareFilePath, sourceFileId);
+        log.info(sourceFilePagePathList.toString());
         // 3、OCR识别文档
 //        for (String path : sourceFilePagePathList) {
 //            String sourceFileResult = HttpUtils.getResp(path);
 //        }
+
 //        for (String path : compareFilePagePathList) {
 //            String compareFileResult = HttpUtils.getResp(path);
 //        }
@@ -94,7 +93,7 @@ public class ContractServiceImpl implements ContractService {
 
     }
 
-    private void saveFilePage(File compareFilePath, Integer sourceFileId) throws Exception {
+    private List<Integer> saveFilePage(File compareFilePath, Integer sourceFileId) throws Exception {
         List<String> compareFilePagePathList = FileUtils.pdf2Image(compareFilePath);
         List<CContractFilePage> comparePageList = new ArrayList<>();
 
@@ -108,6 +107,8 @@ public class ContractServiceImpl implements ContractService {
             comparePageList.add(cContractFilePage);
         }
         cContractFilePageDao.insertBatch(comparePageList);
+        log.info(JSONArray.toJSONString(comparePageList));
+        return comparePageList.stream().map(CContractFilePage::getId).collect(Collectors.toList());
     }
 
 }

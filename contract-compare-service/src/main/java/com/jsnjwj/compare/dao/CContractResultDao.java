@@ -1,6 +1,8 @@
 package com.jsnjwj.compare.dao;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.jsnjwj.compare.entity.CContractResult;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -11,7 +13,8 @@ import java.util.List;
  * @author makejava
  * @since 2023-06-23 02:06:22
  */
-public interface CContractResultDao {
+@Mapper
+public interface CContractResultDao extends BaseMapper<CContractResult> {
 
     /**
      * 通过ID查询单条数据

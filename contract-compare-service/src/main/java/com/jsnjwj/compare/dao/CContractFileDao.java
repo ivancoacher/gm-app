@@ -1,7 +1,8 @@
 package com.jsnjwj.compare.dao;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.jsnjwj.compare.entity.CContractFile;
-import tk.mybatis.mapper.common.Mapper;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
  * (CContractFile)表数据库访问层
@@ -9,7 +10,8 @@ import tk.mybatis.mapper.common.Mapper;
  * @author makejava
  * @since 2023-06-23 02:06:13
  */
-public interface CContractFileDao extends Mapper<CContractFile> {
+@Mapper
+public interface CContractFileDao extends BaseMapper<CContractFile> {
     int insertOne(CContractFile cContractFile);
 
 }
