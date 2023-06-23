@@ -14,7 +14,7 @@ public class ApiResponse<T> implements Serializable {
     private T data;
 
     //    私有构造器
-    private ApiResponse() {
+    public ApiResponse() {
     }
 
     //    通用成功

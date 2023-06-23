@@ -7,6 +7,8 @@
         <result property="fileId" column="file_id" jdbcType="INTEGER"/>
         <result property="pageNo" column="page_no" jdbcType="INTEGER"/>
         <result property="pagePath" column="page_path" jdbcType="VARCHAR"/>
+        <result property="contractId" column="contract_id" jdbcType="INTEGER"/>
+        <result property="compareResult" column="compare_result" jdbcType="VARCHAR"/>
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
     </resultMap>
@@ -83,7 +85,8 @@
         values (#{fileId}, #{pageNo}, #{pagePath}, #{createTime}, #{updateTime})
     </insert>
 
-    <insert id="insertBatch" parameterType="com.jsnjwj.compare.entity.CContractFilePage" useGeneratedKeys="true" keyColumn="id" keyProperty="entities.id">
+    <insert id="insertBatch" parameterType="com.jsnjwj.compare.entity.CContractFilePage" useGeneratedKeys="true"
+            keyColumn="id" keyProperty="id">
         insert into c_contract_file_page(file_id, page_no, page_path, create_time, update_time)
         values
         <foreach collection="entities" item="entity" separator=",">
@@ -92,17 +95,16 @@
     </insert>
 
     <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
-        insert into c_contract_file_page(file_id, page_no, page_path, create_time, update_time)
+        insert into c_contract_file_page(id,contract_id,file_id, page_no, page_path, compare_result,create_time,
+        update_time)
         values
         <foreach collection="entities" item="entity" separator=",">
-            (#{entity.fileId}, #{entity.pageNo}, #{entity.pagePath}, #{entity.createTime}, #{entity.updateTime})
+            (#{entity.id},#{entity.contractId},#{entity.fileId}, #{entity.pageNo}, #{entity.pagePath},
+            #{entity.compareResult},#{entity.createTime}, #{entity.updateTime})
         </foreach>
         on duplicate key update
-        file_id = values(file_id),
-        page_no = values(page_no),
-        page_path = values(page_path),
-        create_time = values(create_time),
-        update_time = values(update_time)
+        contract_id = values(contract_id),
+        compare_result = values(compare_result)
     </insert>
     <insert id="insertList"></insert>
 

@@ -6,6 +6,8 @@
         <result property="id" column="id" jdbcType="INTEGER"/>
         <result property="contractId" column="contract_id" jdbcType="INTEGER"/>
         <result property="pageId" column="page_id" jdbcType="INTEGER"/>
+        <result property="pageId" column="page_id" jdbcType="INTEGER"/>
+        <result property="pageNo" column="page_no" jdbcType="INTEGER"/>
         <result property="content" column="content" jdbcType="VARCHAR"/>
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
@@ -84,10 +86,10 @@
     </insert>
 
     <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
-        insert into c_contract_result(contract_id, page_id, content, create_time, update_time)
+        insert into c_contract_result(contract_id, page_id,page_no, content, create_time, update_time)
         values
         <foreach collection="entities" item="entity" separator=",">
-            (#{entity.contractId}, #{entity.pageId}, #{entity.content}, #{entity.createTime}, #{entity.updateTime})
+            (#{entity.contractId}, #{entity.pageId}, #{entity.pageNo},#{entity.content}, #{entity.createTime}, #{entity.updateTime})
         </foreach>
     </insert>
 

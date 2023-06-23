@@ -1,5 +1,12 @@
 package com.jsnjwj.api.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.jsnjwj.compare.entity.CContractFilePage;
+import com.jsnjwj.compare.entity.CContractRecord;
+import com.jsnjwj.compare.query.CompareResultQuery;
+import com.jsnjwj.compare.query.ContractDetailQuery;
+import com.jsnjwj.compare.query.ContractListQuery;
+import com.jsnjwj.compare.response.ApiResponse;
 import com.jsnjwj.compare.service.ContractService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -27,4 +34,24 @@ public class CompareController {
         contractService.compare(sourceFile, compareFile);
         return 1;
     }
+
+    @GetMapping(value = "/list", produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public ApiResponse<Page<CContractRecord>> list(ContractListQuery query) {
+        return contractService.queryList(query);
+    }
+
+
+    @GetMapping(value = "/detail", produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public ApiResponse<CContractRecord> detail(ContractDetailQuery query) {
+        return contractService.queryDetail(query);
+    }
+
+    @GetMapping(value = "/result", produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public ApiResponse<CContractFilePage> result(CompareResultQuery query) {
+        return contractService.queryResult(query);
+    }
+
 }

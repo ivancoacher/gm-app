@@ -24,6 +24,9 @@ public class CContractResult implements Serializable {
      * 页面编号
      */
     private Long pageId;
+
+    private Integer pageNo;
+
     /**
      * 识别内容
      */

@@ -78,7 +78,7 @@
     </select>
 
     <!--新增所有列-->
-    <insert id="insertOne" parameterType="com.jsnjwj.compare.entity.CContractFile">
+    <insert id="insertOne" parameterType="com.jsnjwj.compare.entity.CContractFile" keyProperty="id" useGeneratedKeys="true">
         insert into c_contract_file(file_name, file_type, file_path, create_time, update_time)
         values (#{fileName}, #{fileType}, #{filePath}, #{createTime}, #{updateTime})
     </insert>

@@ -1,5 +1,9 @@
 package com.jsnjwj.compare.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.jsnjwj.compare.enums.CompareStateEnum;
+import lombok.Data;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -9,6 +13,7 @@ import java.util.Date;
  * @author makejava
  * @since 2023-06-23 02:06:22
  */
+@Data
 public class CContractRecord implements Serializable {
     private static final long serialVersionUID = 748741055830395712L;
 
@@ -16,76 +21,24 @@ public class CContractRecord implements Serializable {
 
     private Integer userId;
 
-    private Integer status;
+    private CompareStateEnum compareState;
     /**
      * 原文档编号
      */
     private Long originFileId;
+
+    private String originFileName;
     /**
      * 对比文档编号
      */
     private Long compareFileId;
 
+    private String compareFileName;
+
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
     private Date createTime;
 
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
     private Date updateTime;
-
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    public Long getOriginFileId() {
-        return originFileId;
-    }
-
-    public void setOriginFileId(Long originFileId) {
-        this.originFileId = originFileId;
-    }
-
-    public Long getCompareFileId() {
-        return compareFileId;
-    }
-
-    public void setCompareFileId(Long compareFileId) {
-        this.compareFileId = compareFileId;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
-
 }
 

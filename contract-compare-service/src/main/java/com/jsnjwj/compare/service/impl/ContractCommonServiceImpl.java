@@ -1,23 +1,23 @@
 package com.jsnjwj.compare.service.impl;
 
 import com.alibaba.fastjson2.JSONArray;
+import com.jsnjwj.compare.dao.CContractFileDao;
 import com.jsnjwj.compare.dao.CContractFilePageDao;
-import com.jsnjwj.compare.dao.CContractResultDao;
+import com.jsnjwj.compare.entity.CContractFile;
 import com.jsnjwj.compare.entity.CContractFilePage;
-import com.jsnjwj.compare.entity.CContractResult;
 import com.jsnjwj.compare.service.ContractCommonService;
 import com.jsnjwj.compare.utils.FileUtils;
 import com.jsnjwj.compare.utils.HttpUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -26,9 +26,9 @@ public class ContractCommonServiceImpl implements ContractCommonService {
     private CContractFilePageDao cContractFilePageDao;
 
     @Resource
-    private CContractResultDao cContractResultDao;
+    private CContractFileDao cContractFileDao;
 
-    private List<Integer> saveFilePage(File compareFilePath, Integer sourceFileId) throws Exception {
+    private List<CContractFilePage> saveFilePage(File compareFilePath, Integer sourceFileId) throws Exception {
         List<String> compareFilePagePathList = FileUtils.pdf2Image(compareFilePath);
         List<CContractFilePage> comparePageList = new ArrayList<>();
 
@@ -43,32 +43,38 @@ public class ContractCommonServiceImpl implements ContractCommonService {
         }
         cContractFilePageDao.insertBatch(comparePageList);
         log.info(JSONArray.toJSONString(comparePageList));
-        return comparePageList.stream().map(CContractFilePage::getId).collect(Collectors.toList());
+        return comparePageList;
     }
 
 
     @Override
     @Async
     public void doCompare(Integer recordId, File sourceFilePath, Integer fileId) throws Exception {
+        log.info("4");
 
         // 2、文档转图片
-        List<Integer> sourceFilePagePathList = saveFilePage(sourceFilePath, fileId);
+        List<CContractFilePage> sourceFilePagePathList = saveFilePage(sourceFilePath, fileId);
         log.info(sourceFilePagePathList.toString());
         // 3、OCR识别文档
-        List<CContractResult> sourceFileResultList = new ArrayList<>();
-        for (Integer pageId : sourceFilePagePathList) {
-            CContractFilePage pageInfo = cContractFilePageDao.selectById(pageId);
+        List<CContractFilePage> sourceFileResultList = new ArrayList<>();
+        for (CContractFilePage pageInfo : sourceFilePagePathList) {
             String sourceFileResult = HttpUtils.getResp(pageInfo.getPagePath());
-            log.info("sourceFile====pageId:{}===result{}", pageId, sourceFileResult);
-            CContractResult result = new CContractResult();
-            result.setContractId(Long.valueOf(recordId));
-            result.setContent(sourceFileResult);
-            result.setPageId(Long.valueOf(pageId));
-            result.setCreateTime(new Date());
-            sourceFileResultList.add(result);
+            pageInfo.setCompareResult(sourceFileResult);
+            pageInfo.setContractId(recordId);
+            sourceFileResultList.add(pageInfo);
         }
-        cContractResultDao.insertBatch(sourceFileResultList);
+        cContractFilePageDao.insertOrUpdateBatch(sourceFileResultList);
     }
 
+    @Override
+    public Integer saveFilePath(MultipartFile file, File filePath) {
+        CContractFile compareFileEntity = new CContractFile();
+        compareFileEntity.setFileName(file.getOriginalFilename());
+        compareFileEntity.setFilePath(filePath.getPath());
+        compareFileEntity.setFileType(file.getContentType());
+        compareFileEntity.setCreateTime(new Date());
+        cContractFileDao.insertOne(compareFileEntity);
+        return compareFileEntity.getId();
+    }
 
 }
