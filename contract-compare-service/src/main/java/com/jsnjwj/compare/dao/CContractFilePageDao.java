@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.jsnjwj.compare.entity.CContractFilePage;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -15,6 +16,9 @@ import java.util.List;
 @Mapper
 public interface CContractFilePageDao extends BaseMapper<CContractFilePage> {
     void insertBatch(List<CContractFilePage> entities);
+
+    @Override
+    CContractFilePage selectById(Serializable id);
 
 }
 
