@@ -2,10 +2,14 @@ package com.jsnjwj.compare.service.impl;
 
 import com.alibaba.fastjson2.JSONArray;
 import com.jsnjwj.compare.dao.CContractFilePageDao;
+import com.jsnjwj.compare.dao.CContractResultDao;
 import com.jsnjwj.compare.entity.CContractFilePage;
+import com.jsnjwj.compare.entity.CContractResult;
 import com.jsnjwj.compare.service.ContractCommonService;
 import com.jsnjwj.compare.utils.FileUtils;
+import com.jsnjwj.compare.utils.HttpUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -21,8 +25,10 @@ public class ContractCommonServiceImpl implements ContractCommonService {
     @Resource
     private CContractFilePageDao cContractFilePageDao;
 
-    @Override
-    public List<Integer> saveFilePage(File compareFilePath, Integer sourceFileId) throws Exception {
+    @Resource
+    private CContractResultDao cContractResultDao;
+
+    private List<Integer> saveFilePage(File compareFilePath, Integer sourceFileId) throws Exception {
         List<String> compareFilePagePathList = FileUtils.pdf2Image(compareFilePath);
         List<CContractFilePage> comparePageList = new ArrayList<>();
 
@@ -39,5 +45,30 @@ public class ContractCommonServiceImpl implements ContractCommonService {
         log.info(JSONArray.toJSONString(comparePageList));
         return comparePageList.stream().map(CContractFilePage::getId).collect(Collectors.toList());
     }
+
+
+    @Override
+    @Async
+    public void doCompare(Integer recordId, File sourceFilePath, Integer fileId) throws Exception {
+
+        // 2、文档转图片
+        List<Integer> sourceFilePagePathList = saveFilePage(sourceFilePath, fileId);
+        log.info(sourceFilePagePathList.toString());
+        // 3、OCR识别文档
+        List<CContractResult> sourceFileResultList = new ArrayList<>();
+        for (Integer pageId : sourceFilePagePathList) {
+            CContractFilePage pageInfo = cContractFilePageDao.selectById(pageId);
+            String sourceFileResult = HttpUtils.getResp(pageInfo.getPagePath());
+            log.info("sourceFile====pageId:{}===result{}", pageId, sourceFileResult);
+            CContractResult result = new CContractResult();
+            result.setContractId(Long.valueOf(recordId));
+            result.setContent(sourceFileResult);
+            result.setPageId(Long.valueOf(pageId));
+            result.setCreateTime(new Date());
+            sourceFileResultList.add(result);
+        }
+        cContractResultDao.insertBatch(sourceFileResultList);
+    }
+
 
 }
