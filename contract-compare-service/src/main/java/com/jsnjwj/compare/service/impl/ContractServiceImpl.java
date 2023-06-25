@@ -71,7 +71,7 @@ public class ContractServiceImpl implements ContractService {
         Integer recordId = cContractRecord.getId();
         contractCommonService.doCompare(recordId, sourceFilePath, sourceFileId);
         contractCommonService.doCompare(recordId, compareFilePath, compareFileId);
-        return ApiResponse.success();
+        return ApiResponse.success(recordId);
     }
 
     /**
