@@ -91,8 +91,8 @@ public class ContractServiceImpl implements ContractService {
         wrapper.lambda().eq(CContractRecord::getUserId, query.getUserId());
         resultPage = cContractRecordDao.selectPage(resultPage, wrapper);
 
-        response.setCode(200);
-        response.setMsg("查询成功");
+        response.setCode(20000);
+        response.setMessage("查询成功");
         response.setData(resultPage);
         return response;
     }
@@ -107,8 +107,8 @@ public class ContractServiceImpl implements ContractService {
     public ApiResponse<CContractRecord> queryDetail(ContractDetailQuery query) {
         ApiResponse<CContractRecord> response = new ApiResponse<>();
         CContractRecord result = cContractRecordDao.selectById(query.getContractId());
-        response.setCode(200);
-        response.setMsg("查询成功");
+        response.setCode(20000);
+        response.setMessage("查询成功");
         response.setData(result);
         return response;
     }
@@ -127,8 +127,8 @@ public class ContractServiceImpl implements ContractService {
                 .eq(CContractFilePage::getPageNo, query.getPageNo())
                 .eq(CContractFilePage::getFileId, query.getFileId());
         CContractFilePage result = cContractFilePageDao.selectOne(wrapper);
-        response.setCode(200);
-        response.setMsg("查询成功");
+        response.setCode(20000);
+        response.setMessage("查询成功");
         response.setData(result);
         return response;
     }

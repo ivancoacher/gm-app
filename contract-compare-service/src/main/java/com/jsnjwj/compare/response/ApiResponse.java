@@ -9,8 +9,8 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 public class ApiResponse<T> implements Serializable {
-    private int code = 1000;
-    private String msg = "成功";
+    private int code = 20000;
+    private String message = "成功";
     private T data;
 
     //    私有构造器
@@ -25,7 +25,7 @@ public class ApiResponse<T> implements Serializable {
     public static ApiResponse success(Object data) {
         ApiResponse ApiResponse = new ApiResponse<>();
         ApiResponse.setCode(ResponseEnum.SUCESS.getResultCode());
-        ApiResponse.setMsg(ResponseEnum.SUCESS.getResultMsg());
+        ApiResponse.setMessage(ResponseEnum.SUCESS.getResultMsg());
         ApiResponse.setData(data);
 
         return ApiResponse;
@@ -39,7 +39,7 @@ public class ApiResponse<T> implements Serializable {
     public static ApiResponse error(Object data) {
         ApiResponse ApiResponse = new ApiResponse<>();
         ApiResponse.setCode(ResponseEnum.ERROR.getResultCode());
-        ApiResponse.setMsg(ResponseEnum.ERROR.getResultMsg());
+        ApiResponse.setMessage(ResponseEnum.ERROR.getResultMsg());
         ApiResponse.setData(data);
 
         return ApiResponse;
@@ -57,7 +57,7 @@ public class ApiResponse<T> implements Serializable {
     }
 
     public ApiResponse msg(String msg) {
-        this.setMsg(msg);
+        this.setMessage(msg);
         return this;
     }
 

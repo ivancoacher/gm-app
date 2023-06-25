@@ -4,9 +4,9 @@ import lombok.Data;
 
 @Data
 public class ContractListQuery {
-    private Integer pageIndex;
+    private Integer pageIndex = 1;
 
-    private Integer pageSize;
+    private Integer pageSize = 10;
 
-    private Integer userId;
+    private Integer userId=1;
 }

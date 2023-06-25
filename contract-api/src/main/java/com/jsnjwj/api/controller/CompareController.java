@@ -35,8 +35,7 @@ public class CompareController {
         return 1;
     }
 
-    @GetMapping(value = "/list", produces = "application/json;charset=UTF-8")
-    @ResponseBody
+    @RequestMapping(value = "/list")
     public ApiResponse<Page<CContractRecord>> list(ContractListQuery query) {
         return contractService.queryList(query);
     }
