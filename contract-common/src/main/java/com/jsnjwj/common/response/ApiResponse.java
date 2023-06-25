@@ -1,6 +1,6 @@
-package com.jsnjwj.compare.response;
+package com.jsnjwj.common.response;
 
-import com.jsnjwj.compare.enums.ResponseEnum;
+import com.jsnjwj.common.enums.ResponseEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

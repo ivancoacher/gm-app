@@ -1,10 +1,10 @@
-package com.jsnjwj.compare.enums;
+package com.jsnjwj.common.enums;
 
 import lombok.Getter;
 
 @Getter
 public enum ResponseEnum {
-    SUCESS(1000, "请求成功！"),
+    SUCESS(20000, "请求成功！"),
     ERROR(9999, "请求失败！");
 
     private int resultCode;

@@ -1,13 +1,10 @@
 package com.jsnjwj.api.controller;
 
-import com.jsnjwj.compare.response.ApiResponse;
-import com.jsnjwj.compare.service.UserService;
+import com.jsnjwj.common.response.ApiResponse;
+import com.jsnjwj.user.request.LoginRequest;
+import com.jsnjwj.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -23,13 +20,22 @@ public class UserController {
 
     @ResponseBody
     @PostMapping("/login")
-    public ApiResponse index() {
+    public ApiResponse login(@RequestBody LoginRequest request) {
         ApiResponse<Map> response = new ApiResponse<Map>();
         response.setCode(20000);
         Map<String, String> result = new HashMap<>();
-        result.put("data", "admin-token");
-        response.setData(result);
-        return response;
+
+        return userService.login(request);
+    }
+
+    @ResponseBody
+    @PostMapping("/register")
+    public ApiResponse register(@RequestBody LoginRequest request) {
+        ApiResponse<Map> response = new ApiResponse<Map>();
+        response.setCode(20000);
+        Map<String, String> result = new HashMap<>();
+
+        return userService.register(request);
     }
 
     @RequestMapping("/info")

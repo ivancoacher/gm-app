@@ -3,7 +3,7 @@ package com.jsnjwj.compare.service.impl;
 import com.jsnjwj.compare.service.UserService;
 import org.springframework.stereotype.Service;
 
-@Service
+@Service("contractUserService")
 public class UserServiceImpl implements UserService {
     @Override
     public int save() {

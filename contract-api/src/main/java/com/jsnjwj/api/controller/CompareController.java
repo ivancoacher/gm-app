@@ -1,12 +1,12 @@
 package com.jsnjwj.api.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.jsnjwj.common.response.ApiResponse;
 import com.jsnjwj.compare.entity.CContractFilePage;
 import com.jsnjwj.compare.entity.CContractRecord;
 import com.jsnjwj.compare.query.CompareResultQuery;
 import com.jsnjwj.compare.query.ContractDetailQuery;
 import com.jsnjwj.compare.query.ContractListQuery;
-import com.jsnjwj.compare.response.ApiResponse;
 import com.jsnjwj.compare.service.ContractService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -36,7 +36,8 @@ public class CompareController {
     }
 
     @RequestMapping(value = "/list")
-    public ApiResponse<Page<CContractRecord>> list(ContractListQuery query) {
+    public ApiResponse<Page<CContractRecord>> list(ContractListQuery query,HttpServletRequest request) {
+        query.setUserId(Integer.valueOf((String) request.getAttribute("identifyId")));
         return contractService.queryList(query);
     }
 

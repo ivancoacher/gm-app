@@ -2,6 +2,7 @@ package com.jsnjwj.compare.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.jsnjwj.common.response.ApiResponse;
 import com.jsnjwj.compare.dao.CContractFilePageDao;
 import com.jsnjwj.compare.dao.CContractRecordDao;
 import com.jsnjwj.compare.entity.CContractFilePage;
@@ -10,7 +11,6 @@ import com.jsnjwj.compare.enums.CompareStateEnum;
 import com.jsnjwj.compare.query.CompareResultQuery;
 import com.jsnjwj.compare.query.ContractDetailQuery;
 import com.jsnjwj.compare.query.ContractListQuery;
-import com.jsnjwj.compare.response.ApiResponse;
 import com.jsnjwj.compare.service.ContractCommonService;
 import com.jsnjwj.compare.service.ContractService;
 import com.jsnjwj.compare.utils.FileUtils;
