@@ -9,5 +9,5 @@ public interface ContractCommonService {
     @Async
     void doCompare(Integer recordId, File sourceFilePath, Integer fileId) throws Exception;
 
-    Integer saveFilePath(MultipartFile file, File filePath);
+    Integer saveFilePath(MultipartFile file, String filePath);
 }

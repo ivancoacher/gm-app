@@ -26,7 +26,7 @@ public class AccessTokenInterceptor implements HandlerInterceptor {
                              @NonNull Object handler) throws Exception {
         /** 地址过滤 */
         String uri = request.getRequestURI();
-        if (uri.contains("/login") || uri.contains("/register")) {
+        if (uri.contains("/login") || uri.contains("/register") || uri.contains("/file")) {
             return true;
         }
         /** Token 验证 */

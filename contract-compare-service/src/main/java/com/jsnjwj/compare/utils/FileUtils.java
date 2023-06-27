@@ -20,9 +20,7 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Component
 public class FileUtils {
@@ -37,7 +35,7 @@ public class FileUtils {
         return fileRealPath;
     }
 
-    public static File uploadFile(MultipartFile uploadFile) throws Exception {
+    public static Map<String, Object> uploadFile(MultipartFile uploadFile) throws Exception {
 
         File fileRealPath = getUploadPath("contract-file");
 
@@ -49,7 +47,12 @@ public class FileUtils {
         File targetFile = new File(fileRealPath, fileName);
         uploadFile.transferTo(targetFile);
         Boolean rst = file.delete();
-        return targetFile;
+
+        Map<String, Object> result = new HashMap<String, Object>();
+        result.put("location", "http://127.0.0.1:8082/file/contract-file/" + fileName);
+        result.put("file", targetFile);
+
+        return result;
     }
 
     private static File convert2File(MultipartFile multipartFile) {
@@ -78,8 +81,8 @@ public class FileUtils {
         return file;
     }
 
-    public static List<String> pdf2Image(File ufile) throws Exception {
-        List<String> result = new ArrayList<>();
+    public static List<Map<String,Object>> pdf2Image(File ufile) throws Exception {
+        List<Map<String,Object>> result = new ArrayList<>();
         String uuid = IdUtil.fastSimpleUUID();
 
         // 创建文件夹
@@ -94,7 +97,14 @@ public class FileUtils {
             for (int i = 1; i <= source.getNumberOfPages(); i++) {
                 String imgPath = outPath + File.separator + i + ".jpg";
                 writeToImage(outPath + File.separator + i + ".pdf", imgPath);
-                result.add(imgPath);
+
+                String imageLocation = "http://127.0.0.1:8082/file/contract-page/" + uuid + "/" + i + ".jpg";
+                Map<String,Object> fileObj = new HashMap<String,Object>();
+                //文件绝对地址
+                fileObj.put("location",imageLocation);
+                //文件访问路径
+                fileObj.put("filePath",imgPath);
+                result.add(fileObj);
             }
             source.close();
         } catch (IOException e) {

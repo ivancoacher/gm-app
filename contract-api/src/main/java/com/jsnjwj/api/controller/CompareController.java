@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsnjwj.common.response.ApiResponse;
 import com.jsnjwj.compare.entity.CContractFilePage;
 import com.jsnjwj.compare.entity.CContractRecord;
+import com.jsnjwj.compare.query.ComparePagesQuery;
 import com.jsnjwj.compare.query.CompareResultQuery;
 import com.jsnjwj.compare.query.ContractDetailQuery;
 import com.jsnjwj.compare.query.ContractListQuery;
@@ -15,6 +16,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -54,4 +56,10 @@ public class CompareController {
         return contractService.queryResult(query);
     }
 
+    @GetMapping(value = "/pages", produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public ApiResponse<List<CContractFilePage>> result(ComparePagesQuery query, HttpServletRequest request) {
+        query.setUserId(Integer.valueOf((String) request.getAttribute("identifyId")));
+        return contractService.queryPages(query);
+    }
 }

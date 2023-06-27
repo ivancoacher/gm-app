@@ -8,6 +8,7 @@ import com.jsnjwj.compare.dao.CContractRecordDao;
 import com.jsnjwj.compare.entity.CContractFilePage;
 import com.jsnjwj.compare.entity.CContractRecord;
 import com.jsnjwj.compare.enums.CompareStateEnum;
+import com.jsnjwj.compare.query.ComparePagesQuery;
 import com.jsnjwj.compare.query.CompareResultQuery;
 import com.jsnjwj.compare.query.ContractDetailQuery;
 import com.jsnjwj.compare.query.ContractListQuery;
@@ -21,6 +22,8 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import java.io.File;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 合同比对service
@@ -49,13 +52,14 @@ public class ContractServiceImpl implements ContractService {
     public ApiResponse compare(MultipartFile sourceFile, MultipartFile compareFile) throws Exception {
         Integer userId = 1;
         // 1、上传文档
-        File sourceFilePath = FileUtils.uploadFile(sourceFile);
-        File compareFilePath = FileUtils.uploadFile(compareFile);
-
+        Map<String, Object> sourceFileMap = FileUtils.uploadFile(sourceFile);
+        Map<String, Object> compareFileMap = FileUtils.uploadFile(compareFile);
+        File sourceFilePath = (File) sourceFileMap.get("file");
+        File compareFilePath = (File) compareFileMap.get("file");
         // 保存对比文件
-        Integer sourceFileId = contractCommonService.saveFilePath(sourceFile, sourceFilePath);
+        Integer sourceFileId = contractCommonService.saveFilePath(sourceFile, (String) sourceFileMap.get("location"));
 
-        Integer compareFileId = contractCommonService.saveFilePath(compareFile, compareFilePath);
+        Integer compareFileId = contractCommonService.saveFilePath(compareFile, (String) compareFileMap.get("location"));
 
         // 保存对比记录
         CContractRecord cContractRecord = new CContractRecord();
@@ -133,4 +137,17 @@ public class ContractServiceImpl implements ContractService {
         return response;
     }
 
+    @Override
+    public ApiResponse<List<CContractFilePage>> queryPages(ComparePagesQuery query) {
+        ApiResponse<List<CContractFilePage>> response = new ApiResponse<>();
+        QueryWrapper<CContractFilePage> wrapper = new QueryWrapper<>();
+        wrapper.lambda().eq(CContractFilePage::getContractId, query.getContractId());
+        wrapper.lambda().eq(CContractFilePage::getFileId, query.getFileId());
+        wrapper.lambda().orderByAsc(CContractFilePage::getPageNo);
+        List<CContractFilePage> result = cContractFilePageDao.selectList(wrapper);
+        response.setCode(20000);
+        response.setMessage("查询成功");
+        response.setData(result);
+        return response;
+    }
 }
