@@ -4,9 +4,6 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
-import java.io.Serializable;
-import java.util.Date;
-
 /**
  * (CContractFile)实体类
  *
@@ -15,8 +12,7 @@ import java.util.Date;
  */
 @Data
 @TableName("c_users")
-public class User implements Serializable {
-    private static final long serialVersionUID = -54218611872513195L;
+public class User {
     @TableId
     private Integer id;
 

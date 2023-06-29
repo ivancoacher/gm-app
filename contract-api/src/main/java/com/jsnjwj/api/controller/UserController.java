@@ -33,8 +33,6 @@ public class UserController {
     public ApiResponse register(@RequestBody LoginRequest request) {
         ApiResponse<Map> response = new ApiResponse<Map>();
         response.setCode(20000);
-        Map<String, String> result = new HashMap<>();
-
         return userService.register(request);
     }
 
