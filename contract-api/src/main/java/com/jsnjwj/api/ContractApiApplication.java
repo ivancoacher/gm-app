@@ -10,7 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @EnableAutoConfiguration(exclude = {org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration.class })
 
 @SpringBootApplication(scanBasePackages = {"com.jsnjwj"})
-@MapperScan(basePackages = {"com.jsnjwj.compare.dao","com.jsnjwj.user.dao"})
+@MapperScan(basePackages = {"com.jsnjwj.compare.dao","com.jsnjwj.user.dao","com.jsnjwj.trade.dao"})
 @EnableAsync
 public class ContractApiApplication {
     public static void main(String[] args) {
