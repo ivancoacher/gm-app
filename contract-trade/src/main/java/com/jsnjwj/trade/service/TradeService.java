@@ -9,6 +9,6 @@ public interface TradeService {
 
 	ApiResponse<Page<TradeLog>> fetchList(QueryListRequest query);
 
-	int saveLog(TradeLog tradeLog);;
+	int saveLog(TradeLog tradeLog);
 
 }
