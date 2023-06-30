@@ -30,7 +30,6 @@ public class CContractFile implements Serializable {
 
     private Date updateTime;
 
-
     public Integer getId() {
         return id;
     }
@@ -80,4 +79,3 @@ public class CContractFile implements Serializable {
     }
 
 }
-

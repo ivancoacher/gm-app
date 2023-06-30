@@ -37,4 +37,3 @@ public class CContractFilePage implements Serializable {
 
     private Integer contractId;
 }
-

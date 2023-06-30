@@ -6,4 +6,3 @@ public class JwtExpiredException extends RuntimeException {
     }
 
 }
-

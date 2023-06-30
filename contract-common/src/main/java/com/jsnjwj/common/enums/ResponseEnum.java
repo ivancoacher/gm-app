@@ -4,8 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum ResponseEnum {
-    SUCESS(20000, "请求成功！"),
-    ERROR(9999, "请求失败！");
+    SUCESS(20000, "请求成功！"), ERROR(9999, "请求失败！");
 
     private int resultCode;
     private String resultMsg;

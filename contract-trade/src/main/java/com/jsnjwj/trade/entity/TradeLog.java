@@ -21,11 +21,12 @@ public class TradeLog implements Serializable {
 
     private String tradeType;
 
+    private String tradeContent;
+
     @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
     private LocalTime createTime;
 
     @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
     private LocalTime updateTime;
-
 
 }

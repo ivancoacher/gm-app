@@ -14,6 +14,4 @@ import org.apache.ibatis.annotations.Mapper;
 public interface CContractRecordDao extends BaseMapper<CContractRecord> {
     int insert(CContractRecord cContractRecord);
 
-
 }
-

@@ -61,7 +61,7 @@ public class FileUtils {
         File file = new File(fileName);
         OutputStream out = null;
         try {
-            //获取文件流，以文件流的方式输出到新文件
+            // 获取文件流，以文件流的方式输出到新文件
             out = Files.newOutputStream(file.toPath());
             byte[] ss = multipartFile.getBytes();
             for (int i = 0; i < ss.length; i++) {
@@ -81,8 +81,8 @@ public class FileUtils {
         return file;
     }
 
-    public static List<Map<String,Object>> pdf2Image(File ufile) throws Exception {
-        List<Map<String,Object>> result = new ArrayList<>();
+    public static List<Map<String, Object>> pdf2Image(File ufile) throws Exception {
+        List<Map<String, Object>> result = new ArrayList<>();
         String uuid = IdUtil.fastSimpleUUID();
 
         // 创建文件夹
@@ -91,19 +91,17 @@ public class FileUtils {
 
         try {
             PDDocument source = PDDocument.load(ufile);
-            split(1, source.getNumberOfPages(), 1,
-                    ufile.getAbsolutePath(),
-                    outPath);
+            split(1, source.getNumberOfPages(), 1, ufile.getAbsolutePath(), outPath);
             for (int i = 1; i <= source.getNumberOfPages(); i++) {
                 String imgPath = outPath + File.separator + i + ".jpg";
                 writeToImage(outPath + File.separator + i + ".pdf", imgPath);
 
                 String imageLocation = "http://127.0.0.1:8082/file/contract-page/" + uuid + "/" + i + ".jpg";
-                Map<String,Object> fileObj = new HashMap<String,Object>();
-                //文件绝对地址
-                fileObj.put("location",imageLocation);
-                //文件访问路径
-                fileObj.put("filePath",imgPath);
+                Map<String, Object> fileObj = new HashMap<String, Object>();
+                // 文件绝对地址
+                fileObj.put("location", imageLocation);
+                // 文件访问路径
+                fileObj.put("filePath", imgPath);
                 result.add(fileObj);
             }
             source.close();
@@ -118,9 +116,9 @@ public class FileUtils {
         byte[] bytes = Files.readAllBytes(pdfPath);
         byte[] data = pdfToImage2(bytes);
         File file = new File(out);
-        //打开输入流
+        // 打开输入流
         FileImageOutputStream imageOutput = new FileImageOutputStream(file);
-        //将byte写入硬盘
+        // 将byte写入硬盘
         imageOutput.write(data, 0, data.length);
         imageOutput.flush();
         ;
@@ -147,13 +145,14 @@ public class FileUtils {
     /**
      * pdf文件转换成jpg图片流
      *
-     * @param pdfBytes 要转换的pdf文件的流
+     * @param pdfBytes
+     *            要转换的pdf文件的流
      */
     public static byte[] pdfToImage2(byte[] pdfBytes) {
         try {
             PDDocument doc = PDDocument.load(pdfBytes);
             int pageCount = doc.getNumberOfPages();
-//            log.info("PDF转图片流，总页数:{}", pageCount);
+            // log.info("PDF转图片流，总页数:{}", pageCount);
             PDFRenderer pdfRenderer = new PDFRenderer(doc);
             // 不知道图片的宽和高，所以先定义个null
             BufferedImage pdfImage = null;

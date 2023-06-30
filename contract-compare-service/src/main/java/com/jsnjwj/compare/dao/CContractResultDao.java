@@ -19,7 +19,8 @@ public interface CContractResultDao extends BaseMapper<CContractResult> {
     /**
      * 通过ID查询单条数据
      *
-     * @param id 主键
+     * @param id
+     *            主键
      * @return 实例对象
      */
     CContractResult queryById(Integer id);
@@ -27,7 +28,8 @@ public interface CContractResultDao extends BaseMapper<CContractResult> {
     /**
      * 统计总行数
      *
-     * @param cContractResult 查询条件
+     * @param cContractResult
+     *            查询条件
      * @return 总行数
      */
     long count(CContractResult cContractResult);
@@ -35,7 +37,8 @@ public interface CContractResultDao extends BaseMapper<CContractResult> {
     /**
      * 新增数据
      *
-     * @param cContractResult 实例对象
+     * @param cContractResult
+     *            实例对象
      * @return 影响行数
      */
     int insert(CContractResult cContractResult);
@@ -43,7 +46,8 @@ public interface CContractResultDao extends BaseMapper<CContractResult> {
     /**
      * 批量新增数据（MyBatis原生foreach方法）
      *
-     * @param entities List<CContractResult> 实例对象列表
+     * @param entities
+     *            List<CContractResult> 实例对象列表
      * @return 影响行数
      */
     int insertBatch(@Param("entities") List<CContractResult> entities);
@@ -51,16 +55,19 @@ public interface CContractResultDao extends BaseMapper<CContractResult> {
     /**
      * 批量新增或按主键更新数据（MyBatis原生foreach方法）
      *
-     * @param entities List<CContractResult> 实例对象列表
+     * @param entities
+     *            List<CContractResult> 实例对象列表
      * @return 影响行数
-     * @throws org.springframework.jdbc.BadSqlGrammarException 入参是空List的时候会抛SQL语句错误的异常，请自行校验入参
+     * @throws org.springframework.jdbc.BadSqlGrammarException
+     *             入参是空List的时候会抛SQL语句错误的异常，请自行校验入参
      */
     int insertOrUpdateBatch(@Param("entities") List<CContractResult> entities);
 
     /**
      * 修改数据
      *
-     * @param cContractResult 实例对象
+     * @param cContractResult
+     *            实例对象
      * @return 影响行数
      */
     int update(CContractResult cContractResult);
@@ -68,10 +75,10 @@ public interface CContractResultDao extends BaseMapper<CContractResult> {
     /**
      * 通过主键删除数据
      *
-     * @param id 主键
+     * @param id
+     *            主键
      * @return 影响行数
      */
     int deleteById(Integer id);
 
 }
-

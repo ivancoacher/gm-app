@@ -40,7 +40,6 @@ public class CompareController {
         return contractService.queryList(query);
     }
 
-
     @GetMapping(value = "/detail", produces = "application/json;charset=UTF-8")
     @ResponseBody
     public ApiResponse<CContractRecord> detail(ContractDetailQuery query, HttpServletRequest request) {

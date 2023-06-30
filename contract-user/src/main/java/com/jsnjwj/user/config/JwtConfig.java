@@ -12,9 +12,9 @@ import java.util.Date;
 //@ConfigurationProperties(prefix = "config.jwt")
 @Component
 public class JwtConfig {
-    private String secret="kaN3f72qUB3BqUA";
-    private long expire=3600;
-    private String header="access-token";
+    private String secret = "kaN3f72qUB3BqUA";
+    private long expire = 3600;
+    private String header = "access-token";
 
     /**
      * 生成token
@@ -24,15 +24,10 @@ public class JwtConfig {
      */
     public String createToken(String subject) {
         Date nowDate = new Date();
-        Date expireDate = new Date(nowDate.getTime() + expire * 1000);//过期时间
+        Date expireDate = new Date(nowDate.getTime() + expire * 1000);// 过期时间
 
-        return Jwts.builder()
-                .setHeaderParam("typ", "JWT")
-                .setSubject(subject)
-                .setIssuedAt(nowDate)
-                .setExpiration(expireDate)
-                .signWith(SignatureAlgorithm.HS512, secret)
-                .compact();
+        return Jwts.builder().setHeaderParam("typ", "JWT").setSubject(subject).setIssuedAt(nowDate)
+                .setExpiration(expireDate).signWith(SignatureAlgorithm.HS512, secret).compact();
     }
 
     /**

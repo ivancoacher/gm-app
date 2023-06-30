@@ -5,7 +5,7 @@ import com.jsnjwj.user.request.LoginRequest;
 
 public interface UserService {
 
-
     ApiResponse<String> login(LoginRequest request);
+
     ApiResponse<String> register(LoginRequest request);
 }

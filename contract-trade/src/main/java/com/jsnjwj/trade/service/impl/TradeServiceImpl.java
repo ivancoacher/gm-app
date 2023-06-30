@@ -33,10 +33,11 @@ public class TradeServiceImpl implements TradeService {
             wrapper.lambda().le(TradeLog::getCreateTime, query.getEndTime());
         }
 
-        if (StringUtils.isNotEmpty(query.getKey())){
-            wrapper.lambda().le(TradeLog::getTradeNo, query.getKey());
+        if (StringUtils.isNotEmpty(query.getKey())) {
+            wrapper.lambda().and(wp-> wp.like(TradeLog::getTradeNo,query.getKey())
+                    .or()
+                    .like(TradeLog::getTradeContent,query.getKey()));
         }
-
         resultPage = tradeInfoDao.selectPage(resultPage, wrapper);
 
         response.setCode(20000);

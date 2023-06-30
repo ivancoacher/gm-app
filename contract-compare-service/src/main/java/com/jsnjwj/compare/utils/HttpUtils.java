@@ -37,8 +37,7 @@ public class HttpUtils {
             out.write(imgData);
             out.flush();
             out.close();
-            in = new BufferedReader(
-                    new InputStreamReader(conn.getInputStream(), "UTF-8"));
+            in = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
             String line;
             while ((line = in.readLine()) != null) {
                 result.append(line);

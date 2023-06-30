@@ -37,4 +37,3 @@ public class CContractResult implements Serializable {
     private Date updateTime;
 
 }
-

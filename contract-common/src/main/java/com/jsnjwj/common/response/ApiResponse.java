@@ -13,11 +13,11 @@ public class ApiResponse<T> implements Serializable {
     private String message = "成功";
     private T data;
 
-    //    私有构造器
+    // 私有构造器
     public ApiResponse() {
     }
 
-    //    通用成功
+    // 通用成功
     public static ApiResponse success() {
         return success(null);
     }
@@ -31,7 +31,7 @@ public class ApiResponse<T> implements Serializable {
         return ApiResponse;
     }
 
-    //    通用失败
+    // 通用失败
     public static ApiResponse error() {
         return error(null);
     }
@@ -45,7 +45,7 @@ public class ApiResponse<T> implements Serializable {
         return ApiResponse;
     }
 
-    //    自定义参数,链式编程
+    // 自定义参数,链式编程
     public ApiResponse data(T data) {
         this.setData(data);
         return this;

@@ -35,10 +35,8 @@ public class ContractServiceImpl implements ContractService {
     @Resource
     private CContractRecordDao cContractRecordDao;
 
-
     @Resource
     private CContractFilePageDao cContractFilePageDao;
-
 
     @Resource
     private ContractCommonService contractCommonService;
@@ -59,7 +57,8 @@ public class ContractServiceImpl implements ContractService {
         // 保存对比文件
         Integer sourceFileId = contractCommonService.saveFilePath(sourceFile, (String) sourceFileMap.get("location"));
 
-        Integer compareFileId = contractCommonService.saveFilePath(compareFile, (String) compareFileMap.get("location"));
+        Integer compareFileId = contractCommonService.saveFilePath(compareFile,
+                (String) compareFileMap.get("location"));
 
         // 保存对比记录
         CContractRecord cContractRecord = new CContractRecord();

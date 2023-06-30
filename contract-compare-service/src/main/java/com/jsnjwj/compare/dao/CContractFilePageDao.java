@@ -24,4 +24,3 @@ public interface CContractFilePageDao extends BaseMapper<CContractFilePage> {
     int insertOrUpdateBatch(@Param("entities") List<CContractFilePage> entities);
 
 }
-

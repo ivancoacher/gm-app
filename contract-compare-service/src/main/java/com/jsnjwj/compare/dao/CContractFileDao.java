@@ -15,4 +15,3 @@ public interface CContractFileDao extends BaseMapper<CContractFile> {
     int insertOne(CContractFile cContractFile);
 
 }
-
