@@ -22,43 +22,45 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/compare")
 public class CompareController {
-    @Resource
-    private ContractService contractService;
 
-    @PostMapping(value = "/do", produces = "application/json;charset=UTF-8")
-    @ResponseBody
-    public ApiResponse compare(HttpServletRequest request) throws Exception {
-        MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
-        MultipartFile sourceFile = multiRequest.getFile("sourceFile");
-        MultipartFile compareFile = multiRequest.getFile("compareFile");
-        return contractService.compare(sourceFile, compareFile);
-    }
+	@Resource
+	private ContractService contractService;
 
-    @RequestMapping(value = "/list")
-    public ApiResponse<Page<CContractRecord>> list(ContractListQuery query, HttpServletRequest request) {
-        query.setUserId(Integer.valueOf((String) request.getAttribute("identifyId")));
-        return contractService.queryList(query);
-    }
+	@PostMapping(value = "/do", produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public ApiResponse compare(HttpServletRequest request) throws Exception {
+		MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
+		MultipartFile sourceFile = multiRequest.getFile("sourceFile");
+		MultipartFile compareFile = multiRequest.getFile("compareFile");
+		return contractService.compare(sourceFile, compareFile);
+	}
 
-    @GetMapping(value = "/detail", produces = "application/json;charset=UTF-8")
-    @ResponseBody
-    public ApiResponse<CContractRecord> detail(ContractDetailQuery query, HttpServletRequest request) {
-        query.setUserId(Integer.valueOf((String) request.getAttribute("identifyId")));
+	@RequestMapping(value = "/list")
+	public ApiResponse<Page<CContractRecord>> list(ContractListQuery query, HttpServletRequest request) {
+		query.setUserId(Integer.valueOf((String) request.getAttribute("identifyId")));
+		return contractService.queryList(query);
+	}
 
-        return contractService.queryDetail(query);
-    }
+	@GetMapping(value = "/detail", produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public ApiResponse<CContractRecord> detail(ContractDetailQuery query, HttpServletRequest request) {
+		query.setUserId(Integer.valueOf((String) request.getAttribute("identifyId")));
 
-    @GetMapping(value = "/result", produces = "application/json;charset=UTF-8")
-    @ResponseBody
-    public ApiResponse<CContractFilePage> result(CompareResultQuery query, HttpServletRequest request) {
-        query.setUserId(Integer.valueOf((String) request.getAttribute("identifyId")));
-        return contractService.queryResult(query);
-    }
+		return contractService.queryDetail(query);
+	}
 
-    @GetMapping(value = "/pages", produces = "application/json;charset=UTF-8")
-    @ResponseBody
-    public ApiResponse<List<CContractFilePage>> result(ComparePagesQuery query, HttpServletRequest request) {
-        query.setUserId(Integer.valueOf((String) request.getAttribute("identifyId")));
-        return contractService.queryPages(query);
-    }
+	@GetMapping(value = "/result", produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public ApiResponse<CContractFilePage> result(CompareResultQuery query, HttpServletRequest request) {
+		query.setUserId(Integer.valueOf((String) request.getAttribute("identifyId")));
+		return contractService.queryResult(query);
+	}
+
+	@GetMapping(value = "/pages", produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public ApiResponse<List<CContractFilePage>> result(ComparePagesQuery query, HttpServletRequest request) {
+		query.setUserId(Integer.valueOf((String) request.getAttribute("identifyId")));
+		return contractService.queryPages(query);
+	}
+
 }

@@ -13,12 +13,14 @@ import javax.annotation.Resource;
 @RequestMapping("/org")
 
 public class OrganizationController {
-    @Resource
-    private UserService userService;
 
-    @ResponseBody
-    @RequestMapping("/")
-    public Integer index() {
-        return userService.save();
-    }
+	@Resource
+	private UserService userService;
+
+	@ResponseBody
+	@RequestMapping("/")
+	public Integer index() {
+		return userService.save();
+	}
+
 }

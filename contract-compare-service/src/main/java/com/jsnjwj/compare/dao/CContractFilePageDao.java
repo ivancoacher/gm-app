@@ -16,11 +16,12 @@ import java.util.List;
  */
 @Mapper
 public interface CContractFilePageDao extends BaseMapper<CContractFilePage> {
-    void insertBatch(List<CContractFilePage> entities);
 
-    @Override
-    CContractFilePage selectById(Serializable id);
+	void insertBatch(List<CContractFilePage> entities);
 
-    int insertOrUpdateBatch(@Param("entities") List<CContractFilePage> entities);
+	@Override
+	CContractFilePage selectById(Serializable id);
+
+	int insertOrUpdateBatch(@Param("entities") List<CContractFilePage> entities);
 
 }

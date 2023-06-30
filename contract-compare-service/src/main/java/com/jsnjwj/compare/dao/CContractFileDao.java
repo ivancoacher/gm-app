@@ -12,6 +12,7 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface CContractFileDao extends BaseMapper<CContractFile> {
-    int insertOne(CContractFile cContractFile);
+
+	int insertOne(CContractFile cContractFile);
 
 }

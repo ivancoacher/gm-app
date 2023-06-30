@@ -10,72 +10,76 @@ import java.util.Date;
  * @since 2023-06-23 02:06:19
  */
 public class CContractFile implements Serializable {
-    private static final long serialVersionUID = -54218611872513195L;
 
-    private Integer id;
-    /**
-     * 文档名称
-     */
-    private String fileName;
-    /**
-     * 文档类型
-     */
-    private String fileType;
-    /**
-     * 文档路径
-     */
-    private String filePath;
+	private static final long serialVersionUID = -54218611872513195L;
 
-    private Date createTime;
+	private Integer id;
 
-    private Date updateTime;
+	/**
+	 * 文档名称
+	 */
+	private String fileName;
 
-    public Integer getId() {
-        return id;
-    }
+	/**
+	 * 文档类型
+	 */
+	private String fileType;
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+	/**
+	 * 文档路径
+	 */
+	private String filePath;
 
-    public String getFileName() {
-        return fileName;
-    }
+	private Date createTime;
 
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
+	private Date updateTime;
 
-    public String getFileType() {
-        return fileType;
-    }
+	public Integer getId() {
+		return id;
+	}
 
-    public void setFileType(String fileType) {
-        this.fileType = fileType;
-    }
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
-    public String getFilePath() {
-        return filePath;
-    }
+	public String getFileName() {
+		return fileName;
+	}
 
-    public void setFilePath(String filePath) {
-        this.filePath = filePath;
-    }
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
 
-    public Date getCreateTime() {
-        return createTime;
-    }
+	public String getFileType() {
+		return fileType;
+	}
 
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
+	public void setFileType(String fileType) {
+		this.fileType = fileType;
+	}
 
-    public Date getUpdateTime() {
-        return updateTime;
-    }
+	public String getFilePath() {
+		return filePath;
+	}
 
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
+	public void setFilePath(String filePath) {
+		this.filePath = filePath;
+	}
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
+
+	public Date getUpdateTime() {
+		return updateTime;
+	}
+
+	public void setUpdateTime(Date updateTime) {
+		this.updateTime = updateTime;
+	}
 
 }

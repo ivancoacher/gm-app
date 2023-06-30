@@ -10,22 +10,26 @@ import javax.annotation.Resource;
 
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
-    @Resource
-    private AccessTokenInterceptor accessTokenInterceptor;
 
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                // 是否发送Cookie
-                .allowCredentials(true)
-                // 放行哪些原始域
-                .allowedOriginPatterns("*").allowedMethods("GET", "POST", "PUT", "DELETE").allowedHeaders("*")
-                .exposedHeaders("*");
-    }
+	@Resource
+	private AccessTokenInterceptor accessTokenInterceptor;
 
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(accessTokenInterceptor).addPathPatterns("/**").excludePathPatterns("/file/**");
-        ;
-    }
+	@Override
+	public void addCorsMappings(CorsRegistry registry) {
+		registry.addMapping("/**")
+			// 是否发送Cookie
+			.allowCredentials(true)
+			// 放行哪些原始域
+			.allowedOriginPatterns("*")
+			.allowedMethods("GET", "POST", "PUT", "DELETE")
+			.allowedHeaders("*")
+			.exposedHeaders("*");
+	}
+
+	@Override
+	public void addInterceptors(InterceptorRegistry registry) {
+		registry.addInterceptor(accessTokenInterceptor).addPathPatterns("/**").excludePathPatterns("/file/**");
+		;
+	}
+
 }

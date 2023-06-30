@@ -8,6 +8,6 @@ import lombok.EqualsAndHashCode;
 @Data
 public class ContractDetailQuery extends BaseRequest {
 
-    private Integer contractId;
+	private Integer contractId;
 
 }

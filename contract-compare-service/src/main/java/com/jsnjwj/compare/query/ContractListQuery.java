@@ -7,9 +7,11 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class ContractListQuery extends BaseRequest {
-    private Integer pageIndex = 1;
 
-    private Integer pageSize = 10;
+	private Integer pageIndex = 1;
 
-    private Integer userId;
+	private Integer pageSize = 10;
+
+	private Integer userId;
+
 }

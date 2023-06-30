@@ -20,70 +20,71 @@ import java.util.*;
 @Service
 @Slf4j
 public class ContractCommonServiceImpl implements ContractCommonService {
-    @Resource
-    private CContractFilePageDao cContractFilePageDao;
 
-    @Resource
-    private CContractFileDao cContractFileDao;
+	@Resource
+	private CContractFilePageDao cContractFilePageDao;
 
-    private List<Map<String, Object>> saveFilePage(File compareFilePath, Integer sourceFileId) throws Exception {
-        List<Map<String, Object>> compareFilePagePathList = FileUtils.pdf2Image(compareFilePath);
-        List<CContractFilePage> comparePageList = new ArrayList<>();
-        List<Map<String, Object>> resultList = new ArrayList<>();
-        for (int i = 1; i <= compareFilePagePathList.size(); i++) {
-            Map<String, Object> fileInfo = compareFilePagePathList.get(i - 1);
+	@Resource
+	private CContractFileDao cContractFileDao;
 
-            CContractFilePage cContractFilePage = new CContractFilePage();
-            cContractFilePage.setFileId(sourceFileId);
-            cContractFilePage.setPageNo(i);
-            cContractFilePage.setPagePath((String) fileInfo.get("location"));
-            cContractFilePage.setCreateTime(new Date());
-            cContractFilePage.setUpdateTime(new Date());
-            comparePageList.add(cContractFilePage);
+	private List<Map<String, Object>> saveFilePage(File compareFilePath, Integer sourceFileId) throws Exception {
+		List<Map<String, Object>> compareFilePagePathList = FileUtils.pdf2Image(compareFilePath);
+		List<CContractFilePage> comparePageList = new ArrayList<>();
+		List<Map<String, Object>> resultList = new ArrayList<>();
+		for (int i = 1; i <= compareFilePagePathList.size(); i++) {
+			Map<String, Object> fileInfo = compareFilePagePathList.get(i - 1);
 
-            Map<String, Object> fileObj = new HashMap<>();
-            // 文件访问地址
-            fileObj.put("filePath", fileInfo.get("filePath"));
-            // 文件对象
-            fileObj.put("file", cContractFilePage);
-            resultList.add(fileObj);
-        }
-        cContractFilePageDao.insertBatch(comparePageList);
-        log.info(JSONArray.toJSONString(comparePageList));
-        return resultList;
-    }
+			CContractFilePage cContractFilePage = new CContractFilePage();
+			cContractFilePage.setFileId(sourceFileId);
+			cContractFilePage.setPageNo(i);
+			cContractFilePage.setPagePath((String) fileInfo.get("location"));
+			cContractFilePage.setCreateTime(new Date());
+			cContractFilePage.setUpdateTime(new Date());
+			comparePageList.add(cContractFilePage);
 
-    @Override
-    @Async
-    public void doCompare(Integer recordId, File sourceFilePath, Integer fileId) throws Exception {
-        log.info("4");
+			Map<String, Object> fileObj = new HashMap<>();
+			// 文件访问地址
+			fileObj.put("filePath", fileInfo.get("filePath"));
+			// 文件对象
+			fileObj.put("file", cContractFilePage);
+			resultList.add(fileObj);
+		}
+		cContractFilePageDao.insertBatch(comparePageList);
+		log.info(JSONArray.toJSONString(comparePageList));
+		return resultList;
+	}
 
-        // 2、文档转图片
-        List<Map<String, Object>> sourceFilePagePathList = saveFilePage(sourceFilePath, fileId);
-        log.info(sourceFilePagePathList.toString());
-        // 3、OCR识别文档
-        List<CContractFilePage> sourceFileResultList = new ArrayList<>();
-        for (Map<String, Object> filePage : sourceFilePagePathList) {
-            CContractFilePage pageInfo = (CContractFilePage) filePage.get("file");
-            String filePath = (String) filePage.get("filePath");
-            String sourceFileResult = HttpUtils.getResp(filePath);
-            pageInfo.setCompareResult(sourceFileResult);
-            pageInfo.setContractId(recordId);
-            pageInfo.setPagePath(pageInfo.getPagePath());
-            sourceFileResultList.add(pageInfo);
-        }
-        cContractFilePageDao.insertOrUpdateBatch(sourceFileResultList);
-    }
+	@Override
+	@Async
+	public void doCompare(Integer recordId, File sourceFilePath, Integer fileId) throws Exception {
+		log.info("4");
 
-    @Override
-    public Integer saveFilePath(MultipartFile file, String filePath) {
-        CContractFile compareFileEntity = new CContractFile();
-        compareFileEntity.setFileName(file.getOriginalFilename());
-        compareFileEntity.setFilePath(filePath);
-        compareFileEntity.setFileType(file.getContentType());
-        compareFileEntity.setCreateTime(new Date());
-        cContractFileDao.insertOne(compareFileEntity);
-        return compareFileEntity.getId();
-    }
+		// 2、文档转图片
+		List<Map<String, Object>> sourceFilePagePathList = saveFilePage(sourceFilePath, fileId);
+		log.info(sourceFilePagePathList.toString());
+		// 3、OCR识别文档
+		List<CContractFilePage> sourceFileResultList = new ArrayList<>();
+		for (Map<String, Object> filePage : sourceFilePagePathList) {
+			CContractFilePage pageInfo = (CContractFilePage) filePage.get("file");
+			String filePath = (String) filePage.get("filePath");
+			String sourceFileResult = HttpUtils.getResp(filePath);
+			pageInfo.setCompareResult(sourceFileResult);
+			pageInfo.setContractId(recordId);
+			pageInfo.setPagePath(pageInfo.getPagePath());
+			sourceFileResultList.add(pageInfo);
+		}
+		cContractFilePageDao.insertOrUpdateBatch(sourceFileResultList);
+	}
+
+	@Override
+	public Integer saveFilePath(MultipartFile file, String filePath) {
+		CContractFile compareFileEntity = new CContractFile();
+		compareFileEntity.setFileName(file.getOriginalFilename());
+		compareFileEntity.setFilePath(filePath);
+		compareFileEntity.setFileType(file.getContentType());
+		compareFileEntity.setCreateTime(new Date());
+		cContractFileDao.insertOne(compareFileEntity);
+		return compareFileEntity.getId();
+	}
 
 }

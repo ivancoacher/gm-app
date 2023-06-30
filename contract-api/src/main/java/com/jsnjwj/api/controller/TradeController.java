@@ -17,13 +17,15 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 @RequestMapping("/trade")
 public class TradeController {
-    @Resource
-    private TradeService tradeService;
 
-    @RequestMapping("/list")
-    @ResponseBody
-    public ApiResponse<Page<TradeLog>> info(QueryListRequest query, HttpServletRequest request) {
-        query.setUserId(Integer.valueOf((String) request.getAttribute("identifyId")));
-        return tradeService.fetchList(query);
-    }
+	@Resource
+	private TradeService tradeService;
+
+	@RequestMapping("/list")
+	@ResponseBody
+	public ApiResponse<Page<TradeLog>> info(QueryListRequest query, HttpServletRequest request) {
+		query.setUserId(Integer.valueOf((String) request.getAttribute("identifyId")));
+		return tradeService.fetchList(query);
+	}
+
 }

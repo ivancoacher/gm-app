@@ -13,10 +13,12 @@ import lombok.Data;
 @Data
 @TableName("c_users")
 public class User {
-    @TableId
-    private Integer id;
 
-    private String username;
+	@TableId
+	private Integer id;
 
-    private String password;
+	private String username;
+
+	private String password;
+
 }

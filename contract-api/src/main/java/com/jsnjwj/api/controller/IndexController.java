@@ -11,12 +11,14 @@ import javax.annotation.Resource;
 @Slf4j
 @Controller
 public class IndexController {
-    @Resource
-    private UserService userService;
 
-    @ResponseBody
-    @RequestMapping("/")
-    public Integer index() {
-        return userService.save();
-    }
+	@Resource
+	private UserService userService;
+
+	@ResponseBody
+	@RequestMapping("/")
+	public Integer index() {
+		return userService.save();
+	}
+
 }

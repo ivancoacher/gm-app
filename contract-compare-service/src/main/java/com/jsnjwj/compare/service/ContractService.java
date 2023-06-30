@@ -14,13 +14,14 @@ import java.util.List;
 
 public interface ContractService {
 
-    ApiResponse compare(MultipartFile sourceFile, MultipartFile compareFile) throws Exception;
+	ApiResponse compare(MultipartFile sourceFile, MultipartFile compareFile) throws Exception;
 
-    ApiResponse<Page<CContractRecord>> queryList(ContractListQuery query);
+	ApiResponse<Page<CContractRecord>> queryList(ContractListQuery query);
 
-    ApiResponse<CContractRecord> queryDetail(ContractDetailQuery query);
+	ApiResponse<CContractRecord> queryDetail(ContractDetailQuery query);
 
-    ApiResponse<CContractFilePage> queryResult(CompareResultQuery query);
+	ApiResponse<CContractFilePage> queryResult(CompareResultQuery query);
 
-    ApiResponse<List<CContractFilePage>> queryPages(ComparePagesQuery query);
+	ApiResponse<List<CContractFilePage>> queryPages(ComparePagesQuery query);
+
 }

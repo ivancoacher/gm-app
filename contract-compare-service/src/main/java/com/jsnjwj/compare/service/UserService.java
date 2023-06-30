@@ -1,13 +1,15 @@
 package com.jsnjwj.compare.service;
 
 public interface UserService {
-    int save();
 
-    int update();
+	int save();
 
-    int delete();
+	int update();
 
-    int fetchOne();
+	int delete();
 
-    int fetchList();
+	int fetchOne();
+
+	int fetchList();
+
 }

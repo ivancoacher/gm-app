@@ -7,26 +7,28 @@ import lombok.Data;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalTime;
+import java.util.Date;
 
 @Data
 @TableName("c_trade_log")
 public class TradeLog implements Serializable {
-    private static final long serialVersionUID = 748741055830395712L;
 
-    private String tradeNo;
+	private static final long serialVersionUID = 748741055830395712L;
 
-    private Long userId;
+	private String tradeNo;
 
-    private BigDecimal tradeAmount;
+	private Long userId;
 
-    private String tradeType;
+	private BigDecimal tradeAmount;
 
-    private String tradeContent;
+	private String tradeType;
 
-    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
-    private LocalTime createTime;
+	private String tradeContent;
 
-    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
-    private LocalTime updateTime;
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+	private Date createTime;
+
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+	private Date updateTime;
 
 }

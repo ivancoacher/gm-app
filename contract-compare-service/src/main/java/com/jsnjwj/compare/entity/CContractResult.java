@@ -13,27 +13,30 @@ import java.util.Date;
  */
 @Data
 public class CContractResult implements Serializable {
-    private static final long serialVersionUID = -20285122907714444L;
 
-    private Integer id;
-    /**
-     * 合同对比业务编号
-     */
-    private Long contractId;
-    /**
-     * 页面编号
-     */
-    private Long pageId;
+	private static final long serialVersionUID = -20285122907714444L;
 
-    private Integer pageNo;
+	private Integer id;
 
-    /**
-     * 识别内容
-     */
-    private String content;
+	/**
+	 * 合同对比业务编号
+	 */
+	private Long contractId;
 
-    private Date createTime;
+	/**
+	 * 页面编号
+	 */
+	private Long pageId;
 
-    private Date updateTime;
+	private Integer pageNo;
+
+	/**
+	 * 识别内容
+	 */
+	private String content;
+
+	private Date createTime;
+
+	private Date updateTime;
 
 }

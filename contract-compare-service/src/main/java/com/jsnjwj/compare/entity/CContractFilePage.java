@@ -13,27 +13,32 @@ import java.util.Date;
  */
 @Data
 public class CContractFilePage implements Serializable {
-    private static final long serialVersionUID = -31768408083590278L;
 
-    private Integer id;
-    /**
-     * 文件编号
-     */
-    private Integer fileId;
-    /**
-     * 页面编号
-     */
-    private Integer pageNo;
-    /**
-     * 页面地址
-     */
-    private String pagePath;
+	private static final long serialVersionUID = -31768408083590278L;
 
-    private Date createTime;
+	private Integer id;
 
-    private Date updateTime;
+	/**
+	 * 文件编号
+	 */
+	private Integer fileId;
 
-    private String compareResult;
+	/**
+	 * 页面编号
+	 */
+	private Integer pageNo;
 
-    private Integer contractId;
+	/**
+	 * 页面地址
+	 */
+	private String pagePath;
+
+	private Date createTime;
+
+	private Date updateTime;
+
+	private String compareResult;
+
+	private Integer contractId;
+
 }

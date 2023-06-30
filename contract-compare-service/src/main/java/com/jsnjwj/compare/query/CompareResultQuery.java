@@ -8,7 +8,10 @@ import lombok.EqualsAndHashCode;
 @Data
 public class CompareResultQuery extends BaseRequest {
 
-    private Integer contractId;
-    private Integer pageNo;
-    private Integer fileId;
+	private Integer contractId;
+
+	private Integer pageNo;
+
+	private Integer fileId;
+
 }

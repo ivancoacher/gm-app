@@ -15,29 +15,33 @@ import java.util.Date;
  */
 @Data
 public class CContractRecord implements Serializable {
-    private static final long serialVersionUID = 748741055830395712L;
 
-    private Integer id;
+	private static final long serialVersionUID = 748741055830395712L;
 
-    private Integer userId;
+	private Integer id;
 
-    private CompareStateEnum compareState;
-    /**
-     * 原文档编号
-     */
-    private Long originFileId;
+	private Integer userId;
 
-    private String originFileName;
-    /**
-     * 对比文档编号
-     */
-    private Long compareFileId;
+	private CompareStateEnum compareState;
 
-    private String compareFileName;
+	/**
+	 * 原文档编号
+	 */
+	private Long originFileId;
 
-    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
-    private Date createTime;
+	private String originFileName;
 
-    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
-    private Date updateTime;
+	/**
+	 * 对比文档编号
+	 */
+	private Long compareFileId;
+
+	private String compareFileName;
+
+	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
+	private Date createTime;
+
+	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
+	private Date updateTime;
+
 }

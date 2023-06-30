@@ -4,5 +4,7 @@ import lombok.Data;
 
 @Data
 public class BaseRequest {
-    private Integer userId;
+
+	private Integer userId;
+
 }
