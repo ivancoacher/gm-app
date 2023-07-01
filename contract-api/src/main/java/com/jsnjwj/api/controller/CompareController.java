@@ -4,10 +4,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsnjwj.common.response.ApiResponse;
 import com.jsnjwj.compare.entity.CContractFilePage;
 import com.jsnjwj.compare.entity.CContractRecord;
-import com.jsnjwj.compare.query.ComparePagesQuery;
-import com.jsnjwj.compare.query.CompareResultQuery;
-import com.jsnjwj.compare.query.ContractDetailQuery;
-import com.jsnjwj.compare.query.ContractListQuery;
+import com.jsnjwj.compare.query.*;
+import com.jsnjwj.compare.response.CompareAnalysisChartResponse;
+import com.jsnjwj.compare.response.CompareAnalysisResponse;
 import com.jsnjwj.compare.service.ContractService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +15,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
 import java.util.List;
 
 @Slf4j
@@ -63,4 +63,17 @@ public class CompareController {
 		return contractService.queryPages(query);
 	}
 
+	@GetMapping(value = "/analysis", produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public ApiResponse<CompareAnalysisResponse> analysis(ComparePagesQuery query, HttpServletRequest request) {
+		query.setUserId(Integer.valueOf((String) request.getAttribute("identifyId")));
+		return contractService.queryAnalysis(Long.valueOf(query.getUserId()));
+	}
+
+	@GetMapping(value = "/analysis/chart", produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public ApiResponse<List<CompareAnalysisChartResponse>> analysis(CompareAnalysisQuery query, HttpServletRequest request) throws ParseException {
+		query.setUserId(Integer.valueOf((String) request.getAttribute("identifyId")));
+		return contractService.queryAnalysisChart(query);
+	}
 }

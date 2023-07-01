@@ -22,5 +22,11 @@
         values (#{userId}, #{compareState}, #{originFileId}, #{originFileName}, #{compareFileId}, #{compareFileName},
                 #{createTime}, #{updateTime})
     </insert>
+    <select id="selectGroupData" resultType="com.jsnjwj.compare.response.CompareAnalysisChartResponse">
+        select count(*) as count,operate_day as label from c_contract_record
+        where create_time <![CDATA[ >=]]>  #{startTime}
+        and create_time <![CDATA[ <=]]>   #{endTime}
+        group by operate_day
+    </select>
 </mapper>
 
