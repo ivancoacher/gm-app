@@ -9,4 +9,6 @@ public class LoginRequest {
 
 	private String password;
 
+	private String role = "editor";
+
 }

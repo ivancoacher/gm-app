@@ -1,8 +1,12 @@
 package com.jsnjwj.user.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+
+import java.util.Date;
 
 /**
  * (CContractFile)实体类
@@ -14,11 +18,19 @@ import lombok.Data;
 @TableName("c_users")
 public class User {
 
-	@TableId
-	private Integer id;
+	@TableId(type = IdType.AUTO)
+	private Long id;
 
 	private String username;
 
+	private String avatar;
+
 	private String password;
+
+	private String role;
+
+	private String info;
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+	private Date createTime;
 
 }

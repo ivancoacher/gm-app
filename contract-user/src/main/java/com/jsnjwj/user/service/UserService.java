@@ -9,4 +9,5 @@ public interface UserService {
 
 	ApiResponse<String> register(LoginRequest request);
 
+	ApiResponse info(Long userId);
 }
