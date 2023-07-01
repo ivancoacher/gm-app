@@ -195,7 +195,7 @@ public class ContractServiceImpl implements ContractService {
 
         response = initChartData(startTime,endTime);
         List<CompareAnalysisChartResponse> groupData = cContractRecordDao.selectGroupData(startTime, endTime);
-        if (groupData.size() > 0) {
+        if (!groupData.isEmpty()) {
             Map<String,Object> groupDataDict = groupData.stream().collect(Collectors.toMap(CompareAnalysisChartResponse::getLabel,CompareAnalysisChartResponse::getCount));
             response.forEach(rsp->{
                 if (groupDataDict.containsKey(rsp.getLabel())){

@@ -1,9 +1,12 @@
 package com.jsnjwj.api.interceptor;
 
+import com.jsnjwj.common.response.ApiResponse;
 import com.jsnjwj.user.config.JwtConfig;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.SignatureException;
 import lombok.NonNull;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -11,6 +14,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
  * @author chenmingyong
@@ -50,5 +54,4 @@ public class AccessTokenInterceptor implements HandlerInterceptor {
         }
         return true;
     }
-
 }

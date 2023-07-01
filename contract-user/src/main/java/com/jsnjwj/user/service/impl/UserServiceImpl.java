@@ -2,11 +2,16 @@ package com.jsnjwj.user.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsnjwj.common.response.ApiResponse;
 import com.jsnjwj.user.config.JwtConfig;
+import com.jsnjwj.user.dao.OptLogDao;
 import com.jsnjwj.user.dao.UserDao;
+import com.jsnjwj.user.entity.OptLog;
 import com.jsnjwj.user.entity.User;
 import com.jsnjwj.user.reponse.UserInfoResponse;
+import com.jsnjwj.user.request.FetchOptLogRequest;
 import com.jsnjwj.user.request.LoginRequest;
 import com.jsnjwj.user.service.UserService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -30,6 +35,8 @@ public class UserServiceImpl implements UserService {
 
     @Resource
     private UserDao userDao;
+    @Resource
+    private OptLogDao optLogDao;
 
     @Override
     public ApiResponse login(LoginRequest request) {
@@ -89,4 +96,20 @@ public class UserServiceImpl implements UserService {
         return ApiResponse.success(response);
     }
 
+    @Override
+    public ApiResponse<Page<OptLog>> fetchOptLogList(FetchOptLogRequest request) {
+        User user = userDao.selectById(request.getUserId());
+        if (null == user) {
+            return ApiResponse.error("用户信息不存在");
+        }
+        Page<OptLog> response = new Page<>();
+        response.setCurrent(request.getPageIndex());
+        response.setSize(request.getPageSize());
+        QueryWrapper<OptLog> wrapper = new QueryWrapper<>();
+        wrapper.lambda().eq(OptLog::getUserId, request.getUserId());
+        wrapper.lambda().gt(StringUtils.isNotEmpty(request.getStartTime()),OptLog::getCreateTime,request.getStartTime());
+        wrapper.lambda().lt(StringUtils.isNotEmpty(request.getEndTime()),OptLog::getCreateTime,request.getEndTime());
+        response = optLogDao.selectPage(response, wrapper);
+        return ApiResponse.success(response);
+    }
 }
