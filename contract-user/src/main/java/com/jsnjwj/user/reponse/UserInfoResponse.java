@@ -6,13 +6,15 @@ import java.util.List;
 
 @Data
 public class UserInfoResponse {
-    private Long userId;
 
-    private String name;
+	private Long userId;
 
-    private String avatar;
+	private String name;
 
-    private List<String> roles;
+	private String avatar;
 
-    private String info;
+	private List<String> roles;
+
+	private String info;
+
 }

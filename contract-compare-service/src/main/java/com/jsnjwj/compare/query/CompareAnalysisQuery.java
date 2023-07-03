@@ -7,6 +7,9 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class CompareAnalysisQuery extends BaseRequest {
-    private String startTime;
-    private String endTime;
+
+	private String startTime;
+
+	private String endTime;
+
 }

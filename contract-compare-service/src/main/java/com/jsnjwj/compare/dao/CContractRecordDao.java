@@ -17,8 +17,9 @@ import java.util.List;
 @Mapper
 public interface CContractRecordDao extends BaseMapper<CContractRecord> {
 
-    int insert(CContractRecord cContractRecord);
+	int insert(CContractRecord cContractRecord);
 
-    List<CompareAnalysisChartResponse> selectGroupData(@Param("startTime") String startTime, @Param("endTime") String endTime);
+	List<CompareAnalysisChartResponse> selectGroupData(@Param("startTime") String startTime,
+			@Param("endTime") String endTime);
 
 }

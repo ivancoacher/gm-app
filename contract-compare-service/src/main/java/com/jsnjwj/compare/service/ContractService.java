@@ -26,6 +26,7 @@ public interface ContractService {
 
 	ApiResponse<CompareAnalysisResponse> queryAnalysis(Long userId);
 
+	ApiResponse<List<CompareAnalysisChartResponse>> queryAnalysisChart(CompareAnalysisQuery query)
+			throws ParseException;
 
-	ApiResponse<List<CompareAnalysisChartResponse>> queryAnalysisChart(CompareAnalysisQuery query) throws ParseException;
 }

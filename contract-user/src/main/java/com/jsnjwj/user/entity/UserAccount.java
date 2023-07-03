@@ -16,15 +16,19 @@ public class UserAccount {
 	private Long id;
 
 	private Long userId;
-	@JsonSerialize(using= ToStringSerializer.class)
+
+	@JsonSerialize(using = ToStringSerializer.class)
 	private BigDecimal totalRecharge;
-	@JsonSerialize(using= ToStringSerializer.class)
+
+	@JsonSerialize(using = ToStringSerializer.class)
 	private BigDecimal totalExpense;
-	@JsonSerialize(using= ToStringSerializer.class)
+
+	@JsonSerialize(using = ToStringSerializer.class)
 	private BigDecimal balance;
 
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	private Date createTime;
+
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	private Date updateTime;
 

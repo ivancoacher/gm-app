@@ -18,12 +18,15 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 @RequestMapping(value = "/optlog")
 public class OptLogController {
-    @Resource
-    private UserService userService;
-    @RequestMapping("/list")
-    @ResponseBody
-    public ApiResponse<Page<OptLog>> accountInfo(FetchOptLogRequest query, HttpServletRequest request) {
-        query.setUserId(Integer.valueOf((String) request.getAttribute("identifyId")));
-        return userService.fetchOptLogList(query);
-    }
+
+	@Resource
+	private UserService userService;
+
+	@RequestMapping("/list")
+	@ResponseBody
+	public ApiResponse<Page<OptLog>> accountInfo(FetchOptLogRequest query, HttpServletRequest request) {
+		query.setUserId(Integer.valueOf((String) request.getAttribute("identifyId")));
+		return userService.fetchOptLogList(query);
+	}
+
 }

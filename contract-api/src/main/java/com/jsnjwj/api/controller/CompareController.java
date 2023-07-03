@@ -1,6 +1,7 @@
 package com.jsnjwj.api.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.jsnjwj.api.aspect.MethodLog;
 import com.jsnjwj.common.response.ApiResponse;
 import com.jsnjwj.compare.entity.CContractFilePage;
 import com.jsnjwj.compare.entity.CContractRecord;
@@ -8,6 +9,7 @@ import com.jsnjwj.compare.query.*;
 import com.jsnjwj.compare.response.CompareAnalysisChartResponse;
 import com.jsnjwj.compare.response.CompareAnalysisResponse;
 import com.jsnjwj.compare.service.ContractService;
+import com.jsnjwj.user.enums.OperateTypeEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,6 +28,7 @@ public class CompareController {
 	@Resource
 	private ContractService contractService;
 
+	@MethodLog(operType = OperateTypeEnum.DOC_COMPARE, targetId = "", remark = "")
 	@PostMapping(value = "/do", produces = "application/json;charset=UTF-8")
 	@ResponseBody
 	public ApiResponse compare(HttpServletRequest request) throws Exception {
@@ -41,17 +44,24 @@ public class CompareController {
 		return contractService.queryList(query);
 	}
 
+	@MethodLog(operType = OperateTypeEnum.VIEW_COMPARE_RESULT, targetId = "", remark = "")
 	@GetMapping(value = "/detail", produces = "application/json;charset=UTF-8")
 	@ResponseBody
 	public ApiResponse<CContractRecord> detail(ContractDetailQuery query, HttpServletRequest request) {
 		query.setUserId(Integer.valueOf((String) request.getAttribute("identifyId")));
-
 		return contractService.queryDetail(query);
 	}
 
 	@GetMapping(value = "/result", produces = "application/json;charset=UTF-8")
 	@ResponseBody
 	public ApiResponse<CContractFilePage> result(CompareResultQuery query, HttpServletRequest request) {
+		query.setUserId(Integer.valueOf((String) request.getAttribute("identifyId")));
+		return contractService.queryResult(query);
+	}
+
+	@GetMapping(value = "/download", produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public ApiResponse<CContractFilePage> download(CompareResultQuery query, HttpServletRequest request) {
 		query.setUserId(Integer.valueOf((String) request.getAttribute("identifyId")));
 		return contractService.queryResult(query);
 	}
@@ -72,8 +82,10 @@ public class CompareController {
 
 	@GetMapping(value = "/analysis/chart", produces = "application/json;charset=UTF-8")
 	@ResponseBody
-	public ApiResponse<List<CompareAnalysisChartResponse>> analysis(CompareAnalysisQuery query, HttpServletRequest request) throws ParseException {
+	public ApiResponse<List<CompareAnalysisChartResponse>> analysis(CompareAnalysisQuery query,
+			HttpServletRequest request) throws ParseException {
 		query.setUserId(Integer.valueOf((String) request.getAttribute("identifyId")));
 		return contractService.queryAnalysisChart(query);
 	}
+
 }

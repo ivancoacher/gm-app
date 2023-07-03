@@ -5,7 +5,8 @@ import lombok.Data;
 @Data
 public class CompareAnalysisChartResponse {
 
-    private String label;
+	private String label;
 
-    private Long count = 0L;
+	private Long count = 0L;
+
 }
