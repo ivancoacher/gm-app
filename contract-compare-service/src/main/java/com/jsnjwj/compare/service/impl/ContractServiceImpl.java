@@ -22,6 +22,8 @@ import javax.annotation.Resource;
 import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -46,8 +48,26 @@ public class ContractServiceImpl implements ContractService {
 	 * @return
 	 */
 	@Override
-	public ApiResponse compare(MultipartFile sourceFile, MultipartFile compareFile) throws Exception {
-		Integer userId = 1;
+	public ApiResponse compare(ContractCompareQuery query,MultipartFile sourceFile, MultipartFile compareFile) throws Exception {
+		Integer userId = query.getUserId();
+		//保存记录
+		LocalDateTime dateTime = LocalDateTime.now();
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+		String tradeNo = UUID.randomUUID().toString();
+		CContractRecord cContractRecord = new CContractRecord();
+		cContractRecord.setUserId(userId);
+		cContractRecord.setCompareFileName(compareFile.getOriginalFilename());
+		cContractRecord.setOriginFileName(sourceFile.getOriginalFilename());
+		cContractRecord.setCreateTime(new Date());
+		cContractRecord.setUpdateTime(new Date());
+		cContractRecord.setOriginFileId(0L);
+		cContractRecord.setCompareFileId(0L);
+		cContractRecord.setTradeNo(tradeNo);
+		cContractRecord.setOperateDay(dateTime.format(formatter));
+		cContractRecord.setCompareState(CompareStateEnum.HANDLING);
+		cContractRecordDao.insert(cContractRecord);
+
 		// 1、上传文档
 		Map<String, Object> sourceFileMap = FileUtils.uploadFile(sourceFile);
 		Map<String, Object> compareFileMap = FileUtils.uploadFile(compareFile);
@@ -59,21 +79,16 @@ public class ContractServiceImpl implements ContractService {
 		Integer compareFileId = contractCommonService.saveFilePath(compareFile,
 				(String) compareFileMap.get("location"));
 
-		// 保存对比记录
-		CContractRecord cContractRecord = new CContractRecord();
-		cContractRecord.setUserId(userId);
-		cContractRecord.setCompareFileId(compareFileId.longValue());
-		cContractRecord.setCompareFileName(compareFile.getOriginalFilename());
-		cContractRecord.setOriginFileId(sourceFileId.longValue());
-		cContractRecord.setOriginFileName(sourceFile.getOriginalFilename());
-		cContractRecord.setCreateTime(new Date());
+		// 更新对比记录
+		cContractRecord.setOriginFileId(Long.valueOf(sourceFileId));
+		cContractRecord.setCompareFileId(Long.valueOf(compareFileId));
 		cContractRecord.setUpdateTime(new Date());
-		cContractRecord.setCompareState(CompareStateEnum.HANDLING);
-		cContractRecordDao.insert(cContractRecord);
+		cContractRecordDao.updateById(cContractRecord);
+
 		Integer recordId = cContractRecord.getId();
 		contractCommonService.doCompare(recordId, sourceFilePath, sourceFileId);
 		contractCommonService.doCompare(recordId, compareFilePath, compareFileId);
-		return ApiResponse.success(recordId);
+		return ApiResponse.success(tradeNo);
 	}
 
 	/**

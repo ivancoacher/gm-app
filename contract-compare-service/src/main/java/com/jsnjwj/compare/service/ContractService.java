@@ -14,7 +14,7 @@ import java.util.List;
 
 public interface ContractService {
 
-	ApiResponse compare(MultipartFile sourceFile, MultipartFile compareFile) throws Exception;
+	ApiResponse compare(ContractCompareQuery query,MultipartFile sourceFile, MultipartFile compareFile) throws Exception;
 
 	ApiResponse<Page<CContractRecord>> queryList(ContractListQuery query);
 

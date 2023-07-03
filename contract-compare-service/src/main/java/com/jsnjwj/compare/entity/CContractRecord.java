@@ -22,6 +22,10 @@ public class CContractRecord implements Serializable {
 
 	private Integer userId;
 
+	private String tradeNo;
+
+	private String operateDay;
+
 	private CompareStateEnum compareState;
 
 	/**
