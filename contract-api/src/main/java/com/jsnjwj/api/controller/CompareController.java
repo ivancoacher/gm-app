@@ -31,12 +31,12 @@ public class CompareController {
 	@MethodLog(operType = OperateTypeEnum.DOC_COMPARE, targetId = "", remark = "")
 	@PostMapping(value = "/do", produces = "application/json;charset=UTF-8")
 	@ResponseBody
-	public ApiResponse compare(ContractCompareQuery query,HttpServletRequest request) throws Exception {
+	public ApiResponse compare(ContractCompareQuery query, HttpServletRequest request) throws Exception {
 		MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
 		MultipartFile sourceFile = multiRequest.getFile("sourceFile");
 		MultipartFile compareFile = multiRequest.getFile("compareFile");
 		query.setUserId(Integer.valueOf((String) request.getAttribute("identifyId")));
-		return contractService.compare(query,sourceFile, compareFile);
+		return contractService.compare(query, sourceFile, compareFile);
 	}
 
 	@RequestMapping(value = "/list")

@@ -48,9 +48,10 @@ public class ContractServiceImpl implements ContractService {
 	 * @return
 	 */
 	@Override
-	public ApiResponse compare(ContractCompareQuery query,MultipartFile sourceFile, MultipartFile compareFile) throws Exception {
+	public ApiResponse compare(ContractCompareQuery query, MultipartFile sourceFile, MultipartFile compareFile)
+			throws Exception {
 		Integer userId = query.getUserId();
-		//保存记录
+		// 保存记录
 		LocalDateTime dateTime = LocalDateTime.now();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 

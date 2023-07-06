@@ -42,7 +42,7 @@ public class SysLogAspect {
 				sysLog.setUserId(Long.valueOf(userIdStr));
 			}
 		}
-		sysLog.setOperateType(operType);
+		sysLog.setOperateType(operType.getCode());
 		sysLog.setRemark(methodLog.remark());
 		sysLog.setCreateTime(new Date());
 

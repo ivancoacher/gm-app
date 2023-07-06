@@ -1,8 +1,9 @@
 package com.jsnjwj.user.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.jsnjwj.user.enums.OperateTypeEnum;
 import lombok.Data;
 
 import java.util.Date;
@@ -17,9 +18,12 @@ import java.util.Date;
 @TableName("c_opt_log")
 public class OptLog {
 
+	@TableId(type = IdType.AUTO)
+	private Long id;
+
 	private Long userId;
 
-	private OperateTypeEnum operateType;
+	private Integer operateType;
 
 	private String remark;
 

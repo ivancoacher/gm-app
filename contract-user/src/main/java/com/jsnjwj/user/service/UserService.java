@@ -5,6 +5,7 @@ import com.jsnjwj.common.response.ApiResponse;
 import com.jsnjwj.user.entity.OptLog;
 import com.jsnjwj.user.request.FetchOptLogRequest;
 import com.jsnjwj.user.request.LoginRequest;
+import com.jsnjwj.user.vo.OperateLogVo;
 
 public interface UserService {
 
@@ -14,6 +15,6 @@ public interface UserService {
 
 	ApiResponse info(Long userId);
 
-	ApiResponse<Page<OptLog>> fetchOptLogList(FetchOptLogRequest request);
+	ApiResponse<Page<OperateLogVo>> fetchOptLogList(FetchOptLogRequest request);
 
 }

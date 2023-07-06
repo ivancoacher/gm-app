@@ -2,6 +2,7 @@ package com.jsnjwj.user.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsnjwj.common.response.ApiResponse;
@@ -15,13 +16,15 @@ import com.jsnjwj.user.reponse.UserInfoResponse;
 import com.jsnjwj.user.request.FetchOptLogRequest;
 import com.jsnjwj.user.request.LoginRequest;
 import com.jsnjwj.user.service.UserService;
+import com.jsnjwj.user.vo.OperateLogVo;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -65,7 +68,7 @@ public class UserServiceImpl implements UserService {
 		// 保存日志
 		OptLog optLog = new OptLog();
 		optLog.setUserId(userId);
-		optLog.setOperateType(operateTypeEnum);
+		optLog.setOperateType(operateTypeEnum.getCode());
 		optLog.setRemark(remark);
 		optLog.setCreateTime(new Date());
 		optLogDao.insert(optLog);
@@ -103,7 +106,7 @@ public class UserServiceImpl implements UserService {
 			return ApiResponse.error("用户信息不存在");
 		}
 		UserInfoResponse response = new UserInfoResponse();
-		response.setUserId(Long.valueOf(user.getId()));
+		response.setUserId(user.getId());
 		response.setName(user.getUsername());
 		response.setAvatar(user.getAvatar());
 		List<String> roles = new ArrayList<>();
@@ -114,20 +117,57 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public ApiResponse<Page<OptLog>> fetchOptLogList(FetchOptLogRequest request) {
+	public ApiResponse<Page<OperateLogVo>> fetchOptLogList(FetchOptLogRequest request) {
 		User user = userDao.selectById(request.getUserId());
 		if (null == user) {
 			return ApiResponse.error("用户信息不存在");
 		}
-		Page<OptLog> response = new Page<>();
-		response.setCurrent(request.getPageIndex());
-		response.setSize(request.getPageSize());
+		Page<OptLog> result = new Page<>();
+		result.setCurrent(request.getPageIndex());
+		result.setSize(request.getPageSize());
 		QueryWrapper<OptLog> wrapper = new QueryWrapper<>();
 		wrapper.lambda().eq(OptLog::getUserId, request.getUserId());
-		wrapper.lambda()
-			.gt(StringUtils.isNotEmpty(request.getStartTime()), OptLog::getCreateTime, request.getStartTime());
-		wrapper.lambda().lt(StringUtils.isNotEmpty(request.getEndTime()), OptLog::getCreateTime, request.getEndTime());
-		response = optLogDao.selectPage(response, wrapper);
+
+		wrapper.lambda().gt(!Objects.isNull(request.getStartTime()), OptLog::getCreateTime, request.getStartTime());
+
+		if (!Objects.isNull(request.getEndTime())) {
+			wrapper.lambda().lt(OptLog::getCreateTime, request.getEndTime() + " 23:59:59");
+		}
+		wrapper.lambda().orderByDesc(OptLog::getCreateTime);
+		result = optLogDao.selectPage(result, wrapper);
+
+		Page<OperateLogVo> response = new Page<>();
+		response.setCurrent(result.getSize());
+		response.setTotal(result.getTotal());
+		response.setPages(result.getPages());
+		List<OperateLogVo> records = new ArrayList<>();
+		if (CollectionUtils.isNotEmpty(result.getRecords())) {
+			List<Long> customerIds = result.getRecords()
+				.stream()
+				.map(OptLog::getUserId)
+				.distinct()
+				.collect(Collectors.toList());
+			QueryWrapper<User> wrapper1 = new QueryWrapper<>();
+			wrapper1.lambda().in(User::getId, customerIds);
+			List<User> userList = userDao.selectList(wrapper1);
+			Map<Long, String> userMap = userList.stream().collect(Collectors.toMap(User::getId, User::getUsername));
+
+			result.getRecords().forEach(record -> {
+				OperateLogVo vo = new OperateLogVo();
+				vo.setUserId(record.getUserId());
+				vo.setId(record.getId());
+				vo.setCreateTime(record.getCreateTime());
+				if (userMap.containsKey(record.getUserId())) {
+					vo.setUsername(userMap.get(record.getUserId()));
+				}
+				vo.setOperateType(record.getOperateType());
+				vo.setOperateTypeDesc(OperateTypeEnum.getValue(record.getOperateType()));
+				vo.setRemark(record.getRemark());
+				records.add(vo);
+			});
+		}
+		response.setRecords(records);
+
 		return ApiResponse.success(response);
 	}
 

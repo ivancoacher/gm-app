@@ -16,6 +16,7 @@ import java.util.List;
  */
 @Mapper
 public interface CContractRecordDao extends BaseMapper<CContractRecord> {
+
 	List<CompareAnalysisChartResponse> selectGroupData(@Param("startTime") String startTime,
 			@Param("endTime") String endTime);
 
