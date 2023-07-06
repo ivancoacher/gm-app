@@ -247,5 +247,4 @@ public class ContractServiceImpl implements ContractService {
 		}
 		return allDate;
 	}
-
 }

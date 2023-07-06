@@ -17,4 +17,10 @@ public class UserInfoResponse {
 
 	private String info;
 
+	private Long organizationId;
+
+	private Integer organizationStatus;
+
+	private String organizationName;
+
 }

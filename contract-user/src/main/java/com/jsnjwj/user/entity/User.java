@@ -29,6 +29,20 @@ public class User {
 
 	private String role;
 
+	/**
+	 * 所属组织编号
+	 */
+	private Long organizationId;
+
+	/**
+	 * 组织认证状态
+	 * 0:未认证
+	 * 1:认证中
+	 * 2:认证成功
+	 * 3:认证失败
+	 */
+	private Integer organizationStatus;
+
 	private String info;
 
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
