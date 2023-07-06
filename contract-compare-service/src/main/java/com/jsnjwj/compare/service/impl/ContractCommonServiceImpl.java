@@ -3,8 +3,8 @@ package com.jsnjwj.compare.service.impl;
 import com.alibaba.fastjson2.JSONArray;
 import com.jsnjwj.compare.dao.CContractFileDao;
 import com.jsnjwj.compare.dao.CContractFilePageDao;
-import com.jsnjwj.compare.entity.CContractFile;
-import com.jsnjwj.compare.entity.CContractFilePage;
+import com.jsnjwj.compare.entity.CContractFileEntity;
+import com.jsnjwj.compare.entity.CContractFilePageEntity;
 import com.jsnjwj.compare.service.ContractCommonService;
 import com.jsnjwj.compare.utils.FileUtils;
 import com.jsnjwj.compare.utils.HttpUtils;
@@ -29,24 +29,24 @@ public class ContractCommonServiceImpl implements ContractCommonService {
 
 	private List<Map<String, Object>> saveFilePage(File compareFilePath, Integer sourceFileId) throws Exception {
 		List<Map<String, Object>> compareFilePagePathList = FileUtils.pdf2Image(compareFilePath);
-		List<CContractFilePage> comparePageList = new ArrayList<>();
+		List<CContractFilePageEntity> comparePageList = new ArrayList<>();
 		List<Map<String, Object>> resultList = new ArrayList<>();
 		for (int i = 1; i <= compareFilePagePathList.size(); i++) {
 			Map<String, Object> fileInfo = compareFilePagePathList.get(i - 1);
 
-			CContractFilePage cContractFilePage = new CContractFilePage();
-			cContractFilePage.setFileId(sourceFileId);
-			cContractFilePage.setPageNo(i);
-			cContractFilePage.setPagePath((String) fileInfo.get("location"));
-			cContractFilePage.setCreateTime(new Date());
-			cContractFilePage.setUpdateTime(new Date());
-			comparePageList.add(cContractFilePage);
+			CContractFilePageEntity cContractFilePageEntity = new CContractFilePageEntity();
+			cContractFilePageEntity.setFileId(sourceFileId);
+			cContractFilePageEntity.setPageNo(i);
+			cContractFilePageEntity.setPagePath((String) fileInfo.get("location"));
+			cContractFilePageEntity.setCreateTime(new Date());
+			cContractFilePageEntity.setUpdateTime(new Date());
+			comparePageList.add(cContractFilePageEntity);
 
 			Map<String, Object> fileObj = new HashMap<>();
 			// 文件访问地址
 			fileObj.put("filePath", fileInfo.get("filePath"));
 			// 文件对象
-			fileObj.put("file", cContractFilePage);
+			fileObj.put("file", cContractFilePageEntity);
 			resultList.add(fileObj);
 		}
 		cContractFilePageDao.insertBatch(comparePageList);
@@ -63,9 +63,9 @@ public class ContractCommonServiceImpl implements ContractCommonService {
 		List<Map<String, Object>> sourceFilePagePathList = saveFilePage(sourceFilePath, fileId);
 		log.info(sourceFilePagePathList.toString());
 		// 3、OCR识别文档
-		List<CContractFilePage> sourceFileResultList = new ArrayList<>();
+		List<CContractFilePageEntity> sourceFileResultList = new ArrayList<>();
 		for (Map<String, Object> filePage : sourceFilePagePathList) {
-			CContractFilePage pageInfo = (CContractFilePage) filePage.get("file");
+			CContractFilePageEntity pageInfo = (CContractFilePageEntity) filePage.get("file");
 			String filePath = (String) filePage.get("filePath");
 			String sourceFileResult = HttpUtils.getResp(filePath);
 			pageInfo.setCompareResult(sourceFileResult);
@@ -78,7 +78,7 @@ public class ContractCommonServiceImpl implements ContractCommonService {
 
 	@Override
 	public Integer saveFilePath(MultipartFile file, String filePath) {
-		CContractFile compareFileEntity = new CContractFile();
+		CContractFileEntity compareFileEntity = new CContractFileEntity();
 		compareFileEntity.setFileName(file.getOriginalFilename());
 		compareFileEntity.setFilePath(filePath);
 		compareFileEntity.setFileType(file.getContentType());

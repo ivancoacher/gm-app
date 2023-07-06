@@ -2,8 +2,8 @@ package com.jsnjwj.compare.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsnjwj.common.response.ApiResponse;
-import com.jsnjwj.compare.entity.CContractFilePage;
-import com.jsnjwj.compare.entity.CContractRecord;
+import com.jsnjwj.compare.entity.CContractFilePageEntity;
+import com.jsnjwj.compare.entity.CContractRecordEntity;
 import com.jsnjwj.compare.query.*;
 import com.jsnjwj.compare.response.CompareAnalysisChartResponse;
 import com.jsnjwj.compare.response.CompareAnalysisResponse;
@@ -17,13 +17,13 @@ public interface ContractService {
 	ApiResponse compare(ContractCompareQuery query, MultipartFile sourceFile, MultipartFile compareFile)
 			throws Exception;
 
-	ApiResponse<Page<CContractRecord>> queryList(ContractListQuery query);
+	ApiResponse<Page<CContractRecordEntity>> queryList(ContractListQuery query);
 
-	ApiResponse<CContractRecord> queryDetail(ContractDetailQuery query);
+	ApiResponse<CContractRecordEntity> queryDetail(ContractDetailQuery query);
 
-	ApiResponse<CContractFilePage> queryResult(CompareResultQuery query);
+	ApiResponse<CContractFilePageEntity> queryResult(CompareResultQuery query);
 
-	ApiResponse<List<CContractFilePage>> queryPages(ComparePagesQuery query);
+	ApiResponse<List<CContractFilePageEntity>> queryPages(ComparePagesQuery query);
 
 	ApiResponse<CompareAnalysisResponse> queryAnalysis(Long userId);
 

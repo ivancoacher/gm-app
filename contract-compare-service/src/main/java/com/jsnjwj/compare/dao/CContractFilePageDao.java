@@ -1,7 +1,7 @@
 package com.jsnjwj.compare.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.jsnjwj.compare.entity.CContractFilePage;
+import com.jsnjwj.compare.entity.CContractFilePageEntity;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -15,13 +15,13 @@ import java.util.List;
  * @since 2023-06-23 02:06:22
  */
 @Mapper
-public interface CContractFilePageDao extends BaseMapper<CContractFilePage> {
+public interface CContractFilePageDao extends BaseMapper<CContractFilePageEntity> {
 
-	void insertBatch(List<CContractFilePage> entities);
+	void insertBatch(List<CContractFilePageEntity> entities);
 
 	@Override
-	CContractFilePage selectById(Serializable id);
+	CContractFilePageEntity selectById(Serializable id);
 
-	int insertOrUpdateBatch(@Param("entities") List<CContractFilePage> entities);
+	int insertOrUpdateBatch(@Param("entities") List<CContractFilePageEntity> entities);
 
 }

@@ -1,5 +1,8 @@
 package com.jsnjwj.compare.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.jsnjwj.compare.enums.CompareStateEnum;
 import lombok.Data;
@@ -14,10 +17,12 @@ import java.util.Date;
  * @since 2023-06-23 02:06:22
  */
 @Data
-public class CContractRecord implements Serializable {
+@TableName("c_contract_record")
+public class CContractRecordEntity implements Serializable {
 
 	private static final long serialVersionUID = 748741055830395712L;
 
+	@TableId(type = IdType.AUTO)
 	private Integer id;
 
 	private Integer userId;
@@ -26,7 +31,7 @@ public class CContractRecord implements Serializable {
 
 	private String operateDay;
 
-	private CompareStateEnum compareState;
+	private Integer compareState;
 
 	/**
 	 * 原文档编号

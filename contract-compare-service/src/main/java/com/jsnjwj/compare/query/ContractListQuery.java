@@ -12,6 +12,12 @@ public class ContractListQuery extends BaseRequest {
 
 	private Integer pageSize = 10;
 
-	private Integer userId;
+	private String title;
+
+	private String startTime;
+
+	private String endTime;
+
+	private Integer compareState;
 
 }

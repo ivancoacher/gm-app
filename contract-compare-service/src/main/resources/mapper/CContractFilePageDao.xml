@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jsnjwj.compare.dao.CContractFilePageDao">
 
-    <resultMap type="com.jsnjwj.compare.entity.CContractFilePage" id="CContractFilePageMap">
+    <resultMap type="com.jsnjwj.compare.entity.CContractFilePageEntity" id="CContractFilePageMap">
         <result property="id" column="id" jdbcType="INTEGER"/>
         <result property="fileId" column="file_id" jdbcType="INTEGER"/>
         <result property="pageNo" column="page_no" jdbcType="INTEGER"/>
@@ -85,7 +85,7 @@
         values (#{fileId}, #{pageNo}, #{pagePath}, #{createTime}, #{updateTime})
     </insert>
 
-    <insert id="insertBatch" parameterType="com.jsnjwj.compare.entity.CContractFilePage" useGeneratedKeys="true"
+    <insert id="insertBatch" parameterType="com.jsnjwj.compare.entity.CContractFilePageEntity" useGeneratedKeys="true"
             keyColumn="id" keyProperty="id">
         insert into c_contract_file_page(file_id, page_no, page_path, create_time, update_time)
         values

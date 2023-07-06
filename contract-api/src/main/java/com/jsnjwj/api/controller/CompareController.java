@@ -3,8 +3,8 @@ package com.jsnjwj.api.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsnjwj.api.aspect.MethodLog;
 import com.jsnjwj.common.response.ApiResponse;
-import com.jsnjwj.compare.entity.CContractFilePage;
-import com.jsnjwj.compare.entity.CContractRecord;
+import com.jsnjwj.compare.entity.CContractFilePageEntity;
+import com.jsnjwj.compare.entity.CContractRecordEntity;
 import com.jsnjwj.compare.query.*;
 import com.jsnjwj.compare.response.CompareAnalysisChartResponse;
 import com.jsnjwj.compare.response.CompareAnalysisResponse;
@@ -40,7 +40,7 @@ public class CompareController {
 	}
 
 	@RequestMapping(value = "/list")
-	public ApiResponse<Page<CContractRecord>> list(ContractListQuery query, HttpServletRequest request) {
+	public ApiResponse<Page<CContractRecordEntity>> list(ContractListQuery query, HttpServletRequest request) {
 		query.setUserId(Integer.valueOf((String) request.getAttribute("identifyId")));
 		return contractService.queryList(query);
 	}
@@ -48,28 +48,28 @@ public class CompareController {
 	@MethodLog(operType = OperateTypeEnum.VIEW_COMPARE_RESULT, targetId = "", remark = "")
 	@GetMapping(value = "/detail", produces = "application/json;charset=UTF-8")
 	@ResponseBody
-	public ApiResponse<CContractRecord> detail(ContractDetailQuery query, HttpServletRequest request) {
+	public ApiResponse<CContractRecordEntity> detail(ContractDetailQuery query, HttpServletRequest request) {
 		query.setUserId(Integer.valueOf((String) request.getAttribute("identifyId")));
 		return contractService.queryDetail(query);
 	}
 
 	@GetMapping(value = "/result", produces = "application/json;charset=UTF-8")
 	@ResponseBody
-	public ApiResponse<CContractFilePage> result(CompareResultQuery query, HttpServletRequest request) {
+	public ApiResponse<CContractFilePageEntity> result(CompareResultQuery query, HttpServletRequest request) {
 		query.setUserId(Integer.valueOf((String) request.getAttribute("identifyId")));
 		return contractService.queryResult(query);
 	}
 
 	@GetMapping(value = "/download", produces = "application/json;charset=UTF-8")
 	@ResponseBody
-	public ApiResponse<CContractFilePage> download(CompareResultQuery query, HttpServletRequest request) {
+	public ApiResponse<CContractFilePageEntity> download(CompareResultQuery query, HttpServletRequest request) {
 		query.setUserId(Integer.valueOf((String) request.getAttribute("identifyId")));
 		return contractService.queryResult(query);
 	}
 
 	@GetMapping(value = "/pages", produces = "application/json;charset=UTF-8")
 	@ResponseBody
-	public ApiResponse<List<CContractFilePage>> result(ComparePagesQuery query, HttpServletRequest request) {
+	public ApiResponse<List<CContractFilePageEntity>> result(ComparePagesQuery query, HttpServletRequest request) {
 		query.setUserId(Integer.valueOf((String) request.getAttribute("identifyId")));
 		return contractService.queryPages(query);
 	}

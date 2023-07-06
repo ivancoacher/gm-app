@@ -35,11 +35,7 @@ public class User {
 	private Long organizationId;
 
 	/**
-	 * 组织认证状态
-	 * 0:未认证
-	 * 1:认证中
-	 * 2:认证成功
-	 * 3:认证失败
+	 * 组织认证状态 0:未认证 1:认证中 2:认证成功 3:认证失败
 	 */
 	private Integer organizationStatus;
 

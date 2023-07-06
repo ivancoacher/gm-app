@@ -1,5 +1,8 @@
 package com.jsnjwj.compare.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -12,10 +15,13 @@ import java.util.Date;
  * @since 2023-06-23 02:06:22
  */
 @Data
-public class CContractFilePage implements Serializable {
+@TableName("c_contract_file_page")
+
+public class CContractFilePageEntity implements Serializable {
 
 	private static final long serialVersionUID = -31768408083590278L;
 
+	@TableId(type = IdType.AUTO)
 	private Integer id;
 
 	/**
