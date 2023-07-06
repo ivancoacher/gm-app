@@ -9,6 +9,7 @@ import com.jsnjwj.compare.query.*;
 import com.jsnjwj.compare.response.CompareAnalysisChartResponse;
 import com.jsnjwj.compare.response.CompareAnalysisResponse;
 import com.jsnjwj.compare.service.ContractService;
+import com.jsnjwj.compare.vo.CompareInfoVo;
 import com.jsnjwj.user.enums.OperateTypeEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -40,7 +41,7 @@ public class CompareController {
 	}
 
 	@RequestMapping(value = "/list")
-	public ApiResponse<Page<CContractRecordEntity>> list(ContractListQuery query, HttpServletRequest request) {
+	public ApiResponse<Page<CompareInfoVo>> list(ContractListQuery query, HttpServletRequest request) {
 		query.setUserId(Integer.valueOf((String) request.getAttribute("identifyId")));
 		return contractService.queryList(query);
 	}

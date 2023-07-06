@@ -7,6 +7,7 @@ import com.jsnjwj.compare.entity.CContractRecordEntity;
 import com.jsnjwj.compare.query.*;
 import com.jsnjwj.compare.response.CompareAnalysisChartResponse;
 import com.jsnjwj.compare.response.CompareAnalysisResponse;
+import com.jsnjwj.compare.vo.CompareInfoVo;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.text.ParseException;
@@ -17,7 +18,7 @@ public interface ContractService {
 	ApiResponse compare(ContractCompareQuery query, MultipartFile sourceFile, MultipartFile compareFile)
 			throws Exception;
 
-	ApiResponse<Page<CContractRecordEntity>> queryList(ContractListQuery query);
+	ApiResponse<Page<CompareInfoVo>> queryList(ContractListQuery query);
 
 	ApiResponse<CContractRecordEntity> queryDetail(ContractDetailQuery query);
 

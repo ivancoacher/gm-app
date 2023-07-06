@@ -8,7 +8,7 @@ import lombok.EqualsAndHashCode;
 @Data
 public class ComparePagesQuery extends BaseRequest {
 
-	private Integer contractId;
+	private String contractId;
 
 	private Integer pageNo;
 
