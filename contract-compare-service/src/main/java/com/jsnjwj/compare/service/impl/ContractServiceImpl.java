@@ -10,13 +10,15 @@ import com.jsnjwj.compare.dao.CContractRecordDao;
 import com.jsnjwj.compare.entity.CContractFilePageEntity;
 import com.jsnjwj.compare.entity.CContractRecordEntity;
 import com.jsnjwj.compare.enums.CompareStateEnum;
+import com.jsnjwj.compare.manager.ContractFileManager;
+import com.jsnjwj.compare.manager.ContractManager;
 import com.jsnjwj.compare.query.*;
 import com.jsnjwj.compare.response.CompareAnalysisChartResponse;
 import com.jsnjwj.compare.response.CompareAnalysisResponse;
-import com.jsnjwj.compare.service.ContractCommonService;
 import com.jsnjwj.compare.service.ContractService;
 import com.jsnjwj.compare.utils.FileUtils;
 import com.jsnjwj.compare.vo.CompareInfoVo;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,7 +28,6 @@ import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -35,6 +36,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class ContractServiceImpl implements ContractService {
 
 	@Resource
@@ -43,8 +45,9 @@ public class ContractServiceImpl implements ContractService {
 	@Resource
 	private CContractFilePageDao cContractFilePageDao;
 
-	@Resource
-	private ContractCommonService contractCommonService;
+	private final ContractManager contractManager;
+
+	private final ContractFileManager contractFileManager;
 
 	/**
 	 * 合同比对执行
@@ -55,22 +58,13 @@ public class ContractServiceImpl implements ContractService {
 			throws Exception {
 		Integer userId = query.getUserId();
 		// 保存记录
-		LocalDateTime dateTime = LocalDateTime.now();
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
 		String tradeNo = UUID.randomUUID().toString();
 		CContractRecordEntity cContractRecordEntity = new CContractRecordEntity();
 		cContractRecordEntity.setUserId(userId);
 		cContractRecordEntity.setCompareFileName(compareFile.getOriginalFilename());
 		cContractRecordEntity.setOriginFileName(sourceFile.getOriginalFilename());
-		cContractRecordEntity.setCreateTime(new Date());
-		cContractRecordEntity.setUpdateTime(new Date());
-		cContractRecordEntity.setOriginFileId(0L);
-		cContractRecordEntity.setCompareFileId(0L);
 		cContractRecordEntity.setTradeNo(tradeNo);
-		cContractRecordEntity.setOperateDay(dateTime.format(formatter));
-		cContractRecordEntity.setCompareState(CompareStateEnum.HANDLING.getCode());
-		cContractRecordDao.insert(cContractRecordEntity);
+		contractManager.initRecord(cContractRecordEntity);
 
 		// 1、上传文档
 		Map<String, Object> sourceFileMap = FileUtils.uploadFile(sourceFile);
@@ -78,20 +72,19 @@ public class ContractServiceImpl implements ContractService {
 		File sourceFilePath = (File) sourceFileMap.get("file");
 		File compareFilePath = (File) compareFileMap.get("file");
 		// 保存对比文件
-		Integer sourceFileId = contractCommonService.saveFilePath(sourceFile, (String) sourceFileMap.get("location"));
+		Integer sourceFileId = contractFileManager.saveFilePath(sourceFile, (String) sourceFileMap.get("location"));
 
-		Integer compareFileId = contractCommonService.saveFilePath(compareFile,
-				(String) compareFileMap.get("location"));
+		Integer compareFileId = contractFileManager.saveFilePath(compareFile, (String) compareFileMap.get("location"));
 
 		// 更新对比记录
 		cContractRecordEntity.setOriginFileId(Long.valueOf(sourceFileId));
 		cContractRecordEntity.setCompareFileId(Long.valueOf(compareFileId));
-		cContractRecordEntity.setUpdateTime(new Date());
+		cContractRecordEntity.setUpdateTime(LocalDateTime.now());
 		cContractRecordDao.updateById(cContractRecordEntity);
 
 		Integer recordId = cContractRecordEntity.getId();
-		contractCommonService.doCompare(recordId, sourceFilePath, sourceFileId);
-		contractCommonService.doCompare(recordId, compareFilePath, compareFileId);
+		contractFileManager.doCompare(recordId, sourceFilePath, sourceFileId);
+		contractFileManager.doCompare(recordId, compareFilePath, compareFileId);
 		return ApiResponse.success(tradeNo);
 	}
 

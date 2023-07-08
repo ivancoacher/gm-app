@@ -8,15 +8,13 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.ImageType;
 import org.apache.pdfbox.rendering.PDFRenderer;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import javax.imageio.stream.FileImageOutputStream;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -37,22 +35,43 @@ public class FileUtils {
 
 	public static Map<String, Object> uploadFile(MultipartFile uploadFile) throws Exception {
 
-		File fileRealPath = getUploadPath("contract-file");
+		// File fileRealPath = getUploadPath("contract-file");
 
 		String uuid = IdUtil.fastSimpleUUID();
 		File file = convert2File(uploadFile);
+		File fileRealPath = getBasePath("contract-file");
 
 		String suffix = FileUtil.getSuffix(file);
 		String fileName = uuid + "." + suffix;
 		File targetFile = new File(fileRealPath, fileName);
 		uploadFile.transferTo(targetFile);
 		Boolean rst = file.delete();
-
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put("location", "http://127.0.0.1:8082/file/contract-file/" + fileName);
 		result.put("file", targetFile);
 
 		return result;
+	}
+
+	private static File getBasePath(String dirName) throws FileNotFoundException {
+		String os = System.getProperty("os.name");
+		String fileRealPath = "";
+		// windows系统
+		if (os.toLowerCase().startsWith("win")) {
+			String path = System.getProperty("user.dir"); // 获取项目相对路径
+			fileRealPath = path + "/src/main/resources/static";
+		}
+		else {
+			// linux系统 获取根目录
+			// 如果是在本地windows环境下，目录为项目的target\classes下
+			// 如果是linux环境下，目录为jar包同级目录
+			File rootPath = new File(ResourceUtils.getURL("classpath:").getPath());
+			if (!rootPath.exists()) {
+				rootPath = new File("");
+			}
+			fileRealPath = rootPath.getAbsolutePath() + "/file";
+		}
+		return new File(fileRealPath + "/" + dirName);
 	}
 
 	private static File convert2File(MultipartFile multipartFile) {

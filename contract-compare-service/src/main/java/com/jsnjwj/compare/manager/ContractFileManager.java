@@ -1,11 +1,13 @@
-package com.jsnjwj.compare.service.impl;
+package com.jsnjwj.compare.manager;
 
 import com.alibaba.fastjson2.JSONArray;
 import com.jsnjwj.compare.dao.CContractFileDao;
 import com.jsnjwj.compare.dao.CContractFilePageDao;
+import com.jsnjwj.compare.dao.CContractRecordDao;
 import com.jsnjwj.compare.entity.CContractFileEntity;
 import com.jsnjwj.compare.entity.CContractFilePageEntity;
-import com.jsnjwj.compare.service.ContractCommonService;
+import com.jsnjwj.compare.entity.CContractRecordEntity;
+import com.jsnjwj.compare.enums.CompareStateEnum;
 import com.jsnjwj.compare.utils.FileUtils;
 import com.jsnjwj.compare.utils.HttpUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -15,11 +17,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.io.File;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
 @Slf4j
-public class ContractCommonServiceImpl implements ContractCommonService {
+public class ContractFileManager {
 
 	@Resource
 	private CContractFilePageDao cContractFilePageDao;
@@ -54,7 +58,6 @@ public class ContractCommonServiceImpl implements ContractCommonService {
 		return resultList;
 	}
 
-	@Override
 	@Async
 	public void doCompare(Integer recordId, File sourceFilePath, Integer fileId) throws Exception {
 		log.info("4");
@@ -76,7 +79,6 @@ public class ContractCommonServiceImpl implements ContractCommonService {
 		cContractFilePageDao.insertOrUpdateBatch(sourceFileResultList);
 	}
 
-	@Override
 	public Integer saveFilePath(MultipartFile file, String filePath) {
 		CContractFileEntity compareFileEntity = new CContractFileEntity();
 		compareFileEntity.setFileName(file.getOriginalFilename());
