@@ -9,15 +9,15 @@
         <version>2.6.4</version>
     </parent>
     <groupId>com.jsnjwj</groupId>
-    <artifactId>contract-compare</artifactId>
+    <artifactId>game</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <modules>
-        <module>contract-compare-service</module>
-        <module>contract-api</module>
-        <module>contract-user</module>
-        <module>contract-common</module>
-        <module>contract-trade</module>
+        <module>game-service</module>
+        <module>game-api</module>
+        <module>game-user</module>
+        <module>game-common</module>
+        <module>game-trade</module>
     </modules>
 
     <properties>

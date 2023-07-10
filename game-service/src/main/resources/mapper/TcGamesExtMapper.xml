@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="service.mapper.TcGamesExtMapper">
+
+    <resultMap id="BaseResultMap" type="com.jsnjwj.facade.entity.TcGamesExt">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="gameName" column="game_name" jdbcType="VARCHAR"/>
+            <result property="gameType" column="game_type" jdbcType="VARCHAR"/>
+            <result property="signType" column="sign_type" jdbcType="VARCHAR"/>
+            <result property="startTime" column="start_time" jdbcType="TIMESTAMP"/>
+            <result property="endTime" column="end_time" jdbcType="TIMESTAMP"/>
+            <result property="fightStartTime" column="fight_start_time" jdbcType="TIMESTAMP"/>
+            <result property="status" column="status" jdbcType="TINYINT"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="smallTitle" column="small_title" jdbcType="VARCHAR"/>
+            <result property="applyCount" column="apply_count" jdbcType="INTEGER"/>
+            <result property="fightEndTime" column="fight_end_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,game_name,game_type,
+        sign_type,start_time,end_time,
+        fight_start_time,status,create_time,
+        update_time,small_title,apply_count,
+        fight_end_time
+    </sql>
+</mapper>

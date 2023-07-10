@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="service.mapper.TcSignTeamMapper">
+
+    <resultMap id="BaseResultMap" type="com.jsnjwj.facade.entity.TcSignTeam">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="gameId" column="game_id" jdbcType="INTEGER"/>
+            <result property="teamName" column="team_name" jdbcType="VARCHAR"/>
+            <result property="leaderName" column="leader_name" jdbcType="VARCHAR"/>
+            <result property="leaderTel" column="leader_tel" jdbcType="VARCHAR"/>
+            <result property="coachName" column="coach_name" jdbcType="VARCHAR"/>
+            <result property="coachTel" column="coach_tel" jdbcType="VARCHAR"/>
+            <result property="remark" column="remark" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="signStatus" column="sign_status" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,game_id,team_name,
+        leader_name,leader_tel,coach_name,
+        coach_tel,remark,create_time,
+        update_time,sign_status
+    </sql>
+</mapper>
