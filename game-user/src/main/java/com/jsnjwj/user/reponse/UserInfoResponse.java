@@ -23,4 +23,7 @@ public class UserInfoResponse {
 
 	private String organizationName;
 
+	private Integer depId;
+
+	private String phone;
 }

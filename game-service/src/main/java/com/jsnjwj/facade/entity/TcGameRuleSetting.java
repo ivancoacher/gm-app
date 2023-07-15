@@ -4,6 +4,9 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Data;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -11,23 +14,24 @@ import java.util.Date;
  * @TableName tc_game_rule_setting
  */
 @TableName(value = "tc_game_rule_setting")
+@Data
 public class TcGameRuleSetting implements Serializable {
 
 	/**
 	 *
 	 */
 	@TableId(type = IdType.AUTO)
-	private Integer id;
+	private Long id;
 
 	/**
 	 *
 	 */
-	private Integer gameId;
+	private Long gameId;
 
 	/**
 	 *
 	 */
-	private Integer itemId;
+	private Long itemId;
 
 	/**
 	 *
@@ -35,119 +39,20 @@ public class TcGameRuleSetting implements Serializable {
 	private Integer judgeGroupNum;
 
 	/**
-	 *
+	 * 积分规则
 	 */
 	private Integer scoreRule;
 
 	/**
 	 *
 	 */
+	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
 	private Date createdAt;
 
 	/**
 	 *
 	 */
+	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
 	private Date updatedAt;
-
-	@TableField(exist = false)
-	private static final long serialVersionUID = 1L;
-
-	/**
-	 *
-	 */
-	public Integer getId() {
-		return id;
-	}
-
-	/**
-	 *
-	 */
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	/**
-	 *
-	 */
-	public Integer getGameId() {
-		return gameId;
-	}
-
-	/**
-	 *
-	 */
-	public void setGameId(Integer gameId) {
-		this.gameId = gameId;
-	}
-
-	/**
-	 *
-	 */
-	public Integer getItemId() {
-		return itemId;
-	}
-
-	/**
-	 *
-	 */
-	public void setItemId(Integer itemId) {
-		this.itemId = itemId;
-	}
-
-	/**
-	 *
-	 */
-	public Integer getJudgeGroupNum() {
-		return judgeGroupNum;
-	}
-
-	/**
-	 *
-	 */
-	public void setJudgeGroupNum(Integer judgeGroupNum) {
-		this.judgeGroupNum = judgeGroupNum;
-	}
-
-	/**
-	 *
-	 */
-	public Integer getScoreRule() {
-		return scoreRule;
-	}
-
-	/**
-	 *
-	 */
-	public void setScoreRule(Integer scoreRule) {
-		this.scoreRule = scoreRule;
-	}
-
-	/**
-	 *
-	 */
-	public Date getCreatedAt() {
-		return createdAt;
-	}
-
-	/**
-	 *
-	 */
-	public void setCreatedAt(Date createdAt) {
-		this.createdAt = createdAt;
-	}
-
-	/**
-	 *
-	 */
-	public Date getUpdatedAt() {
-		return updatedAt;
-	}
-
-	/**
-	 *
-	 */
-	public void setUpdatedAt(Date updatedAt) {
-		this.updatedAt = updatedAt;
-	}
 
 }

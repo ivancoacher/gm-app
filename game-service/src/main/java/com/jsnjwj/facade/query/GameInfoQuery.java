@@ -7,8 +7,9 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class GameInfoQuery extends BaseRequest {
-    private String gameName;
 
-    private Integer gameStatus;
+	private String gameName;
+
+	private Integer gameStatus;
 
 }

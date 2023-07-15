@@ -4,13 +4,15 @@ import lombok.Data;
 
 @Data
 public class ItemLabelVo {
-    private Long itemId;
 
-    private String itemName;
+	private Long itemId;
 
-    private Long groupId;
+	private String itemName;
 
-    private String groupName;
+	private Long groupId;
 
-    private Long gameId;
+	private String groupName;
+
+	private Long gameId;
+
 }

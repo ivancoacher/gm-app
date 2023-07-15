@@ -1,7 +1,7 @@
 package com.jsnjwj.api.aspect;
 
-import com.jsnjwj.user.dao.OptLogDao;
-import com.jsnjwj.user.entity.OptLog;
+import com.jsnjwj.user.dao.TcOptLogDao;
+import com.jsnjwj.user.entity.TcOptLog;
 import com.jsnjwj.user.enums.OperateTypeEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -27,7 +27,7 @@ import java.util.Date;
 public class SysLogAspect {
 
 	@Resource
-	private OptLogDao optLogDao;
+	private TcOptLogDao optLogDao;
 
 	@Resource
 	private HttpServletRequest request;
@@ -35,7 +35,7 @@ public class SysLogAspect {
 	@Around("execution(* com.jsnjwj..*(..)) && @annotation(methodLog)")
 	public Object around(ProceedingJoinPoint joinPoint, MethodLog methodLog) throws Throwable {
 		OperateTypeEnum operType = methodLog.operType();
-		OptLog sysLog = new OptLog();
+		TcOptLog sysLog = new TcOptLog();
 		if (!OperateTypeEnum.LOGIN.equals(operType)) {
 			String userIdStr = (String) request.getAttribute("identifyId");
 			if (null != userIdStr) {
@@ -57,15 +57,15 @@ public class SysLogAspect {
 
 	static class Operate implements Runnable {
 
-		private OptLogDao sysLogMapper;
+		private TcOptLogDao sysLogMapper;
 
-		private OptLog sysLog;
+		private TcOptLog sysLog;
 
-		public void setSysLog(OptLog sysLog) {
+		public void setSysLog(TcOptLog sysLog) {
 			this.sysLog = sysLog;
 		}
 
-		public void setSysLogMapper(OptLogDao sysLogMapper) {
+		public void setSysLogMapper(TcOptLogDao sysLogMapper) {
 			this.sysLogMapper = sysLogMapper;
 		}
 

@@ -44,7 +44,6 @@ public class UserController {
 	@ResponseBody
 	public ApiResponse info(HttpServletRequest request) {
 		return userService.info(Long.valueOf((String) request.getAttribute("identifyId")));
-
 	}
 
 	@RequestMapping("/account/info")

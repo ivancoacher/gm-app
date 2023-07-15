@@ -25,64 +25,64 @@ import javax.annotation.Resource;
 @RequiredArgsConstructor
 public class GameInfoInfoServiceImpl implements GameInfoService {
 
-    @Resource
-    private TcGamesMapper gameMapper;
+	@Resource
+	private TcGamesMapper gameMapper;
 
-    @Override
-    public ApiResponse<Page<GameInfoVo>> queryList(GameListQuery query) {
-        Page<GameInfoVo> response = new Page<>();
+	@Override
+	public ApiResponse<Page<GameInfoVo>> queryList(GameListQuery query) {
+		Page<GameInfoVo> response = new Page<>();
 
-        Page<TcGames> page = new Page<>();
-        LambdaQueryWrapper<TcGames> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(StringUtils.isNotEmpty(query.getGameName()), TcGames::getGameName, query.getGameName());
-        page = gameMapper.selectPage(page, wrapper);
+		Page<TcGames> page = new Page<>();
+		LambdaQueryWrapper<TcGames> wrapper = new LambdaQueryWrapper<>();
+		wrapper.eq(StringUtils.isNotEmpty(query.getGameName()), TcGames::getGameName, query.getGameName());
+		page = gameMapper.selectPage(page, wrapper);
 
-        return ApiResponse.success(response);
-    }
+		return ApiResponse.success(response);
+	}
 
-    @Override
-    public ApiResponse<TcGames> fetchInfo(GameInfoQuery query) {
-        GameInfoVo response = new GameInfoVo();
+	@Override
+	public ApiResponse<TcGames> fetchInfo(GameInfoQuery query) {
+		GameInfoVo response = new GameInfoVo();
 
-        TcGames gameInfo = gameMapper.selectById(query.getGameId());
-        if (gameInfo != null) {
-            response.setId(gameInfo.getId());
-            response.setGameName(gameInfo.getGameName());
-            response.setStatus(gameInfo.getStatus());
-            response.setStatusDesc(GameStatusEnum.getValue(gameInfo.getStatus()));
-            response.setSignStartTime(gameInfo.getSignStartTime());
-            response.setSignEndTime(gameInfo.getSignEndTime());
-            response.setGameTime(gameInfo.getGameTime());
-            response.setCreateTime(gameInfo.getCreateTime());
-            response.setUpdateTime(gameInfo.getUpdateTime());
+		TcGames gameInfo = gameMapper.selectById(query.getGameId());
+		if (gameInfo != null) {
+			response.setId(gameInfo.getId());
+			response.setGameName(gameInfo.getGameName());
+			response.setStatus(gameInfo.getStatus());
+			response.setStatusDesc(GameStatusEnum.getValue(gameInfo.getStatus()));
+			response.setSignStartTime(gameInfo.getSignStartTime());
+			response.setSignEndTime(gameInfo.getSignEndTime());
+			response.setGameTime(gameInfo.getGameTime());
+			response.setCreateTime(gameInfo.getCreateTime());
+			response.setUpdateTime(gameInfo.getUpdateTime());
 
-        }
-        return ApiResponse.success(response);
-    }
+		}
+		return ApiResponse.success(response);
+	}
 
-    @Override
-    public ApiResponse<Boolean> update(GameInfoQuery query) {
-        TcGames games = new TcGames();
-        games.setId(query.getGameId());
-        games.setGameName(query.getGameName());
-        int result = gameMapper.insert(games);
-        return ApiResponse.success(result > 0);
-    }
+	@Override
+	public ApiResponse<Boolean> update(GameInfoQuery query) {
+		TcGames games = new TcGames();
+		games.setId(query.getGameId());
+		games.setGameName(query.getGameName());
+		int result = gameMapper.insert(games);
+		return ApiResponse.success(result > 0);
+	}
 
-    @Override
-    public ApiResponse<Boolean> save(GameInfoQuery query) {
-        TcGames games = new TcGames();
-        int result = gameMapper.insert(games);
-        return ApiResponse.success(result > 0);
-    }
+	@Override
+	public ApiResponse<Boolean> save(GameInfoQuery query) {
+		TcGames games = new TcGames();
+		int result = gameMapper.insert(games);
+		return ApiResponse.success(result > 0);
+	}
 
-    @Override
-    public ApiResponse<Boolean> changeStatus(GameInfoQuery query) {
-        TcGames games = new TcGames();
-        games.setId(query.getGameId());
-        games.setStatus(query.getGameStatus());
-        int result = gameMapper.updateById(games);
-        return ApiResponse.success(result > 0);
-    }
+	@Override
+	public ApiResponse<Boolean> changeStatus(GameInfoQuery query) {
+		TcGames games = new TcGames();
+		games.setId(query.getGameId());
+		games.setStatus(query.getGameStatus());
+		int result = gameMapper.updateById(games);
+		return ApiResponse.success(result > 0);
+	}
 
 }

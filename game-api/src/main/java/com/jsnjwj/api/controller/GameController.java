@@ -17,39 +17,37 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping(value = "/game")
 public class GameController {
 
-    @Resource
-    private GameInfoService gameInfoService;
+	@Resource
+	private GameInfoService gameInfoService;
 
-    @RequestMapping(value = "/list")
-    public ApiResponse<Page<GameInfoVo>> list(GameListQuery query, HttpServletRequest request) {
-        query.setUserId(Integer.valueOf((String) request.getAttribute("identifyId")));
-        return gameInfoService.queryList(query);
-    }
+	@RequestMapping(value = "/list")
+	public ApiResponse<Page<GameInfoVo>> list(GameListQuery query, HttpServletRequest request) {
+		query.setUserId(Integer.valueOf((String) request.getAttribute("identifyId")));
+		return gameInfoService.queryList(query);
+	}
 
-    @RequestMapping(value = "/info")
-    public ApiResponse<TcGames> info(GameInfoQuery query, HttpServletRequest request) {
-        query.setUserId(Integer.valueOf((String) request.getAttribute("identifyId")));
-        return gameInfoService.fetchInfo(query);
-    }
+	@RequestMapping(value = "/info")
+	public ApiResponse<TcGames> info(GameInfoQuery query, HttpServletRequest request) {
+		query.setUserId(Integer.valueOf((String) request.getAttribute("identifyId")));
+		return gameInfoService.fetchInfo(query);
+	}
 
+	@RequestMapping(value = "/update")
+	public ApiResponse<Boolean> update(GameInfoQuery query, HttpServletRequest request) {
+		query.setUserId(Integer.valueOf((String) request.getAttribute("identifyId")));
+		return gameInfoService.update(query);
+	}
 
+	@RequestMapping(value = "/save")
+	public ApiResponse<Boolean> save(GameInfoQuery query, HttpServletRequest request) {
+		query.setUserId(Integer.valueOf((String) request.getAttribute("identifyId")));
+		return gameInfoService.save(query);
+	}
 
-    @RequestMapping(value = "/update")
-    public ApiResponse<Boolean> update(GameInfoQuery query, HttpServletRequest request) {
-        query.setUserId(Integer.valueOf((String) request.getAttribute("identifyId")));
-        return gameInfoService.update(query);
-    }
-
-    @RequestMapping(value = "/save")
-    public ApiResponse<Boolean> save(GameInfoQuery query, HttpServletRequest request) {
-        query.setUserId(Integer.valueOf((String) request.getAttribute("identifyId")));
-        return gameInfoService.save(query);
-    }
-
-    @RequestMapping(value = "/changeStatus")
-    public ApiResponse<Boolean> changeStatus(GameInfoQuery query, HttpServletRequest request) {
-        query.setUserId(Integer.valueOf((String) request.getAttribute("identifyId")));
-        return gameInfoService.changeStatus(query);
-    }
+	@RequestMapping(value = "/changeStatus")
+	public ApiResponse<Boolean> changeStatus(GameInfoQuery query, HttpServletRequest request) {
+		query.setUserId(Integer.valueOf((String) request.getAttribute("identifyId")));
+		return gameInfoService.changeStatus(query);
+	}
 
 }

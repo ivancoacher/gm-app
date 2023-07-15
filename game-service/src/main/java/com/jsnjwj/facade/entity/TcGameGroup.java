@@ -4,6 +4,9 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Data;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -11,18 +14,19 @@ import java.util.Date;
  * @TableName tc_game_group
  */
 @TableName(value = "tc_game_group")
+@Data
 public class TcGameGroup implements Serializable {
 
 	/**
 	 *
 	 */
 	@TableId(type = IdType.AUTO)
-	private Integer id;
+	private Long id;
 
 	/**
 	 *
 	 */
-	private Integer gameId;
+	private Long gameId;
 
 	/**
 	 *
@@ -42,112 +46,15 @@ public class TcGameGroup implements Serializable {
 	/**
 	 *
 	 */
+	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
+
 	private Date createTime;
 
 	/**
 	 *
 	 */
+	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
+
 	private Date updateTime;
-
-	@TableField(exist = false)
-	private static final long serialVersionUID = 1L;
-
-	/**
-	 *
-	 */
-	public Integer getId() {
-		return id;
-	}
-
-	/**
-	 *
-	 */
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	/**
-	 *
-	 */
-	public Integer getGameId() {
-		return gameId;
-	}
-
-	/**
-	 *
-	 */
-	public void setGameId(Integer gameId) {
-		this.gameId = gameId;
-	}
-
-	/**
-	 *
-	 */
-	public String getGroupName() {
-		return groupName;
-	}
-
-	/**
-	 *
-	 */
-	public void setGroupName(String groupName) {
-		this.groupName = groupName;
-	}
-
-	/**
-	 *
-	 */
-	public Integer getCreatorId() {
-		return creatorId;
-	}
-
-	/**
-	 *
-	 */
-	public void setCreatorId(Integer creatorId) {
-		this.creatorId = creatorId;
-	}
-
-	/**
-	 *
-	 */
-	public Integer getSort() {
-		return sort;
-	}
-
-	/**
-	 *
-	 */
-	public void setSort(Integer sort) {
-		this.sort = sort;
-	}
-
-	/**
-	 *
-	 */
-	public Date getCreateTime() {
-		return createTime;
-	}
-
-	/**
-	 *
-	 */
-	public void setCreateTime(Date createTime) {
-		this.createTime = createTime;
-	}
-
-	/**
-	 *
-	 */
-	public Date getUpdateTime() {
-		return updateTime;
-	}
-
-	/**
-	 *
-	 */
-	public void setUpdateTime(Date updateTime) {
-		this.updateTime = updateTime;
-	}
 
 }

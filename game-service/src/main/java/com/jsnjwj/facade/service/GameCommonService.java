@@ -8,7 +8,8 @@ import java.util.List;
 
 public interface GameCommonService {
 
-    ApiResponse<List<GroupLabelVo>> fetchGroup(Long gameId);
+	ApiResponse<List<GroupLabelVo>> fetchGroup(Long gameId);
 
-    ApiResponse<List<ItemLabelVo>> fetchItemByGroupId(Long gameId, Long groupId);
+	ApiResponse<List<ItemLabelVo>> fetchItemByGroupId(Long gameId, Long groupId);
+
 }

@@ -4,12 +4,16 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Data;
+
 import java.io.Serializable;
 import java.util.Date;
 
 /**
  * @TableName tc_sign_single
  */
+@Data
 @TableName(value = "tc_sign_single")
 public class TcSignSingle implements Serializable {
 
@@ -77,210 +81,13 @@ public class TcSignSingle implements Serializable {
 	/**
 	 *
 	 */
+	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
 	private Date createTime;
 
 	/**
 	 *
 	 */
+	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
 	private Date updateTime;
-
-	@TableField(exist = false)
-	private static final long serialVersionUID = 1L;
-
-	/**
-	 *
-	 */
-	public Integer getId() {
-		return id;
-	}
-
-	/**
-	 *
-	 */
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	/**
-	 *
-	 */
-	public Integer getGameId() {
-		return gameId;
-	}
-
-	/**
-	 *
-	 */
-	public void setGameId(Integer gameId) {
-		this.gameId = gameId;
-	}
-
-	/**
-	 *
-	 */
-	public Integer getGroupId() {
-		return groupId;
-	}
-
-	/**
-	 *
-	 */
-	public void setGroupId(Integer groupId) {
-		this.groupId = groupId;
-	}
-
-	/**
-	 *
-	 */
-	public Integer getItemId() {
-		return itemId;
-	}
-
-	/**
-	 *
-	 */
-	public void setItemId(Integer itemId) {
-		this.itemId = itemId;
-	}
-
-	/**
-	 *
-	 */
-	public Integer getTeamId() {
-		return teamId;
-	}
-
-	/**
-	 *
-	 */
-	public void setTeamId(Integer teamId) {
-		this.teamId = teamId;
-	}
-
-	/**
-	 *
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 *
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	/**
-	 *
-	 */
-	public String getTeamName() {
-		return teamName;
-	}
-
-	/**
-	 *
-	 */
-	public void setTeamName(String teamName) {
-		this.teamName = teamName;
-	}
-
-	/**
-	 *
-	 */
-	public String getSex() {
-		return sex;
-	}
-
-	/**
-	 *
-	 */
-	public void setSex(String sex) {
-		this.sex = sex;
-	}
-
-	/**
-	 *
-	 */
-	public Integer getAge() {
-		return age;
-	}
-
-	/**
-	 *
-	 */
-	public void setAge(Integer age) {
-		this.age = age;
-	}
-
-	/**
-	 *
-	 */
-	public String getRemark() {
-		return remark;
-	}
-
-	/**
-	 *
-	 */
-	public void setRemark(String remark) {
-		this.remark = remark;
-	}
-
-	/**
-	 *
-	 */
-	public Integer getSignStatus() {
-		return signStatus;
-	}
-
-	/**
-	 *
-	 */
-	public void setSignStatus(Integer signStatus) {
-		this.signStatus = signStatus;
-	}
-
-	/**
-	 *
-	 */
-	public Integer getAuditStatus() {
-		return auditStatus;
-	}
-
-	/**
-	 *
-	 */
-	public void setAuditStatus(Integer auditStatus) {
-		this.auditStatus = auditStatus;
-	}
-
-	/**
-	 *
-	 */
-	public Date getCreateTime() {
-		return createTime;
-	}
-
-	/**
-	 *
-	 */
-	public void setCreateTime(Date createTime) {
-		this.createTime = createTime;
-	}
-
-	/**
-	 *
-	 */
-	public Date getUpdateTime() {
-		return updateTime;
-	}
-
-	/**
-	 *
-	 */
-	public void setUpdateTime(Date updateTime) {
-		this.updateTime = updateTime;
-	}
 
 }
