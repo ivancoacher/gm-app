@@ -20,6 +20,7 @@ public class AuthController {
 	public ApiResponse login(@RequestBody LoginRequest request) {
 		return userService.login(request);
 	}
+
 	@RequestMapping("/info")
 	@ResponseBody
 	public ApiResponse info(HttpServletRequest request) {

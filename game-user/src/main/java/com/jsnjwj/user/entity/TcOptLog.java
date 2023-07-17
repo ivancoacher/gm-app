@@ -11,6 +11,7 @@ import java.util.Date;
 @Data
 @TableName("tc_opt_log")
 public class TcOptLog {
+
 	@TableId(type = IdType.AUTO)
 	private Long id;
 

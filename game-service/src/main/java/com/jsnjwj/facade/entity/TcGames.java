@@ -36,7 +36,7 @@ public class TcGames implements Serializable {
 	/**
 	 *
 	 */
-	private String gameType;
+	private Integer gameType;
 
 	/**
 	 *
@@ -46,17 +46,19 @@ public class TcGames implements Serializable {
 	/**
 	 * 比赛时间
 	 */
-	private String gameTime;
+	private String gameStartTime;
+
+	private String gameEndTime;
 
 	/**
 	 * 报名开始时间
 	 */
-	private Date signStartTime;
+	private String signStartTime;
 
 	/**
 	 * 报名结束时间
 	 */
-	private Date signEndTime;
+	private String signEndTime;
 
 	/**
 	 *

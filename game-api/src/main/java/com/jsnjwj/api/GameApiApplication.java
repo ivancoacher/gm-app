@@ -8,7 +8,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @EnableAsync
-@SpringBootApplication(scanBasePackages = { "com.jsnjwj","com.jsnjwj.api" },
+@SpringBootApplication(scanBasePackages = { "com.jsnjwj", "com.jsnjwj.api" },
 		exclude = { org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration.class })
 @MapperScan(basePackages = { "com.jsnjwj.facade.mapper", "com.jsnjwj.user.dao", "com.jsnjwj.trade.dao" })
 public class GameApiApplication {

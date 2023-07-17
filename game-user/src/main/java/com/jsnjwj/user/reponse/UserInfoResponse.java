@@ -26,4 +26,5 @@ public class UserInfoResponse {
 	private Integer depId;
 
 	private String phone;
+
 }

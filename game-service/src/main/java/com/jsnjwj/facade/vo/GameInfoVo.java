@@ -1,5 +1,6 @@
 package com.jsnjwj.facade.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -8,7 +9,7 @@ import java.util.Date;
 @Data
 public class GameInfoVo implements Serializable {
 
-	private Integer id;
+	private Integer gameId;
 
 	/**
 	 *
@@ -23,7 +24,7 @@ public class GameInfoVo implements Serializable {
 	/**
 	 *
 	 */
-	private String gameType;
+	private Integer gameType;
 
 	/**
 	 *
@@ -33,17 +34,19 @@ public class GameInfoVo implements Serializable {
 	/**
 	 * 比赛时间
 	 */
-	private String gameTime;
+	private String gameStartTime;
+
+	private String gameEndTime;
 
 	/**
 	 * 报名开始时间
 	 */
-	private Date signStartTime;
+	private String signStartTime;
 
 	/**
 	 * 报名结束时间
 	 */
-	private Date signEndTime;
+	private String signEndTime;
 
 	/**
 	 *
@@ -80,11 +83,13 @@ public class GameInfoVo implements Serializable {
 	/**
 	 *
 	 */
+	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
 	private Date createTime;
 
 	/**
 	 *
 	 */
+	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
 	private Date updateTime;
 
 }

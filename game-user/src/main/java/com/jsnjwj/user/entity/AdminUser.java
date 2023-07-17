@@ -43,11 +43,12 @@ public class AdminUser {
 	 */
 	private Long deptId;
 
-
 	private Integer sex;
 
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	private Date createAt;
+
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	private Date updateAt;
+
 }
