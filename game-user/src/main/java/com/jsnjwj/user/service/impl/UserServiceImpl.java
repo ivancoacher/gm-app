@@ -113,6 +113,7 @@ public class UserServiceImpl implements UserService {
 		response.setName(user.getUsername());
 		response.setAvatar(user.getAvatar());
 		List<String> roles = new ArrayList<>();
+		roles.add("admin");
 		response.setRoles(roles);
 		response.setInfo(user.getRemark());
 		response.setPhone(user.getPhone());

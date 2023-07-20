@@ -9,7 +9,7 @@ import java.util.Date;
 @Data
 public class GameInfoVo implements Serializable {
 
-	private Integer gameId;
+	private Long gameId;
 
 	/**
 	 *

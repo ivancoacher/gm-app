@@ -21,17 +21,17 @@ public class TcGameItem implements Serializable {
 	 *
 	 */
 	@TableId(type = IdType.AUTO)
-	private Integer id;
+	private Long id;
 
 	/**
 	 *
 	 */
-	private Integer gameId;
+	private Long gameId;
 
 	/**
 	 *
 	 */
-	private Integer groupId;
+	private Long groupId;
 
 	/**
 	 *

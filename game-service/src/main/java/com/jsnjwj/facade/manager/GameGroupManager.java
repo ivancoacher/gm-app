@@ -47,7 +47,7 @@ public class GameGroupManager {
 		Page<TcGameGroup> groups = gameGroupMapper.selectPage(page, wrapper);
 
 		Page<GroupLabelVo> response = new Page<>();
-
+		response.setRecords(new ArrayList<>());
 		if (CollUtil.isNotEmpty(groups.getRecords())) {
 			groups.getRecords().forEach(group -> {
 				GroupLabelVo groupLabelVo = new GroupLabelVo();
@@ -66,11 +66,11 @@ public class GameGroupManager {
 		return response;
 	}
 
-	public int saveGroup(TcGameGroup gameGroup) {
+	public int save(TcGameGroup gameGroup) {
 		return gameGroupMapper.insert(gameGroup);
 	}
 
-	public int updateGroup(TcGameGroup gameGroup) {
+	public int update(TcGameGroup gameGroup) {
 		return gameGroupMapper.insert(gameGroup);
 	}
 

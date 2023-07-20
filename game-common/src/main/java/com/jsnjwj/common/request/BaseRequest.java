@@ -7,6 +7,6 @@ public class BaseRequest {
 
 	private Integer userId;
 
-	private Integer gameId;
+	private Long gameId;
 
 }
