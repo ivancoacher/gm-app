@@ -2,6 +2,11 @@ package com.jsnjwj.facade.mapper;
 
 import com.jsnjwj.facade.entity.TcGameJudge;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.jsnjwj.facade.vo.GameJudgeVo;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 /**
  * @author user
@@ -10,5 +15,20 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @Entity com.jsnjwj.service.entity.TcGameJudge
  */
 public interface TcGameJudgeMapper extends BaseMapper<TcGameJudge> {
+
+	@Select("select gj.id,gj.game_id as gameId,j.judge_name as judgeName,j.phone "
+			+ "from tc_game_judge as gj left join tc_judge as j on j.id = gj.judge_id "
+			+ "where gj.game_id = #{gameId}")
+	List<GameJudgeVo> selectPageList(@Param("gameId") Long gameId);
+
+	@Select("select gj.id,gj.game_id as gameId,j.judge_name as judgeName,j.phone "
+			+ "from tc_game_judge as gj left join tc_judge as j on j.id = gj.judge_id "
+			+ "where gj.game_id = #{gameId}")
+	List<GameJudgeVo> selectItemList(@Param("gameId") Long gameId, @Param("itemId") Long itemId);
+
+	@Select("select gj.id,gj.game_id as gameId,j.judge_name as judgeName,j.phone "
+			+ "from tc_game_judge as gj left join tc_judge as j on j.id = gj.judge_id "
+			+ "where gj.game_id = #{gameId}")
+	List<GameJudgeVo> selectAllList(@Param("gameId") Long gameId);
 
 }

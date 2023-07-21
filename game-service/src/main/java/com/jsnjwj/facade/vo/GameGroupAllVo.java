@@ -18,4 +18,5 @@ public class GameGroupAllVo implements Serializable {
 	private Integer sort;
 
 	private List<ItemLabelVo> itemLabelVoList;
+
 }

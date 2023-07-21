@@ -21,11 +21,12 @@ public class GameGroupController {
 
 	@RequestMapping("/list")
 	public ApiResponse<Page<GroupLabelVo>> fetchPage(GameGroupListQuery query) {
-		 return ApiResponse.success(gameGroupService.fetchPages(query));
+		return ApiResponse.success(gameGroupService.fetchPages(query));
 	}
 
 	@RequestMapping("/data")
 	public ApiResponse<List<GroupLabelVo>> fetchList(GameGroupListQuery query) {
 		return ApiResponse.success(gameGroupService.fetchList(query));
 	}
+
 }

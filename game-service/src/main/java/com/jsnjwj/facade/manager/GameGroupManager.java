@@ -33,6 +33,7 @@ public class GameGroupManager {
 				groupLabelVo.setGroupName(group.getGroupName());
 				groupLabelVo.setGroupId(group.getId());
 				groupLabelVo.setSort(group.getSort());
+				response.add(groupLabelVo);
 			});
 		}
 

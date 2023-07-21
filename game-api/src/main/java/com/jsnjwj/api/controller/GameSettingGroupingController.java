@@ -11,8 +11,8 @@ import javax.annotation.Resource;
 import java.util.List;
 
 @RestController
-@RequestMapping("/game/setting")
-public class GameSettingController {
+@RequestMapping("/game/setting/grouping")
+public class GameSettingGroupingController {
 
 	@Resource
 	private GameSettingService gameSettingService;

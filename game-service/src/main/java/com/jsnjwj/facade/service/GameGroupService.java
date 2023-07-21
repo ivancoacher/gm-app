@@ -9,12 +9,12 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-
 public interface GameGroupService {
 
-    Page<GroupLabelVo> fetchPages(GameGroupListQuery query);
+	Page<GroupLabelVo> fetchPages(GameGroupListQuery query);
 
-    List<GroupLabelVo> fetchList(GameGroupListQuery query);
+	List<GroupLabelVo> fetchList(GameGroupListQuery query);
 
-    List<GameGroupAllVo> fetchAll(Long gameId);
+	List<GameGroupAllVo> fetchAll(Long gameId);
+
 }

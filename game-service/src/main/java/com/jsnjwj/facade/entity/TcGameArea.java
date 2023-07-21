@@ -24,7 +24,7 @@ public class TcGameArea implements Serializable {
 	/**
 	 *
 	 */
-	private Integer gameId;
+	private Long gameId;
 
 	/**
 	 *

@@ -7,5 +7,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class GameItemInfoQuery extends BaseRequest {
-    private Long groupId;
+
+	private Long groupId;
+
 }

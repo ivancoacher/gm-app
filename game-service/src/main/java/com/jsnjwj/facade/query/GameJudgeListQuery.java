@@ -6,8 +6,10 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class GameGroupInfoQuery extends BaseRequest {
+public class GameJudgeListQuery extends BaseRequest {
 
-	private Long groupId;
+	private Integer page;
+
+	private Integer limit;
 
 }

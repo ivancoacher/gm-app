@@ -28,30 +28,30 @@ public class GameItemManager {
 
 	public ApiResponse<Page<ItemLabelVo>> fetchItemsPage(GameItemListQuery query) {
 		Long gameId = query.getGameId();
-		Page<ItemLabelVo> response = new Page<>(query.getPage(),query.getLimit());
+		Page<ItemLabelVo> response = new Page<>(query.getPage(), query.getLimit());
 		Page<TcGameItem> page = new Page<>();
 		LambdaQueryWrapper<TcGameItem> lambdaQuery = new LambdaQueryWrapper<>();
-		lambdaQuery.eq(TcGameItem::getGameId,gameId);
+		lambdaQuery.eq(TcGameItem::getGameId, gameId);
 
-		lambdaQuery.eq(!StringUtils.isEmpty(query.getGroupId()),TcGameItem::getGroupId,query.getGroupId());
-		Page<ItemLabelVo> result = gameItemMapper.selectByPage(page,lambdaQuery);
-//		response.setPages(page.getPages());
-//		response.setTotal(page.getTotal());
-//		response.setSize(page.getSize());
-//		response.setCurrent(page.getCurrent());
-//
-//		List<ItemLabelVo> records = new ArrayList<>();
-//		response.setRecords(records);
-//
-//		page.getRecords().forEach(record -> {
-//			ItemLabelVo vo = new ItemLabelVo();
-//			vo.setGameId(record.getGameId());
-//			vo.setItemId(record.getId());
-//			vo.setItemName(record.getItemName());
-////			vo.setGroupName(record.getGroupName());
-//			records.add(vo);
-//		});
-//		response.setRecords(records);
+		lambdaQuery.eq(!StringUtils.isEmpty(query.getGroupId()), TcGameItem::getGroupId, query.getGroupId());
+		Page<ItemLabelVo> result = gameItemMapper.selectByPage(page, lambdaQuery);
+		// response.setPages(page.getPages());
+		// response.setTotal(page.getTotal());
+		// response.setSize(page.getSize());
+		// response.setCurrent(page.getCurrent());
+		//
+		// List<ItemLabelVo> records = new ArrayList<>();
+		// response.setRecords(records);
+		//
+		// page.getRecords().forEach(record -> {
+		// ItemLabelVo vo = new ItemLabelVo();
+		// vo.setGameId(record.getGameId());
+		// vo.setItemId(record.getId());
+		// vo.setItemName(record.getItemName());
+		//// vo.setGroupName(record.getGroupName());
+		// records.add(vo);
+		// });
+		// response.setRecords(records);
 
 		return ApiResponse.success(result);
 	}
@@ -60,6 +60,7 @@ public class GameItemManager {
 		List<ItemLabelVo> response = new ArrayList<>();
 		return response;
 	}
+
 	public int save(TcGameItem tcGameItem) {
 		return gameItemMapper.insert(tcGameItem);
 	}

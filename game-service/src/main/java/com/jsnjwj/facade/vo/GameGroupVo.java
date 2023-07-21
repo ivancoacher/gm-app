@@ -7,12 +7,13 @@ import java.util.List;
 
 @Data
 public class GameGroupVo implements Serializable {
-    private Long gameId;
 
-    private Long groupId;
+	private Long gameId;
 
-    private String groupName;
+	private Long groupId;
 
-    private Integer sort;
+	private String groupName;
+
+	private Integer sort;
 
 }

@@ -5,10 +5,13 @@ import com.jsnjwj.facade.entity.TcGameJudge;
 import com.jsnjwj.facade.entity.TcGameJudgeItem;
 import com.jsnjwj.facade.mapper.TcGameJudgeItemMapper;
 import com.jsnjwj.facade.mapper.TcGameJudgeMapper;
+import com.jsnjwj.facade.vo.GameJudgeVo;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
 
+@Service
 public class GameJudgeManager {
 
 	@Resource
@@ -22,11 +25,14 @@ public class GameJudgeManager {
 	 * @param gameId
 	 * @return
 	 */
-	public List<TcGameJudge> fetchGameJudges(Long gameId) {
+	public List<GameJudgeVo> fetchGameJudges(Long gameId) {
+		return gameJudgeMapper.selectPageList(gameId);
+	}
+
+	public Long fetchGameJudgesCount(Long gameId) {
 		LambdaQueryWrapper<TcGameJudge> wrapper = new LambdaQueryWrapper<>();
 		wrapper.eq(TcGameJudge::getGameId, gameId);
-
-		return gameJudgeMapper.selectList(wrapper);
+		return gameJudgeMapper.selectCount(wrapper);
 	}
 
 	/**
@@ -40,6 +46,10 @@ public class GameJudgeManager {
 		wrapper.eq(TcGameJudgeItem::getGameId, gameId);
 		wrapper.eq(TcGameJudgeItem::getItemId, itemId);
 		return gameJudgeItemMapper.selectList(wrapper);
+	}
+
+	public List<GameJudgeVo> fetchList(Long gameId) {
+		return gameJudgeMapper.selectAllList(gameId);
 	}
 
 	/**

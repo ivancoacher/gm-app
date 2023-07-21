@@ -17,11 +17,13 @@ import javax.annotation.Resource;
 @RestController
 @RequestMapping("/game/item")
 public class GameItemController {
-    @Resource
-    private GameItemService gameItemService;
 
-    @RequestMapping("/list")
-    public ApiResponse<Page<ItemLabelVo>> fetchList(GameItemListQuery query) {
-        return gameItemService.fetchPages(query);
-    }
+	@Resource
+	private GameItemService gameItemService;
+
+	@RequestMapping("/list")
+	public ApiResponse<Page<ItemLabelVo>> fetchList(GameItemListQuery query) {
+		return gameItemService.fetchPages(query);
+	}
+
 }

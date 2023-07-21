@@ -2,6 +2,9 @@ package com.jsnjwj.facade.mapper;
 
 import com.jsnjwj.facade.entity.TcGameArea;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * @author user
@@ -11,4 +14,5 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface TcGameAreaMapper extends BaseMapper<TcGameArea> {
 
+    void saveBatch(@Param("list") List<TcGameArea> list);
 }

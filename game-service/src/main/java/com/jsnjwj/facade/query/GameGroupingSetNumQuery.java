@@ -6,8 +6,8 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class GameGroupInfoQuery extends BaseRequest {
+public class GameGroupingSetNumQuery extends BaseRequest {
 
-	private Long groupId;
+	private Integer areaNum;
 
 }
