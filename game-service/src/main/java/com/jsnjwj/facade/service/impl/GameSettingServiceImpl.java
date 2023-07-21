@@ -2,8 +2,10 @@ package com.jsnjwj.facade.service.impl;
 
 import com.jsnjwj.common.response.ApiResponse;
 import com.jsnjwj.facade.entity.TcGameArea;
+import com.jsnjwj.facade.entity.TcGameAreaItem;
 import com.jsnjwj.facade.manager.GameGroupingManager;
 import com.jsnjwj.facade.query.GameGroupingSetNumQuery;
+import com.jsnjwj.facade.query.GameGroupingAreaSetQuery;
 import com.jsnjwj.facade.query.GameGroupingSetQuery;
 import com.jsnjwj.facade.service.GameSettingService;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +32,8 @@ public class GameSettingServiceImpl implements GameSettingService {
 		if (query.getAreaNum() <= 0)
 			return ApiResponse.error("请输入正确的场地数");
 		int courtNum = 1;
+		gameGroupingManager.resetCourt(query.getGameId());
+
 		List<TcGameArea> areas = new ArrayList<>();
 		while (courtNum <= query.getAreaNum()) {
 			TcGameArea area = new TcGameArea();
@@ -44,9 +48,8 @@ public class GameSettingServiceImpl implements GameSettingService {
 		return ApiResponse.success(true);
 	}
 	@Override
-	public ApiResponse<Boolean> saveCourt(GameGroupingSetQuery query) {
+	public ApiResponse<Boolean> saveCourt(GameGroupingAreaSetQuery query) {
 		TcGameArea area = new TcGameArea();
-		gameGroupingManager.resetCourt(query.getGameId());
 		area.setId(query.getAreaId());
 		area.setGameId(query.getGameId());
 		area.setAreaName(query.getAreaName());
@@ -61,5 +64,27 @@ public class GameSettingServiceImpl implements GameSettingService {
 		return ApiResponse.success(response);
 	}
 
+	@Override
+	public ApiResponse<Boolean> setGrouping(GameGroupingSetQuery query){
+		gameGroupingManager.resetGrouping(query);
+
+		List<TcGameAreaItem> areaItems = new ArrayList<>();
+		if (!query.getItemIds().isEmpty()){
+			Integer sort = 1;
+			for(Long i :query.getItemIds()){
+				TcGameAreaItem item = new TcGameAreaItem();
+				item.setGameId(query.getGameId());
+				item.setItemId(i);
+				item.setAreaNo(query.getAreaNo());
+				item.setAreaId(query.getAreaId());
+				item.setSort(sort);
+				areaItems.add(item);
+				sort++;
+			}
+		}
+		gameGroupingManager.saveGroupings(areaItems);
+
+		return ApiResponse.success(true);
+	}
 
 }

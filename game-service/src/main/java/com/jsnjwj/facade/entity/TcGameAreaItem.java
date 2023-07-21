@@ -24,16 +24,19 @@ public class TcGameAreaItem implements Serializable {
 	/**
 	 *
 	 */
-	private String areaId;
+	private Integer areaId;
 
 	/**
 	 *
 	 */
-	private Integer gameId;
+	private Long  gameId;
 
 	/**
 	 *
 	 */
-	private Integer itemId;
+	private Long itemId;
 
+	private Integer areaNo;
+
+	private Integer sort;
 }

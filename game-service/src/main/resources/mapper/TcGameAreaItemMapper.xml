@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="service.mapper.TcGameAreaItemMapper">
+<mapper namespace="com.jsnjwj.facade.mapper.TcGameAreaItemMapper">
 
     <resultMap id="BaseResultMap" type="com.jsnjwj.facade.entity.TcGameAreaItem">
             <id property="id" column="id" jdbcType="INTEGER"/>
@@ -15,4 +15,11 @@
         id,area_id,game_id,
         item_id
     </sql>
+
+    <insert id="saveBatch">
+        insert into tc_game_area_item (`game_id`,`area_id`,`item_id`,`area_no`) values
+        <foreach collection="list" item="entity" separator=",">
+            (#{entity.gameId},#{entity.areaId},#{entity.itemId}, #{entity.areaNo})
+        </foreach>
+    </insert>
 </mapper>

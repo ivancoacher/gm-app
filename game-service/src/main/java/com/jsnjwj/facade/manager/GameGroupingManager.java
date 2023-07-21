@@ -2,7 +2,10 @@ package com.jsnjwj.facade.manager;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.jsnjwj.facade.entity.TcGameArea;
+import com.jsnjwj.facade.entity.TcGameAreaItem;
+import com.jsnjwj.facade.mapper.TcGameAreaItemMapper;
 import com.jsnjwj.facade.mapper.TcGameAreaMapper;
+import com.jsnjwj.facade.query.GameGroupingSetQuery;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -12,7 +15,8 @@ import java.util.List;
 public class GameGroupingManager {
     @Resource
     private TcGameAreaMapper tcGameAreaMapper;
-
+    @Resource
+    private TcGameAreaItemMapper tcGameAreaItemMapper;
     public void saveCourts(List<TcGameArea> areaList) {
         tcGameAreaMapper.saveBatch(areaList);
     }
@@ -34,4 +38,17 @@ public class GameGroupingManager {
         wrapper.eq(TcGameArea::getGameId,gameId);
         return tcGameAreaMapper.selectList(wrapper);
     }
+
+    public void resetGrouping(GameGroupingSetQuery query){
+        LambdaQueryWrapper<TcGameAreaItem> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(TcGameAreaItem::getGameId,query.getGameId());
+        wrapper.eq(TcGameAreaItem::getAreaId,query.getAreaId());
+        wrapper.eq(TcGameAreaItem::getAreaNo,query.getAreaNo());
+        tcGameAreaItemMapper.delete(wrapper);
+    }
+
+    public void saveGroupings(List<TcGameAreaItem> areaList) {
+        tcGameAreaItemMapper.saveBatch(areaList);
+    }
+
 }

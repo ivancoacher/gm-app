@@ -3,6 +3,7 @@ package com.jsnjwj.api.controller;
 import com.jsnjwj.common.response.ApiResponse;
 import com.jsnjwj.facade.entity.TcGameArea;
 import com.jsnjwj.facade.query.GameGroupingSetNumQuery;
+import com.jsnjwj.facade.query.GameGroupingAreaSetQuery;
 import com.jsnjwj.facade.query.GameGroupingSetQuery;
 import com.jsnjwj.facade.service.GameSettingService;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +26,12 @@ public class GameSettingGroupingController {
 		return gameSettingService.setCourtNum(query);
 	}
 	@PostMapping("/saveArea")
-	public ApiResponse<Boolean> saveArea(@RequestBody GameGroupingSetQuery query) {
+	public ApiResponse<Boolean> saveArea(@RequestBody GameGroupingAreaSetQuery query) {
 		return gameSettingService.saveCourt(query);
+	}
+
+	@PostMapping("/setGrouping")
+	public ApiResponse<Boolean> setGrouping(@RequestBody GameGroupingSetQuery query) {
+		return gameSettingService.setGrouping(query);
 	}
 }
