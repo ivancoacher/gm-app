@@ -1,12 +1,14 @@
 package com.jsnjwj.facade.service.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.jsnjwj.common.response.ApiResponse;
+import com.jsnjwj.facade.entity.TcGameGroup;
 import com.jsnjwj.facade.manager.GameGroupManager;
 import com.jsnjwj.facade.query.GameGroupListQuery;
+import com.jsnjwj.facade.query.GameGroupSaveQuery;
+import com.jsnjwj.facade.query.GameGroupUpdateQuery;
 import com.jsnjwj.facade.service.GameGroupService;
 import com.jsnjwj.facade.vo.GameGroupAllVo;
-import com.jsnjwj.facade.vo.GameGroupVo;
-import java.util.Collections;
 
 import com.jsnjwj.facade.vo.GroupLabelVo;
 import org.springframework.stereotype.Service;
@@ -48,4 +50,31 @@ public class GameGroupServiceImpl implements GameGroupService {
 		return null;
 	}
 
+	@Override
+	public ApiResponse<?> save(GameGroupSaveQuery query){
+		TcGameGroup gameGroup = new TcGameGroup();
+		gameGroup.setGameId(query.getGameId());
+		gameGroup.setGroupName(query.getGroupName());
+		gameGroup.setSort(query.getSort());
+
+		int result = groupManager.save(gameGroup);
+		return ApiResponse.success(result);
+	}
+
+	@Override
+	public ApiResponse<?> update(GameGroupUpdateQuery query){
+		TcGameGroup gameGroup = new TcGameGroup();
+		gameGroup.setGameId(query.getGameId());
+		gameGroup.setGroupName(query.getGroupName());
+		gameGroup.setSort(query.getSort());
+		gameGroup.setId(query.getGroupId());
+		int result = groupManager.update(gameGroup);
+		return ApiResponse.success(result);
+	}
+
+	@Override
+	public ApiResponse<?> delete(GameGroupUpdateQuery query){
+		int result = groupManager.deleteGroup(query.getGroupId());
+		return ApiResponse.success(result);
+	}
 }

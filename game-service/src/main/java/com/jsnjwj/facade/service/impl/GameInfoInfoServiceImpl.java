@@ -109,6 +109,7 @@ public class GameInfoInfoServiceImpl implements GameInfoService {
 		games.setCreatorId(query.getUserId());
 		games.setGameType(query.getGameType());
 		games.setGameLocation(query.getGameLocation());
+		games.setStatus(query.getStatus());
 		int result = gameManager.update(games);
 		return ApiResponse.success(result > 0);
 	}
@@ -125,6 +126,7 @@ public class GameInfoInfoServiceImpl implements GameInfoService {
 		games.setCreatorId(query.getUserId());
 		games.setGameType(query.getGameType());
 		games.setGameLocation(query.getGameLocation());
+		games.setStatus(query.getStatus());
 		int result = gameManager.save(games);
 		return ApiResponse.success(result > 0);
 	}
@@ -133,7 +135,7 @@ public class GameInfoInfoServiceImpl implements GameInfoService {
 	public ApiResponse<Boolean> changeStatus(GameModifyQuery query) {
 		TcGames games = new TcGames();
 		games.setId(query.getGameId());
-		games.setStatus(query.getGameStatus());
+		games.setStatus(query.getStatus());
 		int result = gameManager.update(games);
 		return ApiResponse.success(result > 0);
 	}

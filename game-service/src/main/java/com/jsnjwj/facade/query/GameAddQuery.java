@@ -24,4 +24,6 @@ public class GameAddQuery extends BaseRequest {
 
 	private String gameLocation;
 
+	private Integer status;
+
 }

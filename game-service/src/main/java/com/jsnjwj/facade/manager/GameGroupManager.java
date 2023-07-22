@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -68,11 +69,12 @@ public class GameGroupManager {
 	}
 
 	public int save(TcGameGroup gameGroup) {
+		gameGroup.setUpdateTime(new Date());
 		return gameGroupMapper.insert(gameGroup);
 	}
 
 	public int update(TcGameGroup gameGroup) {
-		return gameGroupMapper.insert(gameGroup);
+		return gameGroupMapper.updateById(gameGroup);
 	}
 
 	public int deleteGroup(Long groupId) {
