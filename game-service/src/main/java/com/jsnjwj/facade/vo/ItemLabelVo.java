@@ -15,4 +15,6 @@ public class ItemLabelVo {
 
 	private Long gameId;
 
+	private Integer sort;
+
 }

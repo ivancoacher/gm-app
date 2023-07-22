@@ -14,12 +14,14 @@ public interface GameItemService {
 
 	ApiResponse<Page<ItemLabelVo>> fetchPages(GameItemListQuery query);
 
-	List<ItemLabelVo> fetchList(Long gameId, Long groupId);
+	List<ItemLabelVo> fetchList(GameItemListQuery query);
 
 	void importData();
 
 	int save(GameItemSaveQuery query);
 
 	int update(GameItemUpdateQuery query);
+
+	ApiResponse<Integer> delete(GameItemUpdateQuery query);
 
 }

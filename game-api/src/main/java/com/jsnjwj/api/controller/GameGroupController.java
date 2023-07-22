@@ -44,7 +44,7 @@ public class GameGroupController {
 	}
 
 	@DeleteMapping("/delete")
-	public ApiResponse<List<GroupLabelVo>> delete(GameGroupUpdateQuery query) {
-		return ApiResponse.success(gameGroupService.delete(query));
+	public ApiResponse<?> delete(GameGroupUpdateQuery query) {
+		return gameGroupService.delete(query);
 	}
 }

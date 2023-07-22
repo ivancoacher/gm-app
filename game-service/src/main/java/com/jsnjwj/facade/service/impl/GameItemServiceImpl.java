@@ -2,15 +2,12 @@ package com.jsnjwj.facade.service.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsnjwj.common.response.ApiResponse;
-import com.jsnjwj.facade.entity.TcGameGroup;
 import com.jsnjwj.facade.entity.TcGameItem;
-import com.jsnjwj.facade.manager.GameGroupManager;
 import com.jsnjwj.facade.manager.GameItemManager;
 import com.jsnjwj.facade.query.GameItemListQuery;
 import com.jsnjwj.facade.query.GameItemSaveQuery;
 import com.jsnjwj.facade.query.GameItemUpdateQuery;
 import com.jsnjwj.facade.service.GameItemService;
-import com.jsnjwj.facade.vo.GameItemVo;
 import com.jsnjwj.facade.vo.ItemLabelVo;
 import org.springframework.stereotype.Service;
 
@@ -39,7 +36,7 @@ public class GameItemServiceImpl implements GameItemService {
 	 * @return
 	 */
 	@Override
-	public List<ItemLabelVo> fetchList(Long gameId, Long groupId) {
+	public List<ItemLabelVo> fetchList(GameItemListQuery query) {
 		return Collections.emptyList();
 	}
 
@@ -67,5 +64,8 @@ public class GameItemServiceImpl implements GameItemService {
 		tcGameGroup.setItemName(query.getItemName());
 		return gameItemManager.update(tcGameGroup);
 	}
-
+	@Override
+	public ApiResponse<Integer> delete(GameItemUpdateQuery query) {
+		return ApiResponse.success(gameItemManager.delete(query.getItemId()));
+	}
 }
