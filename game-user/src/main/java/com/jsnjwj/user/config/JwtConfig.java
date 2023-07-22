@@ -15,7 +15,7 @@ public class JwtConfig {
 
 	private String secret = "kaN3f72qUB3BqUA";
 
-	private long expire = 3600;
+	private long expire = 36000;
 
 	private String header = "access-token";
 

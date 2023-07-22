@@ -38,6 +38,14 @@ public class GameItemManager {
 		return ApiResponse.success(result);
 	}
 
+	public List<TcGameItem> fetchList(GameItemListQuery query){
+		LambdaQueryWrapper<TcGameItem> lambdaQuery = new LambdaQueryWrapper<>();
+		lambdaQuery.eq(TcGameItem::getGameId, query.getGameId());
+		lambdaQuery.eq(TcGameItem::getGroupId, query.getGroupId());
+
+		return gameItemMapper.selectList(lambdaQuery);
+	}
+
 	public List<ItemLabelVo> fetchItemsByGroupId(Long groupId) {
 		List<ItemLabelVo> response = new ArrayList<>();
 		return response;

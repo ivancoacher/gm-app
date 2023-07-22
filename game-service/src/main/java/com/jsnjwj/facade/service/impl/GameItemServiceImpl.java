@@ -12,6 +12,7 @@ import com.jsnjwj.facade.vo.ItemLabelVo;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -37,7 +38,18 @@ public class GameItemServiceImpl implements GameItemService {
 	 */
 	@Override
 	public List<ItemLabelVo> fetchList(GameItemListQuery query) {
-		return Collections.emptyList();
+		List<TcGameItem> result =  gameItemManager.fetchList(query);
+
+		List<ItemLabelVo> response = new ArrayList<>();
+
+		result.forEach(item->{
+			ItemLabelVo vo = new ItemLabelVo();
+			vo.setItemName(item.getItemName());
+			vo.setItemId(item.getId());
+			response.add(vo);
+		});
+		return response;
+
 	}
 
 	@Override
