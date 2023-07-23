@@ -1,7 +1,11 @@
 package com.jsnjwj.facade.mapper;
 
+import com.jsnjwj.facade.entity.TcGameArea;
 import com.jsnjwj.facade.entity.TcSignTeam;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * @author user
@@ -10,5 +14,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @Entity com.jsnjwj.service.entity.TcSignTeam
  */
 public interface TcSignTeamMapper extends BaseMapper<TcSignTeam> {
+    void saveBatch(@Param("list") List<TcSignTeam> list);
 
 }
