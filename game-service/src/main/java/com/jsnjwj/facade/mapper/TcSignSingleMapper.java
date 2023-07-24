@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsnjwj.facade.dto.SignSingleDto;
 import com.jsnjwj.facade.entity.TcSignSingle;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.jsnjwj.facade.entity.TcSignTeam;
 import com.jsnjwj.facade.vo.ItemLabelVo;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -18,14 +19,21 @@ import java.util.List;
  * @Entity com.jsnjwj.service.entity.TcSignSingle
  */
 public interface TcSignSingleMapper extends BaseMapper<TcSignSingle> {
-    String wrapperSql = "select ss.game_id ,ss.group_id ,ss.id ,ss.item_id ,gg.group_name ,gi.item_name " +
-            ",ss.name,ss.age,ss.sex,ss.remark" +
-            " from tc_sign_single as ss left join tc_sign_team as st on st.id = ss.team_id " +
-            "left join tc_game_group as gg on gg.id = ss.group_id " +
-            "left join tc_game_item as gi on gi.id = ss.item_id ";
-    String sql = "select game_id as gameId,group_id as groupId,id as applyId,item_id as itemId," +
-            "group_name as groupName,item_name as itemName,name,age,sex,remark from ("+wrapperSql+") as result ${ew.customSqlSegment} limit #{page},#{limit}";
-    @Select(sql)
-    List<SignSingleDto> selectByPage(@Param("page") Integer page, @Param("limit") Integer limit, @Param("ew") LambdaQueryWrapper lwrapper);
+
+	String wrapperSql = "select ss.game_id ,ss.group_id ,ss.id ,ss.item_id ,gg.group_name ,gi.item_name "
+			+ ",ss.name,ss.age,ss.sex,ss.remark"
+			+ " from tc_sign_single as ss left join tc_sign_team as st on st.id = ss.team_id "
+			+ "left join tc_game_group as gg on gg.id = ss.group_id "
+			+ "left join tc_game_item as gi on gi.id = ss.item_id ";
+
+	String sql = "select game_id as gameId,group_id as groupId,id as applyId,item_id as itemId,"
+			+ "group_name as groupName,item_name as itemName,name,age,sex,remark from (" + wrapperSql
+			+ ") as result ${ew.customSqlSegment} limit #{page},#{limit}";
+
+	@Select(sql)
+	List<SignSingleDto> selectByPage(@Param("page") Integer page, @Param("limit") Integer limit,
+			@Param("ew") LambdaQueryWrapper lwrapper);
+
+	void saveBatch(@Param("list") List<TcSignSingle> list);
 
 }

@@ -47,4 +47,5 @@ public class GameGroupController {
 	public ApiResponse<?> delete(GameGroupUpdateQuery query) {
 		return gameGroupService.delete(query);
 	}
+
 }

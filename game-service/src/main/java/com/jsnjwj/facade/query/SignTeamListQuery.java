@@ -7,11 +7,13 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class SignTeamListQuery extends BaseRequest {
-    private Long groupId;
 
-    private String key;
+	private Long groupId;
 
-    private Integer page = 1;
+	private String key;
 
-    private Integer limit = 10;
+	private Integer page = 1;
+
+	private Integer limit = 10;
+
 }

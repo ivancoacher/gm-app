@@ -13,42 +13,47 @@ import java.util.List;
 
 @Service
 public class GameGroupingManager {
-    @Resource
-    private TcGameAreaMapper tcGameAreaMapper;
-    @Resource
-    private TcGameAreaItemMapper tcGameAreaItemMapper;
-    public void saveCourts(List<TcGameArea> areaList) {
-        tcGameAreaMapper.saveBatch(areaList);
-    }
 
-    public int deleteCourt(TcGameArea area) {
-        return tcGameAreaMapper.deleteById(area);
-    }
-    public int resetCourt(Long gameId) {
-        LambdaQueryWrapper<TcGameArea> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(TcGameArea::getGameId,gameId);
-        return tcGameAreaMapper.delete(wrapper);
-    }
-    public int saveCourt(TcGameArea area) {
-        return tcGameAreaMapper.updateById(area);
-    }
+	@Resource
+	private TcGameAreaMapper tcGameAreaMapper;
 
-    public List<TcGameArea> getCourts(Long gameId){
-        LambdaQueryWrapper<TcGameArea> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(TcGameArea::getGameId,gameId);
-        return tcGameAreaMapper.selectList(wrapper);
-    }
+	@Resource
+	private TcGameAreaItemMapper tcGameAreaItemMapper;
 
-    public void resetGrouping(GameGroupingSetQuery query){
-        LambdaQueryWrapper<TcGameAreaItem> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(TcGameAreaItem::getGameId,query.getGameId());
-        wrapper.eq(TcGameAreaItem::getAreaId,query.getAreaId());
-        wrapper.eq(TcGameAreaItem::getAreaNo,query.getAreaNo());
-        tcGameAreaItemMapper.delete(wrapper);
-    }
+	public void saveCourts(List<TcGameArea> areaList) {
+		tcGameAreaMapper.saveBatch(areaList);
+	}
 
-    public void saveGroupings(List<TcGameAreaItem> areaList) {
-        tcGameAreaItemMapper.saveBatch(areaList);
-    }
+	public int deleteCourt(TcGameArea area) {
+		return tcGameAreaMapper.deleteById(area);
+	}
+
+	public int resetCourt(Long gameId) {
+		LambdaQueryWrapper<TcGameArea> wrapper = new LambdaQueryWrapper<>();
+		wrapper.eq(TcGameArea::getGameId, gameId);
+		return tcGameAreaMapper.delete(wrapper);
+	}
+
+	public int saveCourt(TcGameArea area) {
+		return tcGameAreaMapper.updateById(area);
+	}
+
+	public List<TcGameArea> getCourts(Long gameId) {
+		LambdaQueryWrapper<TcGameArea> wrapper = new LambdaQueryWrapper<>();
+		wrapper.eq(TcGameArea::getGameId, gameId);
+		return tcGameAreaMapper.selectList(wrapper);
+	}
+
+	public void resetGrouping(GameGroupingSetQuery query) {
+		LambdaQueryWrapper<TcGameAreaItem> wrapper = new LambdaQueryWrapper<>();
+		wrapper.eq(TcGameAreaItem::getGameId, query.getGameId());
+		wrapper.eq(TcGameAreaItem::getAreaId, query.getAreaId());
+		wrapper.eq(TcGameAreaItem::getAreaNo, query.getAreaNo());
+		tcGameAreaItemMapper.delete(wrapper);
+	}
+
+	public void saveGroupings(List<TcGameAreaItem> areaList) {
+		tcGameAreaItemMapper.saveBatch(areaList);
+	}
 
 }

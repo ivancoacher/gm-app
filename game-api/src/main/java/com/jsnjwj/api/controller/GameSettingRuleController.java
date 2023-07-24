@@ -17,12 +17,15 @@ public class GameSettingRuleController {
 
 	@Resource
 	private GameSettingService gameSettingService;
+
 	@GetMapping("/setRule")
 	public ApiResponse<List<TcGameArea>> getAreas(@RequestParam("gameId") Long gameId) {
 		return gameSettingService.getCourts(gameId);
 	}
+
 	@PostMapping("/getRule")
 	public ApiResponse<Boolean> setAreaNum(@RequestBody GameGroupingSetNumQuery query) {
 		return gameSettingService.setCourtNum(query);
 	}
+
 }

@@ -38,7 +38,7 @@ public class GameItemManager {
 		return ApiResponse.success(result);
 	}
 
-	public List<TcGameItem> fetchList(GameItemListQuery query){
+	public List<TcGameItem> fetchList(GameItemListQuery query) {
 		LambdaQueryWrapper<TcGameItem> lambdaQuery = new LambdaQueryWrapper<>();
 		lambdaQuery.eq(TcGameItem::getGameId, query.getGameId());
 		lambdaQuery.eq(TcGameItem::getGroupId, query.getGroupId());

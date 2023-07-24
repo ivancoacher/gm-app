@@ -14,6 +14,7 @@ import java.util.List;
  * @Entity com.jsnjwj.service.entity.TcSignTeam
  */
 public interface TcSignTeamMapper extends BaseMapper<TcSignTeam> {
-    void saveBatch(@Param("list") List<TcSignTeam> list);
+
+	void saveBatch(@Param("list") List<TcSignTeam> list);
 
 }

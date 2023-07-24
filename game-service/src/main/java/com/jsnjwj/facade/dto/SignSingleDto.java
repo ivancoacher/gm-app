@@ -6,38 +6,39 @@ import java.util.Date;
 
 @Data
 public class SignSingleDto {
-    private Long applyId;
 
-    private Long teamId;
+	private Long applyId;
 
-    private Long gameId;
+	private Long teamId;
 
-    private String teamName;
+	private Long gameId;
 
-    private String name;
+	private String teamName;
 
-    private Integer sex;
+	private String name;
 
-    private Integer age;
+	private Integer sex;
 
-    private Long groupId;
+	private Integer age;
 
-    private String groupName;
+	private Long groupId;
 
-    private Long itemId;
+	private String groupName;
 
-    private String itemName;
+	private Long itemId;
 
-    private String remark;
+	private String itemName;
 
-    private Date createTime;
+	private String remark;
 
-    private Date updateTime;
+	private Date createTime;
 
-    private Integer signStatus;
+	private Date updateTime;
 
-    private String signStatusDesc;
+	private Integer signStatus;
 
-    private SignTeamDto team;
+	private String signStatusDesc;
+
+	private SignTeamDto team;
 
 }

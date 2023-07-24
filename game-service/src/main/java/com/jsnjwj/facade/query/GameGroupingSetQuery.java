@@ -9,6 +9,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class GameGroupingSetQuery extends BaseRequest {
+
 	private Integer areaNo;
 
 	private List<Long> itemIds;

@@ -51,7 +51,7 @@ public class GameGroupServiceImpl implements GameGroupService {
 	}
 
 	@Override
-	public ApiResponse<?> save(GameGroupSaveQuery query){
+	public ApiResponse<?> save(GameGroupSaveQuery query) {
 		TcGameGroup gameGroup = new TcGameGroup();
 		gameGroup.setGameId(query.getGameId());
 		gameGroup.setGroupName(query.getGroupName());
@@ -62,7 +62,7 @@ public class GameGroupServiceImpl implements GameGroupService {
 	}
 
 	@Override
-	public ApiResponse<?> update(GameGroupUpdateQuery query){
+	public ApiResponse<?> update(GameGroupUpdateQuery query) {
 		TcGameGroup gameGroup = new TcGameGroup();
 		gameGroup.setGameId(query.getGameId());
 		gameGroup.setGroupName(query.getGroupName());
@@ -73,8 +73,9 @@ public class GameGroupServiceImpl implements GameGroupService {
 	}
 
 	@Override
-	public ApiResponse<?> delete(GameGroupUpdateQuery query){
+	public ApiResponse<?> delete(GameGroupUpdateQuery query) {
 		int result = groupManager.deleteGroup(query.getGroupId());
 		return ApiResponse.success(result);
 	}
+
 }

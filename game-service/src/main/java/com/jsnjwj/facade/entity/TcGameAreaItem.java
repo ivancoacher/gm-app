@@ -29,7 +29,7 @@ public class TcGameAreaItem implements Serializable {
 	/**
 	 *
 	 */
-	private Long  gameId;
+	private Long gameId;
 
 	/**
 	 *
@@ -39,4 +39,5 @@ public class TcGameAreaItem implements Serializable {
 	private Integer areaNo;
 
 	private Integer sort;
+
 }

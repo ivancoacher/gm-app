@@ -16,16 +16,20 @@ public class GameSettingController {
 
 	@Resource
 	private GameSettingService gameSettingService;
+
 	@GetMapping("/getAreas")
 	public ApiResponse<List<TcGameArea>> getAreas(@RequestParam("gameId") Long gameId) {
 		return gameSettingService.getCourts(gameId);
 	}
+
 	@PostMapping("/setAreaNum")
 	public ApiResponse<Boolean> setAreaNum(@RequestBody GameGroupingSetNumQuery query) {
 		return gameSettingService.setCourtNum(query);
 	}
+
 	@PostMapping("/saveArea")
 	public ApiResponse<Boolean> saveArea(@RequestBody GameGroupingAreaSetQuery query) {
 		return gameSettingService.saveCourt(query);
 	}
+
 }

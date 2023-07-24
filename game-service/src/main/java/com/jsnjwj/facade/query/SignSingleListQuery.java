@@ -5,15 +5,17 @@ import lombok.Data;
 
 @Data
 public class SignSingleListQuery extends BaseRequest {
-    private Long groupId;
 
-    private Long itemId;
+	private Long groupId;
 
-    private Long teamId;
+	private Long itemId;
 
-    private String key;
+	private Long teamId;
 
-    private Integer page = 1;
+	private String key;
 
-    private Integer limit = 10;
+	private Integer page = 1;
+
+	private Integer limit = 10;
+
 }

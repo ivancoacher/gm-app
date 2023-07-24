@@ -26,17 +26,17 @@ public class TcSignSingle implements Serializable {
 	/**
 	 *
 	 */
-	private Integer gameId;
+	private Long gameId;
 
 	/**
 	 *
 	 */
-	private Integer groupId;
+	private Long groupId;
 
 	/**
 	 *
 	 */
-	private Integer itemId;
+	private Long itemId;
 
 	/**
 	 *
@@ -56,7 +56,7 @@ public class TcSignSingle implements Serializable {
 	/**
 	 *
 	 */
-	private String sex;
+	private Integer sex;
 
 	/**
 	 *

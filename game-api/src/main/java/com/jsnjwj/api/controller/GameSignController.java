@@ -21,24 +21,26 @@ import java.util.Map;
 @RestController
 @RequestMapping("/game/sign")
 public class GameSignController {
-    @Resource
-    private SignApplyService signApplyService;
 
-    @RequestMapping("/single/page")
-    public ApiResponse<?> fetchSinglePage(SignSingleListQuery query){
-        return signApplyService.fetchSinglePage(query);
-    }
+	@Resource
+	private SignApplyService signApplyService;
 
-    @RequestMapping("/team/page")
-    public ApiResponse<?> fetchTeamPage(SignTeamListQuery query){
-        return signApplyService.fetchTeamPage(query);
-    }
+	@RequestMapping("/single/page")
+	public ApiResponse<?> fetchSinglePage(SignSingleListQuery query) {
+		return signApplyService.fetchSinglePage(query);
+	}
 
-    @RequestMapping("/team/import")
-    public ApiResponse<?> compare(BaseRequest query, HttpServletRequest request) throws Exception {
-        MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
-        MultipartFile sourceFile = multiRequest.getFile("file");
-        query.setUserId(Integer.valueOf((String) request.getAttribute("identifyId")));
-        return signApplyService.importTeam(query, sourceFile);
-    }
+	@RequestMapping("/team/page")
+	public ApiResponse<?> fetchTeamPage(SignTeamListQuery query) {
+		return signApplyService.fetchTeamPage(query);
+	}
+
+	@RequestMapping("/team/import")
+	public ApiResponse<?> compare(BaseRequest query, HttpServletRequest request) throws Exception {
+		MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
+		MultipartFile sourceFile = multiRequest.getFile("file");
+		query.setUserId(Integer.valueOf((String) request.getAttribute("identifyId")));
+		return signApplyService.importTeam(query, sourceFile);
+	}
+
 }

@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="service.mapper.TcSignSingleMapper">
+<mapper namespace="com.jsnjwj.facade.mapper.TcSignSingleMapper">
 
     <resultMap id="BaseResultMap" type="com.jsnjwj.facade.entity.TcSignSingle">
             <id property="id" column="id" jdbcType="INTEGER"/>
@@ -28,4 +28,14 @@
         remark,sign_status,audit_status,
         create_time,update_time
     </sql>
+
+
+
+    <insert id="saveBatch">
+        insert into tc_sign_single (`game_id`,`group_id`,`item_id`,`team_id`,`name`,`sex`,`age`) values
+        <foreach collection="list" item="entity" separator=",">
+            (#{entity.gameId},#{entity.groupId},#{entity.itemId}, #{entity.teamId}, #{entity.name}, #{entity.sex}, #{entity.age})
+        </foreach>
+    </insert>
+
 </mapper>

@@ -38,11 +38,11 @@ public class GameItemServiceImpl implements GameItemService {
 	 */
 	@Override
 	public List<ItemLabelVo> fetchList(GameItemListQuery query) {
-		List<TcGameItem> result =  gameItemManager.fetchList(query);
+		List<TcGameItem> result = gameItemManager.fetchList(query);
 
 		List<ItemLabelVo> response = new ArrayList<>();
 
-		result.forEach(item->{
+		result.forEach(item -> {
 			ItemLabelVo vo = new ItemLabelVo();
 			vo.setItemName(item.getItemName());
 			vo.setItemId(item.getId());
@@ -76,8 +76,10 @@ public class GameItemServiceImpl implements GameItemService {
 		tcGameGroup.setItemName(query.getItemName());
 		return gameItemManager.update(tcGameGroup);
 	}
+
 	@Override
 	public ApiResponse<Integer> delete(GameItemUpdateQuery query) {
 		return ApiResponse.success(gameItemManager.delete(query.getItemId()));
 	}
+
 }

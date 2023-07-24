@@ -13,5 +13,7 @@ import java.util.List;
  * @Entity com.jsnjwj.service.entity.TcGameAreaItem
  */
 public interface TcGameAreaItemMapper extends BaseMapper<TcGameAreaItem> {
-    void saveBatch(@Param("list") List<TcGameAreaItem> list);
+
+	void saveBatch(@Param("list") List<TcGameAreaItem> list);
+
 }

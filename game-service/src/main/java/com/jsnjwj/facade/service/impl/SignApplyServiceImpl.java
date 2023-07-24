@@ -31,37 +31,38 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 public class SignApplyServiceImpl implements SignApplyService {
-    private final SignApplyManager signApplyManager;
-    @Override
-    public ApiResponse<?> fetchSinglePage(SignSingleListQuery query){
-        Page<SignSingleDto> page = new Page<>();
-        List<SignSingleDto> list = signApplyManager.fetchSignSinglePage(query);
-        page.setRecords(list);
-        page.setTotal(signApplyManager.fetchSignSingleCount(query));
-        return ApiResponse.success(page);
-    }
-    @Override
-    public ApiResponse<?> fetchTeamPage(SignTeamListQuery query){
 
-        Page<TcSignTeam> page = signApplyManager.fetchSignTeamPage(query);
+	private final SignApplyManager signApplyManager;
 
-        return ApiResponse.success(page);
-    }
+	@Override
+	public ApiResponse<?> fetchSinglePage(SignSingleListQuery query) {
+		Page<SignSingleDto> page = new Page<>();
+		List<SignSingleDto> list = signApplyManager.fetchSignSinglePage(query);
+		page.setRecords(list);
+		page.setTotal(signApplyManager.fetchSignSingleCount(query));
+		return ApiResponse.success(page);
+	}
 
+	@Override
+	public ApiResponse<?> fetchTeamPage(SignTeamListQuery query) {
 
-    @Override
-    public ApiResponse<?> importTeam(BaseRequest request, MultipartFile file) throws IOException {
-        InputStream is = file.getInputStream();
+		Page<TcSignTeam> page = signApplyManager.fetchSignTeamPage(query);
 
-        TeamImportListener userReadListener = new TeamImportListener(request.getGameId(),signApplyManager);
-        EasyExcel.read(is, ImportTeamDto.class,userReadListener)
-                .sheet(0)
-                .headRowNumber(1)
-                .doRead();
-        return ApiResponse.success();
-    }
-    @Override
-    public ApiResponse<?> importSingle(BaseRequest request, MultipartFile file){
-        return null;
-    }
+		return ApiResponse.success(page);
+	}
+
+	@Override
+	public ApiResponse<?> importTeam(BaseRequest request, MultipartFile file) throws IOException {
+		InputStream is = file.getInputStream();
+
+		TeamImportListener userReadListener = new TeamImportListener(request.getGameId(), signApplyManager);
+		EasyExcel.read(is, ImportTeamDto.class, userReadListener).sheet(0).headRowNumber(1).doRead();
+		return ApiResponse.success();
+	}
+
+	@Override
+	public ApiResponse<?> importSingle(BaseRequest request, MultipartFile file) {
+		return null;
+	}
+
 }

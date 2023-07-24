@@ -17,4 +17,5 @@ public interface GameSettingService {
 	ApiResponse<List<TcGameArea>> getCourts(Long gameId);
 
 	ApiResponse<Boolean> setGrouping(GameGroupingSetQuery query);
+
 }

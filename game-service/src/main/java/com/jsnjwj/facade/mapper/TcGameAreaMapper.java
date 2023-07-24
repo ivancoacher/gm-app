@@ -14,5 +14,6 @@ import java.util.List;
  */
 public interface TcGameAreaMapper extends BaseMapper<TcGameArea> {
 
-    void saveBatch(@Param("list") List<TcGameArea> list);
+	void saveBatch(@Param("list") List<TcGameArea> list);
+
 }

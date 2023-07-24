@@ -47,6 +47,7 @@ public class GameSettingServiceImpl implements GameSettingService {
 		gameGroupingManager.saveCourts(areas);
 		return ApiResponse.success(true);
 	}
+
 	@Override
 	public ApiResponse<Boolean> saveCourt(GameGroupingAreaSetQuery query) {
 		TcGameArea area = new TcGameArea();
@@ -65,13 +66,13 @@ public class GameSettingServiceImpl implements GameSettingService {
 	}
 
 	@Override
-	public ApiResponse<Boolean> setGrouping(GameGroupingSetQuery query){
+	public ApiResponse<Boolean> setGrouping(GameGroupingSetQuery query) {
 		gameGroupingManager.resetGrouping(query);
 
 		List<TcGameAreaItem> areaItems = new ArrayList<>();
-		if (!query.getItemIds().isEmpty()){
+		if (!query.getItemIds().isEmpty()) {
 			Integer sort = 1;
-			for(Long i :query.getItemIds()){
+			for (Long i : query.getItemIds()) {
 				TcGameAreaItem item = new TcGameAreaItem();
 				item.setGameId(query.getGameId());
 				item.setItemId(i);
