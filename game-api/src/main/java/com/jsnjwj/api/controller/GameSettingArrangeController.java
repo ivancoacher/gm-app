@@ -24,7 +24,7 @@ public class GameSettingArrangeController {
 	}
 
 	@PostMapping("/setAreaNum")
-	public ApiResponse<Boolean> setAreaNum(@RequestBody GameGroupingSetNumQuery query) {
+	public ApiResponse<?> setAreaNum(@RequestBody GameGroupingSetNumQuery query) {
 		return gameSettingService.setCourtNum(query);
 	}
 

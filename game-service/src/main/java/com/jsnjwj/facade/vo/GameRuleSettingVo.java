@@ -9,6 +9,8 @@ import java.util.List;
 @Data
 public class GameRuleSettingVo implements Serializable {
 
+	private Long id;
+
 	/**
 	 *
 	 */
@@ -49,7 +51,7 @@ public class GameRuleSettingVo implements Serializable {
 		/**
 		 *
 		 */
-		private Integer settingId;
+		private Long settingId;
 
 		/**
 		 *

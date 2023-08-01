@@ -5,6 +5,7 @@ import com.jsnjwj.facade.entity.TcGameArea;
 import com.jsnjwj.facade.query.GameGroupingAreaSetQuery;
 import com.jsnjwj.facade.query.GameGroupingSetNumQuery;
 import com.jsnjwj.facade.query.GameGroupingSetQuery;
+import com.jsnjwj.facade.query.GameSettingSetRulesQuery;
 import com.jsnjwj.facade.service.GameSettingService;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,13 +20,13 @@ public class GameSettingRuleController {
 	private GameSettingService gameSettingService;
 
 	@GetMapping("/setRule")
-	public ApiResponse<List<TcGameArea>> getAreas(@RequestParam("gameId") Long gameId) {
-		return gameSettingService.getCourts(gameId);
+	public ApiResponse<?> getAreas(@RequestBody GameSettingSetRulesQuery query) {
+		return gameSettingService.setRules(query);
 	}
 
 	@PostMapping("/getRule")
-	public ApiResponse<Boolean> setAreaNum(@RequestBody GameGroupingSetNumQuery query) {
-		return gameSettingService.setCourtNum(query);
+	public ApiResponse<?> setAreaNum(@RequestParam("gameId") Long gameId, @RequestParam("itemId") Long itemId) {
+		return gameSettingService.getRules(gameId, itemId);
 	}
 
 }

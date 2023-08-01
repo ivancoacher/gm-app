@@ -6,14 +6,10 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class GameGroupingAreaSetQuery extends BaseRequest {
+public class GameSettingGetRulesQuery extends BaseRequest {
 
-	private String areaName;
+	private Long gameId;
 
-	private Integer areaNo;
-
-	private Integer status;
-
-	private Long areaId;
+	private Long itemId;
 
 }

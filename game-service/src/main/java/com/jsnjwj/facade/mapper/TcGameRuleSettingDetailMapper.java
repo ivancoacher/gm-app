@@ -9,6 +9,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @createDate 2023-07-09 01:36:35
  * @Entity com.jsnjwj.service.entity.TcGameRuleSettingDetail
  */
-public interface TcGameRuleSettingDetailMapper extends BaseMapper<TcGameRuleSettingDetail> {
+public interface TcGameRuleSettingDetailMapper extends CommonMapper<TcGameRuleSettingDetail> {
 
 }

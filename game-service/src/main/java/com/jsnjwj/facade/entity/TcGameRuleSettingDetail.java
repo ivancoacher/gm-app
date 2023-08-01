@@ -26,7 +26,7 @@ public class TcGameRuleSettingDetail implements Serializable {
 	/**
 	 *
 	 */
-	private Integer settingId;
+	private Long settingId;
 
 	/**
 	 *

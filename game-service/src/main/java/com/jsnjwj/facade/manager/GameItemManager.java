@@ -63,4 +63,7 @@ public class GameItemManager {
 		return gameItemMapper.deleteById(itemId);
 	}
 
+	public TcGameItem fetchItemInfo(Long itemId){
+		return gameItemMapper.selectById(itemId);
+	}
 }

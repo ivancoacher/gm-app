@@ -38,7 +38,7 @@ public class GameRuleSettingManager {
 		details.forEach(item -> {
 			GameRuleSettingVo.GameRuleDetailVo detail = new GameRuleSettingVo.GameRuleDetailVo();
 			detail.setSettingId(item.getSettingId());
-			detail.setNum(item.getSettingId());
+			detail.setNum(item.getNum());
 			detail.setExtraType(item.getExtraType());
 			detail.setExtraName(item.getExtraName());
 			detail.setScoreRatio(item.getScoreRatio());

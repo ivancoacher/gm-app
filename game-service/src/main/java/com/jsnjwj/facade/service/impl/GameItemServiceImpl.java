@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -76,7 +75,11 @@ public class GameItemServiceImpl implements GameItemService {
 		tcGameGroup.setItemName(query.getItemName());
 		return gameItemManager.update(tcGameGroup);
 	}
+	@Override
+	public TcGameItem fetchOne(Long itemId) {
 
+		return gameItemManager.fetchItemInfo(itemId);
+	}
 	@Override
 	public ApiResponse<Integer> delete(GameItemUpdateQuery query) {
 		return ApiResponse.success(gameItemManager.delete(query.getItemId()));
