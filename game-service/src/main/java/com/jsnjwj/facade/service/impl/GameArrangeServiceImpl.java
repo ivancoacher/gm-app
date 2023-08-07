@@ -10,9 +10,9 @@ import com.jsnjwj.facade.manager.GameGroupingManager;
 import com.jsnjwj.facade.manager.GameItemManager;
 import com.jsnjwj.facade.manager.GameSettingRuleManager;
 import com.jsnjwj.facade.query.*;
+import com.jsnjwj.facade.service.GameArrangeService;
 import com.jsnjwj.facade.service.GameGroupService;
 import com.jsnjwj.facade.service.GameItemService;
-import com.jsnjwj.facade.service.GameSettingService;
 import com.jsnjwj.facade.vo.GameGroupAreaItemListVo;
 import com.jsnjwj.facade.vo.GameRuleSettingVo;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +32,7 @@ import java.util.Objects;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class GameSettingServiceImpl implements GameSettingService {
+public class GameArrangeServiceImpl implements GameArrangeService {
 
 	@Resource
 	private GameGroupingManager gameGroupingManager;

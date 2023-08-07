@@ -7,7 +7,9 @@ import java.util.List;
 
 @Data
 public class GroupAreaItemDto {
-    public GameAreaDto gameArea;
 
-    public List<GameItemDto> itemList;
+	public GameAreaDto gameArea;
+
+	public List<GameItemDto> itemList;
+
 }

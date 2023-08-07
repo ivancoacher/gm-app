@@ -4,15 +4,17 @@ import lombok.Data;
 
 @Data
 public class GameAreaDto {
-    public Long areaId;
-    
-    public Long gameId;
 
-    public Long itemId;
+	public Long areaId;
 
-    public Long groupId;
+	public Long gameId;
 
-    public Integer areaNo;
+	public Long itemId;
 
-    public String areaName;
+	public Long groupId;
+
+	public Integer areaNo;
+
+	public String areaName;
+
 }

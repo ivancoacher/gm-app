@@ -6,7 +6,7 @@ import com.jsnjwj.facade.query.*;
 
 import java.util.List;
 
-public interface GameSettingService {
+public interface GameArrangeService {
 
 	ApiResponse<?> setCourtNum(GameGroupingSetNumQuery query);
 

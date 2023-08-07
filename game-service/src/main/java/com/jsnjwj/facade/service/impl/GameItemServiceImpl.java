@@ -75,11 +75,13 @@ public class GameItemServiceImpl implements GameItemService {
 		tcGameGroup.setItemName(query.getItemName());
 		return gameItemManager.update(tcGameGroup);
 	}
+
 	@Override
 	public TcGameItem fetchOne(Long itemId) {
 
 		return gameItemManager.fetchItemInfo(itemId);
 	}
+
 	@Override
 	public ApiResponse<Integer> delete(GameItemUpdateQuery query) {
 		return ApiResponse.success(gameItemManager.delete(query.getItemId()));

@@ -41,15 +41,17 @@ public class GameGroupingManager {
 	public List<TcGameArea> getCourts(Long gameId) {
 		LambdaQueryWrapper<TcGameArea> wrapper = new LambdaQueryWrapper<>();
 		wrapper.eq(TcGameArea::getGameId, gameId);
-//		wrapper.eq(TcGameArea::getStatus,1);	//启用中
+		// wrapper.eq(TcGameArea::getStatus,1); //启用中
 		return tcGameAreaMapper.selectList(wrapper);
 	}
+
 	public List<TcGameArea> getAvailableCourts(Long gameId) {
 		LambdaQueryWrapper<TcGameArea> wrapper = new LambdaQueryWrapper<>();
 		wrapper.eq(TcGameArea::getGameId, gameId);
-		wrapper.eq(TcGameArea::getStatus,1);	//启用中
+		wrapper.eq(TcGameArea::getStatus, 1); // 启用中
 		return tcGameAreaMapper.selectList(wrapper);
 	}
+
 	public void resetGrouping(GameGroupingSetQuery query) {
 		LambdaQueryWrapper<TcGameAreaItem> wrapper = new LambdaQueryWrapper<>();
 		wrapper.eq(TcGameAreaItem::getGameId, query.getGameId());
@@ -62,15 +64,14 @@ public class GameGroupingManager {
 		tcGameAreaItemMapper.saveBatch(areaList);
 	}
 
-	public List<TcGameAreaItem> fetchAreaItems(Long gameId,Long areaId){
-		LambdaQueryWrapper<TcGameAreaItem> wrapper  = new LambdaQueryWrapper<>();
-		wrapper.eq(TcGameAreaItem::getGameId,gameId);
-		wrapper.eq(TcGameAreaItem::getAreaId,areaId);
+	public List<TcGameAreaItem> fetchAreaItems(Long gameId, Long areaId) {
+		LambdaQueryWrapper<TcGameAreaItem> wrapper = new LambdaQueryWrapper<>();
+		wrapper.eq(TcGameAreaItem::getGameId, gameId);
+		wrapper.eq(TcGameAreaItem::getAreaId, areaId);
 		wrapper.orderByAsc(TcGameAreaItem::getSort);
 
 		return tcGameAreaItemMapper.selectList(wrapper);
 
 	}
-
 
 }

@@ -81,10 +81,11 @@ public class GameGroupManager {
 		return gameGroupMapper.deleteById(groupId);
 	}
 
-	public TcGameGroup fetchOneInfo(Long gameId,Long groupId) {
+	public TcGameGroup fetchOneInfo(Long gameId, Long groupId) {
 		LambdaQueryWrapper<TcGameGroup> wrapper = new LambdaQueryWrapper<>();
-		wrapper.eq(TcGameGroup::getGameId,gameId);
-		wrapper.eq(TcGameGroup::getId,groupId);
+		wrapper.eq(TcGameGroup::getGameId, gameId);
+		wrapper.eq(TcGameGroup::getId, groupId);
 		return gameGroupMapper.selectOne(wrapper);
 	}
+
 }
