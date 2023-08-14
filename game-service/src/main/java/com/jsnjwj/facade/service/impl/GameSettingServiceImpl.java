@@ -5,6 +5,7 @@ import com.jsnjwj.facade.dto.GameAreaDto;
 import com.jsnjwj.facade.dto.GameItemDto;
 import com.jsnjwj.facade.dto.GroupAreaItemDto;
 import com.jsnjwj.facade.entity.*;
+import com.jsnjwj.facade.enums.SettingRuleEnum;
 import com.jsnjwj.facade.manager.GameGroupManager;
 import com.jsnjwj.facade.manager.GameGroupingManager;
 import com.jsnjwj.facade.manager.GameItemManager;
@@ -152,7 +153,7 @@ public class GameSettingServiceImpl implements GameSettingService {
 		TcGameRuleSetting ruleSetting = gameSettingRuleManager.fetchRule(query.getGameId(), query.getItemId());
 
 		if (Objects.nonNull(ruleSetting)) {
-			ruleSetting.setScoreRule(query.getScoreRule());
+			ruleSetting.setScoreRule(SettingRuleEnum.getByCode(query.getScoreRule()));
 			ruleSetting.setJudgeGroupNum(query.getJudgeGroupNum());
 			List<TcGameRuleSettingDetail> details = new ArrayList<>();
 
@@ -175,7 +176,7 @@ public class GameSettingServiceImpl implements GameSettingService {
 
 		ruleSetting.setGameId(query.getGameId());
 		ruleSetting.setItemId(query.getItemId());
-		ruleSetting.setScoreRule(query.getScoreRule());
+		ruleSetting.setScoreRule(SettingRuleEnum.getByCode(query.getScoreRule()));
 		ruleSetting.setJudgeGroupNum(query.getJudgeGroupNum());
 		ruleSetting.setCreatedAt(new Date());
 		gameSettingRuleManager.saveRuleInfo(ruleSetting);
@@ -207,7 +208,7 @@ public class GameSettingServiceImpl implements GameSettingService {
 		GameRuleSettingVo response = new GameRuleSettingVo();
 		response.setGameId(gameId);
 		response.setJudgeGroupNum(ruleSettingVo.getJudgeGroupNum());
-		response.setScoreRule(ruleSettingVo.getScoreRule());
+		response.setScoreRule(ruleSettingVo.getScoreRule().getCode());
 		response.setItemId(gameId);
 
 		List<GameRuleSettingVo.GameRuleDetailVo> ruleDetailVos = new ArrayList<>();
