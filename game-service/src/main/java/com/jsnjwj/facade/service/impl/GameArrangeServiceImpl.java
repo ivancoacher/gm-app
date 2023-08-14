@@ -5,10 +5,9 @@ import com.jsnjwj.facade.dto.GameAreaDto;
 import com.jsnjwj.facade.dto.GameItemDto;
 import com.jsnjwj.facade.dto.GroupAreaItemDto;
 import com.jsnjwj.facade.entity.*;
-import com.jsnjwj.facade.manager.GameGroupManager;
-import com.jsnjwj.facade.manager.GameGroupingManager;
-import com.jsnjwj.facade.manager.GameItemManager;
-import com.jsnjwj.facade.manager.GameSettingRuleManager;
+import com.jsnjwj.facade.enums.GameStatusEnum;
+import com.jsnjwj.facade.exception.BusinessException;
+import com.jsnjwj.facade.manager.*;
 import com.jsnjwj.facade.query.*;
 import com.jsnjwj.facade.service.GameArrangeService;
 import com.jsnjwj.facade.service.GameGroupService;
@@ -51,6 +50,12 @@ public class GameArrangeServiceImpl implements GameArrangeService {
 
 	@Resource
 	private GameItemManager itemManager;
+
+	@Resource
+	private GameAreaManager gameAreaManager;
+
+	@Resource
+	private GameManager gameManager;
 
 	@Override
 	public ApiResponse<?> setCourtNum(GameGroupingSetNumQuery query) {
@@ -97,23 +102,16 @@ public class GameArrangeServiceImpl implements GameArrangeService {
 	 */
 	@Override
 	public ApiResponse<Boolean> setGroupingBatch(GameGroupingSetQuery query) {
-		gameGroupingManager.resetGrouping(query);
+		Long gameId = query.getGameId();
+		TcGames game = gameManager.fetchInfo(gameId);
 
-		List<TcGameAreaItem> areaItems = new ArrayList<>();
-		if (!query.getItemIds().isEmpty()) {
-			Integer sort = 1;
-			for (Long i : query.getItemIds()) {
-				TcGameAreaItem item = new TcGameAreaItem();
-				item.setGameId(query.getGameId());
-				item.setItemId(i);
-				item.setAreaNo(query.getAreaNo());
-				item.setAreaId(query.getAreaId());
-				item.setSort(sort);
-				areaItems.add(item);
-				sort++;
-			}
+		if (GameStatusEnum.GAME_REGISTRATION_CLOSED.getCode()<=game.getStatus()){
+			throw new BusinessException("赛事已开始，无法操作");
 		}
-		gameGroupingManager.saveGroupings(areaItems);
+
+		//查询所有场地
+		List<TcGameArea> areaList = gameAreaManager.getAvailableCourts(query.getGameId());
+
 
 		return ApiResponse.success(true);
 	}

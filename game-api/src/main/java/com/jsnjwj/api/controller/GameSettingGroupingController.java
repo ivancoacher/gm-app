@@ -5,6 +5,7 @@ import com.jsnjwj.facade.entity.TcGameArea;
 import com.jsnjwj.facade.query.GameGroupingSetNumQuery;
 import com.jsnjwj.facade.query.GameGroupingAreaSetQuery;
 import com.jsnjwj.facade.query.GameGroupingSetQuery;
+import com.jsnjwj.facade.query.GameGroupingViewQuery;
 import com.jsnjwj.facade.service.GameGroupingService;
 import com.jsnjwj.facade.service.GameSettingService;
 import org.springframework.web.bind.annotation.*;
@@ -22,13 +23,18 @@ public class GameSettingGroupingController {
 	@Resource
 	private GameGroupingService gameGroupingService;
 
-	@RequestMapping("/index")
-	public ApiResponse<?> queryList() {
+	@GetMapping("/index")
+	public ApiResponse<?> queryList(GameGroupingViewQuery query) {
+		return ApiResponse.success(gameGroupingService.fetchGroupingItem(query));
+	}
+
+	@PostMapping("/set")
+	public ApiResponse<?> setGrouping() {
 		return ApiResponse.success();
 	}
 
-	@RequestMapping("/set")
-	public ApiResponse<?> setGrouping() {
+	@PostMapping("/setBatch")
+	public ApiResponse<?> setGroupingBatch() {
 		return ApiResponse.success();
 	}
 

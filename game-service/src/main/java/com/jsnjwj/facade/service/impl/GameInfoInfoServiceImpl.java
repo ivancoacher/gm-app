@@ -23,9 +23,6 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * 合同比对service
- */
 @Service
 @Slf4j
 @RequiredArgsConstructor
