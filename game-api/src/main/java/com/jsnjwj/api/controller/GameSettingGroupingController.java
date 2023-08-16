@@ -28,6 +28,11 @@ public class GameSettingGroupingController {
 		return ApiResponse.success(gameGroupingService.fetchGroupingItem(query));
 	}
 
+	@GetMapping("/detail")
+	public ApiResponse<?> queryDetail(GameGroupingViewQuery query) {
+		return ApiResponse.success(gameGroupingService.fetchGroupingDetail(query));
+	}
+
 	@PostMapping("/set")
 	public ApiResponse<?> setGrouping() {
 		return ApiResponse.success();

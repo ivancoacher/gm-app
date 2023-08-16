@@ -3,11 +3,14 @@ package com.jsnjwj.facade.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.jsnjwj.facade.dto.GroupingDetailDto;
 import com.jsnjwj.facade.dto.GroupingItemDto;
 import com.jsnjwj.facade.entity.TcGameItem;
 import com.jsnjwj.facade.entity.TcGameRuleSetting;
+import com.jsnjwj.facade.entity.TcSignSingle;
 import com.jsnjwj.facade.mapper.TcGameItemMapper;
 import com.jsnjwj.facade.mapper.TcGameRuleSettingMapper;
+import com.jsnjwj.facade.mapper.TcSignSingleMapper;
 import com.jsnjwj.facade.query.GameGroupingViewQuery;
 import com.jsnjwj.facade.service.GameGroupingService;
 import com.jsnjwj.facade.vo.ItemLabelVo;
@@ -33,6 +36,8 @@ public class GameGroupingServiceImpl implements GameGroupingService {
     private final TcGameItemMapper tcGameItemMapper;
 
     private final TcGameRuleSettingMapper tcGameRuleSettingMapper;
+
+    private final TcSignSingleMapper tcSignSingleMapper;
     @Override
     public Page<GroupingItemDto> fetchGroupingItem(GameGroupingViewQuery query) {
 
@@ -61,12 +66,13 @@ public class GameGroupingServiceImpl implements GameGroupingService {
             rst.getRecords().forEach(record->{
                 GroupingItemDto groupingItemDto = new GroupingItemDto();
 
-                groupingItemDto.setGameId(query.getGameId());
-                groupingItemDto.setGroupId(query.getGroupId());
-                groupingItemDto.setItemId(query.getItemId());
+                groupingItemDto.setGameId(record.getGameId());
+                groupingItemDto.setGroupId(record.getGroupId());
+                groupingItemDto.setItemId(record.getItemId());
                 groupingItemDto.setGroupName(record.getGroupName());
                 groupingItemDto.setItemName(record.getItemName());
                 if (Objects.nonNull(ruleSets.get(record.getItemId()))){
+                    groupingItemDto.setJudgeCount(ruleSets.get(record.getItemId()).getJudgeGroupNum());
                     groupingItemDto.setRule(ruleSets.get(record.getItemId()).getScoreRule().toString());
                 }
                 records.add(groupingItemDto);
@@ -84,4 +90,62 @@ public class GameGroupingServiceImpl implements GameGroupingService {
 
         return result.stream().collect(Collectors.toMap(TcGameRuleSetting::getItemId, Function.identity()));
     }
+
+
+    @Override
+    public GroupingDetailDto fetchGroupingDetail(GameGroupingViewQuery query){
+
+        LambdaQueryWrapper<TcGameItem> wrapper = new LambdaQueryWrapper<>();
+
+        wrapper.eq(TcGameItem::getGameId, query.getGameId());
+
+        wrapper.orderByAsc(TcGameItem::getSort);
+
+        List<TcGameItem> itemList = tcGameItemMapper.selectList(wrapper);
+
+        GroupingDetailDto response = new GroupingDetailDto();
+        response.setGameId(query.getGameId());
+        if (CollectionUtils.isEmpty(itemList)){
+            return response;
+        }
+
+        List<GroupingDetailDto.GroupingItem> items = new ArrayList<>();
+
+        for (TcGameItem item : itemList){
+            Long itemId = item.getId();
+            Long gameId = item.getGameId();
+
+            // 配置item信息
+            GroupingDetailDto.GroupingItem itemDtos = new GroupingDetailDto.GroupingItem();
+
+            itemDtos.setItemName(item.getItemName());
+            itemDtos.setItemId(itemId);
+
+            // 查询该item下的报名信息
+            LambdaQueryWrapper<TcSignSingle> wrapper1 = new LambdaQueryWrapper<>();
+
+            wrapper1.eq(TcSignSingle::getGameId, query.getGameId());
+            wrapper1.eq(TcSignSingle::getItemId,itemId);
+            List<TcSignSingle> signSingles = tcSignSingleMapper.selectList(wrapper1);
+            List<GroupingDetailDto.GroupingItemSign> groupingItemSigns = new ArrayList<>();
+            if (CollectionUtils.isNotEmpty(signSingles)){
+
+                for (TcSignSingle signSingle:signSingles){
+                    GroupingDetailDto.GroupingItemSign sign = new GroupingDetailDto.GroupingItemSign();
+                    sign.setName(signSingle.getName());
+                    sign.setTeam(signSingle.getTeamName());
+                    groupingItemSigns.add(sign);
+                }
+
+            }
+
+            itemDtos.setGroupItemSignList(groupingItemSigns);
+            items.add(itemDtos);
+
+        }
+        response.setGroupItemList(items);
+        return response;
+    }
+
+
 }

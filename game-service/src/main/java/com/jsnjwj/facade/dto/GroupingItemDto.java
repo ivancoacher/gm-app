@@ -17,7 +17,7 @@ public class GroupingItemDto {
 
     private String rule;
 
-    private Integer judgeCount;
+    private Integer judgeCount = 0;
 
     private String scoreRule;
 
