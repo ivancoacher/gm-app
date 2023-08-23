@@ -27,6 +27,7 @@ public class ExceptionAdvice {
 		response.setMessage(e.getMessage());
 		return response;
 	}
+
 	@ExceptionHandler(Exception.class)
 	public ApiResponse exceptionAdvice(BusinessException e) {
 		ApiResponse response = new ApiResponse();
@@ -34,4 +35,5 @@ public class ExceptionAdvice {
 		response.setMessage(e.getMessage());
 		return response;
 	}
+
 }

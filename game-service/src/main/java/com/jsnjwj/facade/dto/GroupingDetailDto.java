@@ -1,6 +1,5 @@
 package com.jsnjwj.facade.dto;
 
-
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -8,28 +7,33 @@ import java.util.List;
 
 @Data
 public class GroupingDetailDto {
-    private Long gameId;
 
-    private List<GroupingItem> groupItemList = new ArrayList<>();
+	private Long gameId;
 
-    @Data
-    public static class GroupingItem{
-        private Long itemId;
+	private List<GroupingItem> groupItemList = new ArrayList<>();
 
-        private String itemName;
+	@Data
+	public static class GroupingItem {
 
-        private List<GroupingItemSign> groupItemSignList;
-    }
+		private Long itemId;
 
-    @Data
-    public static class GroupingItemSign{
-        private Long signId;
+		private String itemName;
 
-        private Integer sort;
+		private List<GroupingItemSign> groupItemSignList;
 
-        private String name;
+	}
 
-        private String team;
-    }
+	@Data
+	public static class GroupingItemSign {
+
+		private Long signId;
+
+		private Integer sort;
+
+		private String name;
+
+		private String team;
+
+	}
 
 }

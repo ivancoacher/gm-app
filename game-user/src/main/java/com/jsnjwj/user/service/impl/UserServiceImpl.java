@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsnjwj.common.response.ApiResponse;
+import com.jsnjwj.common.utils.ThreadLocalUtil;
 import com.jsnjwj.user.config.JwtConfig;
 import com.jsnjwj.user.dao.AdminUserDao;
 import com.jsnjwj.user.dao.OrgDao;
@@ -62,6 +63,7 @@ public class UserServiceImpl implements UserService {
 		String password = user.getPasswordHash();
 		if (bCryptPasswordEncoder.matches(password, bCryptPasswordEncoder.encode(password))) {
 			saveOptLog(user.getId(), OperateTypeEnum.LOGIN, "");
+			ThreadLocalUtil.addCurrentUser(user.getId());
 			return ApiResponse.success(jwtConfig.createToken(String.valueOf(user.getId())));
 		}
 		return ApiResponse.error("登录失败");

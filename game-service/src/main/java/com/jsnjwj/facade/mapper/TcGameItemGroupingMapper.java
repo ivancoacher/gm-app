@@ -15,12 +15,14 @@ import org.apache.ibatis.annotations.Select;
  * @Entity com.jsnjwj.service.entity.TcGameItemGrouping
  */
 public interface TcGameItemGroupingMapper extends BaseMapper<TcGameItemGrouping> {
-    String wrapperSql = "select i.id,i.item_name ,i.group_id ,g.group_name ,i.game_id,i.sort  "
-            + "from tc_game_item as i left join tc_game_group as g on g.id = i.group_id ";
 
-    String sql = "select game_id as gameId,item_name as itemName,group_id as groupId,group_name as groupName,id as itemId,sort from ("
-            + wrapperSql + ") as result ${ew.customSqlSegment}";
+	String wrapperSql = "select i.id,i.item_name ,i.group_id ,g.group_name ,i.game_id,i.sort  "
+			+ "from tc_game_item as i left join tc_game_group as g on g.id = i.group_id ";
 
-    @Select(sql)
-    Page<ItemLabelVo> selectByPage(Page page, @Param("ew") LambdaQueryWrapper lwrapper);
+	String sql = "select game_id as gameId,item_name as itemName,group_id as groupId,group_name as groupName,id as itemId,sort from ("
+			+ wrapperSql + ") as result ${ew.customSqlSegment}";
+
+	@Select(sql)
+	Page<ItemLabelVo> selectByPage(Page page, @Param("ew") LambdaQueryWrapper lwrapper);
+
 }

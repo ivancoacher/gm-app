@@ -33,119 +33,118 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class GameGroupingServiceImpl implements GameGroupingService {
 
-    private final TcGameItemMapper tcGameItemMapper;
+	private final TcGameItemMapper tcGameItemMapper;
 
-    private final TcGameRuleSettingMapper tcGameRuleSettingMapper;
+	private final TcGameRuleSettingMapper tcGameRuleSettingMapper;
 
-    private final TcSignSingleMapper tcSignSingleMapper;
-    @Override
-    public Page<GroupingItemDto> fetchGroupingItem(GameGroupingViewQuery query) {
+	private final TcSignSingleMapper tcSignSingleMapper;
 
-        Page<TcGameItem> page = new Page<>(query.getPage(), query.getPageSize());
+	@Override
+	public Page<GroupingItemDto> fetchGroupingItem(GameGroupingViewQuery query) {
 
-        LambdaQueryWrapper<TcGameItem> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(Objects.nonNull(query.getGroupId()), TcGameItem::getGroupId, query.getGroupId());
-        wrapper.eq(TcGameItem::getGameId, query.getGameId());
+		Page<TcGameItem> page = new Page<>(query.getPage(), query.getPageSize());
 
-        wrapper.orderByAsc(TcGameItem::getSort);
+		LambdaQueryWrapper<TcGameItem> wrapper = new LambdaQueryWrapper<>();
+		wrapper.eq(Objects.nonNull(query.getGroupId()), TcGameItem::getGroupId, query.getGroupId());
+		wrapper.eq(TcGameItem::getGameId, query.getGameId());
 
-        Page<ItemLabelVo> rst = tcGameItemMapper.selectByPage(page, wrapper);
+		wrapper.orderByAsc(TcGameItem::getSort);
 
-        Page<GroupingItemDto> response = new Page<>();
+		Page<ItemLabelVo> rst = tcGameItemMapper.selectByPage(page, wrapper);
 
-        response.setTotal(rst.getTotal());
-        response.setCurrent(rst.getCurrent());
-        response.setPages(rst.getPages());
+		Page<GroupingItemDto> response = new Page<>();
 
-        List<GroupingItemDto> records = new ArrayList<>();
+		response.setTotal(rst.getTotal());
+		response.setCurrent(rst.getCurrent());
+		response.setPages(rst.getPages());
 
-        if (CollectionUtils.isNotEmpty(rst.getRecords())){
+		List<GroupingItemDto> records = new ArrayList<>();
 
-            List<Long> itemIds = rst.getRecords().stream().map(ItemLabelVo::getItemId).collect(Collectors.toList());
-            Map<Long,TcGameRuleSetting> ruleSets = getRuleSettingMap(itemIds);
-            rst.getRecords().forEach(record->{
-                GroupingItemDto groupingItemDto = new GroupingItemDto();
+		if (CollectionUtils.isNotEmpty(rst.getRecords())) {
 
-                groupingItemDto.setGameId(record.getGameId());
-                groupingItemDto.setGroupId(record.getGroupId());
-                groupingItemDto.setItemId(record.getItemId());
-                groupingItemDto.setGroupName(record.getGroupName());
-                groupingItemDto.setItemName(record.getItemName());
-                if (Objects.nonNull(ruleSets.get(record.getItemId()))){
-                    groupingItemDto.setJudgeCount(ruleSets.get(record.getItemId()).getJudgeGroupNum());
-                    groupingItemDto.setRule(ruleSets.get(record.getItemId()).getScoreRule().toString());
-                }
-                records.add(groupingItemDto);
-            });
-        }
-        response.setRecords(records);
-        return response;
+			List<Long> itemIds = rst.getRecords().stream().map(ItemLabelVo::getItemId).collect(Collectors.toList());
+			Map<Long, TcGameRuleSetting> ruleSets = getRuleSettingMap(itemIds);
+			rst.getRecords().forEach(record -> {
+				GroupingItemDto groupingItemDto = new GroupingItemDto();
 
-    }
+				groupingItemDto.setGameId(record.getGameId());
+				groupingItemDto.setGroupId(record.getGroupId());
+				groupingItemDto.setItemId(record.getItemId());
+				groupingItemDto.setGroupName(record.getGroupName());
+				groupingItemDto.setItemName(record.getItemName());
+				if (Objects.nonNull(ruleSets.get(record.getItemId()))) {
+					groupingItemDto.setJudgeCount(ruleSets.get(record.getItemId()).getJudgeGroupNum());
+					groupingItemDto.setRule(ruleSets.get(record.getItemId()).getScoreRule().toString());
+				}
+				records.add(groupingItemDto);
+			});
+		}
+		response.setRecords(records);
+		return response;
 
-    private Map<Long, TcGameRuleSetting> getRuleSettingMap(List<Long> itemIdList){
-        LambdaQueryWrapper<TcGameRuleSetting> query = new LambdaQueryWrapper<>();
-        query.in(TcGameRuleSetting::getItemId,itemIdList);
-        List<TcGameRuleSetting> result = tcGameRuleSettingMapper.selectList(query);
+	}
 
-        return result.stream().collect(Collectors.toMap(TcGameRuleSetting::getItemId, Function.identity()));
-    }
+	private Map<Long, TcGameRuleSetting> getRuleSettingMap(List<Long> itemIdList) {
+		LambdaQueryWrapper<TcGameRuleSetting> query = new LambdaQueryWrapper<>();
+		query.in(TcGameRuleSetting::getItemId, itemIdList);
+		List<TcGameRuleSetting> result = tcGameRuleSettingMapper.selectList(query);
 
+		return result.stream().collect(Collectors.toMap(TcGameRuleSetting::getItemId, Function.identity()));
+	}
 
-    @Override
-    public GroupingDetailDto fetchGroupingDetail(GameGroupingViewQuery query){
+	@Override
+	public GroupingDetailDto fetchGroupingDetail(GameGroupingViewQuery query) {
 
-        LambdaQueryWrapper<TcGameItem> wrapper = new LambdaQueryWrapper<>();
+		LambdaQueryWrapper<TcGameItem> wrapper = new LambdaQueryWrapper<>();
 
-        wrapper.eq(TcGameItem::getGameId, query.getGameId());
+		wrapper.eq(TcGameItem::getGameId, query.getGameId());
 
-        wrapper.orderByAsc(TcGameItem::getSort);
+		wrapper.orderByAsc(TcGameItem::getSort);
 
-        List<TcGameItem> itemList = tcGameItemMapper.selectList(wrapper);
+		List<TcGameItem> itemList = tcGameItemMapper.selectList(wrapper);
 
-        GroupingDetailDto response = new GroupingDetailDto();
-        response.setGameId(query.getGameId());
-        if (CollectionUtils.isEmpty(itemList)){
-            return response;
-        }
+		GroupingDetailDto response = new GroupingDetailDto();
+		response.setGameId(query.getGameId());
+		if (CollectionUtils.isEmpty(itemList)) {
+			return response;
+		}
 
-        List<GroupingDetailDto.GroupingItem> items = new ArrayList<>();
+		List<GroupingDetailDto.GroupingItem> items = new ArrayList<>();
 
-        for (TcGameItem item : itemList){
-            Long itemId = item.getId();
-            Long gameId = item.getGameId();
+		for (TcGameItem item : itemList) {
+			Long itemId = item.getId();
+			Long gameId = item.getGameId();
 
-            // 配置item信息
-            GroupingDetailDto.GroupingItem itemDtos = new GroupingDetailDto.GroupingItem();
+			// 配置item信息
+			GroupingDetailDto.GroupingItem itemDtos = new GroupingDetailDto.GroupingItem();
 
-            itemDtos.setItemName(item.getItemName());
-            itemDtos.setItemId(itemId);
+			itemDtos.setItemName(item.getItemName());
+			itemDtos.setItemId(itemId);
 
-            // 查询该item下的报名信息
-            LambdaQueryWrapper<TcSignSingle> wrapper1 = new LambdaQueryWrapper<>();
+			// 查询该item下的报名信息
+			LambdaQueryWrapper<TcSignSingle> wrapper1 = new LambdaQueryWrapper<>();
 
-            wrapper1.eq(TcSignSingle::getGameId, query.getGameId());
-            wrapper1.eq(TcSignSingle::getItemId,itemId);
-            List<TcSignSingle> signSingles = tcSignSingleMapper.selectList(wrapper1);
-            List<GroupingDetailDto.GroupingItemSign> groupingItemSigns = new ArrayList<>();
-            if (CollectionUtils.isNotEmpty(signSingles)){
+			wrapper1.eq(TcSignSingle::getGameId, query.getGameId());
+			wrapper1.eq(TcSignSingle::getItemId, itemId);
+			List<TcSignSingle> signSingles = tcSignSingleMapper.selectList(wrapper1);
+			List<GroupingDetailDto.GroupingItemSign> groupingItemSigns = new ArrayList<>();
+			if (CollectionUtils.isNotEmpty(signSingles)) {
 
-                for (TcSignSingle signSingle:signSingles){
-                    GroupingDetailDto.GroupingItemSign sign = new GroupingDetailDto.GroupingItemSign();
-                    sign.setName(signSingle.getName());
-                    sign.setTeam(signSingle.getTeamName());
-                    groupingItemSigns.add(sign);
-                }
+				for (TcSignSingle signSingle : signSingles) {
+					GroupingDetailDto.GroupingItemSign sign = new GroupingDetailDto.GroupingItemSign();
+					sign.setName(signSingle.getName());
+					sign.setTeam(signSingle.getTeamName());
+					groupingItemSigns.add(sign);
+				}
 
-            }
+			}
 
-            itemDtos.setGroupItemSignList(groupingItemSigns);
-            items.add(itemDtos);
+			itemDtos.setGroupItemSignList(groupingItemSigns);
+			items.add(itemDtos);
 
-        }
-        response.setGroupItemList(items);
-        return response;
-    }
-
+		}
+		response.setGroupItemList(items);
+		return response;
+	}
 
 }

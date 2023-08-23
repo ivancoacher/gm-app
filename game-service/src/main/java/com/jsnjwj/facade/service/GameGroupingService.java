@@ -11,7 +11,8 @@ import java.util.List;
 
 public interface GameGroupingService {
 
-    Page<GroupingItemDto> fetchGroupingItem(GameGroupingViewQuery query);
+	Page<GroupingItemDto> fetchGroupingItem(GameGroupingViewQuery query);
 
-    GroupingDetailDto fetchGroupingDetail(GameGroupingViewQuery query);
+	GroupingDetailDto fetchGroupingDetail(GameGroupingViewQuery query);
+
 }

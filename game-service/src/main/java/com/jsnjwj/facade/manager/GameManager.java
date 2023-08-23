@@ -11,22 +11,22 @@ import java.util.Date;
 @Service
 public class GameManager {
 
-    @Resource
-    private TcGamesMapper tcGamesMapper;
+	@Resource
+	private TcGamesMapper tcGamesMapper;
 
-    public int save(TcGames games) {
-        games.setStatus(GameStatusEnum.GAME_PROJECTED.getCode());
-        games.setCreateTime(new Date());
-        games.setUpdateTime(new Date());
-        return tcGamesMapper.insert(games);
-    }
+	public int save(TcGames games) {
+		games.setStatus(GameStatusEnum.GAME_PROJECTED.getCode());
+		games.setCreateTime(new Date());
+		games.setUpdateTime(new Date());
+		return tcGamesMapper.insert(games);
+	}
 
-    public int update(TcGames games) {
-        return tcGamesMapper.updateById(games);
-    }
+	public int update(TcGames games) {
+		return tcGamesMapper.updateById(games);
+	}
 
-    public TcGames fetchInfo(Long gameId) {
-        return tcGamesMapper.selectById(gameId);
-    }
+	public TcGames fetchInfo(Long gameId) {
+		return tcGamesMapper.selectById(gameId);
+	}
 
 }

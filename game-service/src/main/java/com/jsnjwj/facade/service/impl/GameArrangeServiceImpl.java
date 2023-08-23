@@ -106,13 +106,12 @@ public class GameArrangeServiceImpl implements GameArrangeService {
 		Long gameId = query.getGameId();
 		TcGames game = gameManager.fetchInfo(gameId);
 
-		if (GameStatusEnum.GAME_REGISTRATION_CLOSED.getCode()<=game.getStatus()){
+		if (GameStatusEnum.GAME_REGISTRATION_CLOSED.getCode() <= game.getStatus()) {
 			throw new BusinessException("赛事已开始，无法操作");
 		}
 
-		//查询所有场地
+		// 查询所有场地
 		List<TcGameArea> areaList = gameAreaManager.getAvailableCourts(query.getGameId());
-
 
 		return ApiResponse.success(true);
 	}

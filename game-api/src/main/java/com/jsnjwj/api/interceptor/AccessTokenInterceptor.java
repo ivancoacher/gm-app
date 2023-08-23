@@ -1,5 +1,6 @@
 package com.jsnjwj.api.interceptor;
 
+import com.jsnjwj.common.utils.ThreadLocalUtil;
 import com.jsnjwj.user.config.JwtConfig;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.SignatureException;
@@ -44,6 +45,7 @@ public class AccessTokenInterceptor implements HandlerInterceptor {
 			if (claims == null || jwtConfig.isTokenExpired(claims.getExpiration())) {
 				throw new SignatureException(jwtConfig.getHeader() + "失效，请重新登录。");
 			}
+			ThreadLocalUtil.addCurrentUser(Long.valueOf(claims.getSubject()));
 			request.setAttribute("identifyId", claims.getSubject());
 		}
 		catch (Exception e) {
