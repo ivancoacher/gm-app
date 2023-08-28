@@ -1,12 +1,9 @@
 package com.jsnjwj.facade.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsnjwj.facade.dto.SignSingleDto;
-import com.jsnjwj.facade.entity.TcSignSingle;
+import com.jsnjwj.facade.entity.SignSingleEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.jsnjwj.facade.entity.TcSignTeam;
-import com.jsnjwj.facade.vo.ItemLabelVo;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
@@ -18,7 +15,7 @@ import java.util.List;
  * @createDate 2023-07-09 01:36:35
  * @Entity com.jsnjwj.service.entity.TcSignSingle
  */
-public interface TcSignSingleMapper extends BaseMapper<TcSignSingle> {
+public interface TcSignSingleMapper extends BaseMapper<SignSingleEntity> {
 
 	String wrapperSql = "select ss.game_id ,ss.group_id ,ss.id ,ss.item_id ,gg.group_name ,gi.item_name "
 			+ ",ss.name,ss.age,ss.sex,ss.remark"
@@ -34,6 +31,6 @@ public interface TcSignSingleMapper extends BaseMapper<TcSignSingle> {
 	List<SignSingleDto> selectByPage(@Param("page") Integer page, @Param("limit") Integer limit,
 			@Param("ew") LambdaQueryWrapper lwrapper);
 
-	void saveBatch(@Param("list") List<TcSignSingle> list);
+	void saveBatch(@Param("list") List<SignSingleEntity> list);
 
 }

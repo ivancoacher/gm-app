@@ -1,9 +1,9 @@
 package com.jsnjwj.facade.manager;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.jsnjwj.facade.entity.TcGameArea;
-import com.jsnjwj.facade.entity.TcGameAreaItem;
-import com.jsnjwj.facade.mapper.TcGameAreaItemMapper;
+import com.jsnjwj.facade.entity.GameAreaEntity;
+import com.jsnjwj.facade.entity.GameAreaItemEntity;
+import com.jsnjwj.facade.mapper.GameAreaItemMapper;
 import com.jsnjwj.facade.mapper.TcGameAreaMapper;
 import com.jsnjwj.facade.query.GameGroupingSetQuery;
 import org.springframework.stereotype.Service;
@@ -18,59 +18,59 @@ public class GameGroupingManager {
 	private TcGameAreaMapper tcGameAreaMapper;
 
 	@Resource
-	private TcGameAreaItemMapper tcGameAreaItemMapper;
+	private GameAreaItemMapper gameAreaItemMapper;
 
-	public void saveCourts(List<TcGameArea> areaList) {
+	public void saveCourts(List<GameAreaEntity> areaList) {
 		tcGameAreaMapper.saveBatch(areaList);
 	}
 
-	public int deleteCourt(TcGameArea area) {
+	public int deleteCourt(GameAreaEntity area) {
 		return tcGameAreaMapper.deleteById(area);
 	}
 
 	public int resetCourt(Long gameId) {
-		LambdaQueryWrapper<TcGameArea> wrapper = new LambdaQueryWrapper<>();
-		wrapper.eq(TcGameArea::getGameId, gameId);
+		LambdaQueryWrapper<GameAreaEntity> wrapper = new LambdaQueryWrapper<>();
+		wrapper.eq(GameAreaEntity::getGameId, gameId);
 		return tcGameAreaMapper.delete(wrapper);
 	}
 
-	public int saveCourt(TcGameArea area) {
+	public int saveCourt(GameAreaEntity area) {
 		return tcGameAreaMapper.updateById(area);
 	}
 
-	public List<TcGameArea> getCourts(Long gameId) {
-		LambdaQueryWrapper<TcGameArea> wrapper = new LambdaQueryWrapper<>();
-		wrapper.eq(TcGameArea::getGameId, gameId);
+	public List<GameAreaEntity> getCourts(Long gameId) {
+		LambdaQueryWrapper<GameAreaEntity> wrapper = new LambdaQueryWrapper<>();
+		wrapper.eq(GameAreaEntity::getGameId, gameId);
 		// wrapper.eq(TcGameArea::getStatus,1); //启用中
 		return tcGameAreaMapper.selectList(wrapper);
 	}
 
-	public List<TcGameArea> getAvailableCourts(Long gameId) {
-		LambdaQueryWrapper<TcGameArea> wrapper = new LambdaQueryWrapper<>();
-		wrapper.eq(TcGameArea::getGameId, gameId);
-		wrapper.eq(TcGameArea::getStatus, 1); // 启用中
+	public List<GameAreaEntity> getAvailableCourts(Long gameId) {
+		LambdaQueryWrapper<GameAreaEntity> wrapper = new LambdaQueryWrapper<>();
+		wrapper.eq(GameAreaEntity::getGameId, gameId);
+		wrapper.eq(GameAreaEntity::getStatus, 1); // 启用中
 		return tcGameAreaMapper.selectList(wrapper);
 	}
 
 	public void resetGrouping(GameGroupingSetQuery query) {
-		LambdaQueryWrapper<TcGameAreaItem> wrapper = new LambdaQueryWrapper<>();
-		wrapper.eq(TcGameAreaItem::getGameId, query.getGameId());
-		wrapper.eq(TcGameAreaItem::getAreaId, query.getAreaId());
-		wrapper.eq(TcGameAreaItem::getAreaNo, query.getAreaNo());
-		tcGameAreaItemMapper.delete(wrapper);
+		LambdaQueryWrapper<GameAreaItemEntity> wrapper = new LambdaQueryWrapper<>();
+		wrapper.eq(GameAreaItemEntity::getGameId, query.getGameId());
+		wrapper.eq(GameAreaItemEntity::getAreaId, query.getAreaId());
+		wrapper.eq(GameAreaItemEntity::getAreaNo, query.getAreaNo());
+		gameAreaItemMapper.delete(wrapper);
 	}
 
-	public void saveGroupings(List<TcGameAreaItem> areaList) {
-		tcGameAreaItemMapper.saveBatch(areaList);
+	public void saveGroupings(List<GameAreaItemEntity> areaList) {
+		gameAreaItemMapper.saveBatch(areaList);
 	}
 
-	public List<TcGameAreaItem> fetchAreaItems(Long gameId, Long areaId) {
-		LambdaQueryWrapper<TcGameAreaItem> wrapper = new LambdaQueryWrapper<>();
-		wrapper.eq(TcGameAreaItem::getGameId, gameId);
-		wrapper.eq(TcGameAreaItem::getAreaId, areaId);
-		wrapper.orderByAsc(TcGameAreaItem::getSort);
+	public List<GameAreaItemEntity> fetchAreaItems(Long gameId, Long areaId) {
+		LambdaQueryWrapper<GameAreaItemEntity> wrapper = new LambdaQueryWrapper<>();
+		wrapper.eq(GameAreaItemEntity::getGameId, gameId);
+		wrapper.eq(GameAreaItemEntity::getAreaId, areaId);
+		wrapper.orderByAsc(GameAreaItemEntity::getSort);
 
-		return tcGameAreaItemMapper.selectList(wrapper);
+		return gameAreaItemMapper.selectList(wrapper);
 
 	}
 

@@ -1,7 +1,6 @@
 package com.jsnjwj.facade.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -9,16 +8,26 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- * @TableName tc_sign_item
+ * @TableName tc_judge
  */
 @Data
-@TableName(value = "tc_sign_item")
-public class TcSignItem implements Serializable {
+@TableName(value = "tc_judge")
+public class JudgeEntity implements Serializable {
 
 	/**
 	 *
 	 */
 	@TableId(type = IdType.AUTO)
 	private Integer id;
+
+	/**
+	 *
+	 */
+	private String judgeName;
+
+	/**
+	 *
+	 */
+	private String phone;
 
 }

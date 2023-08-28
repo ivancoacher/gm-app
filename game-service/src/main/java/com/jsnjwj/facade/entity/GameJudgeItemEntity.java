@@ -1,7 +1,6 @@
 package com.jsnjwj.facade.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -9,11 +8,11 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- * @TableName tc_game_judge
+ * @TableName tc_game_judge_item
  */
 @Data
-@TableName(value = "tc_game_judge")
-public class TcGameJudge implements Serializable {
+@TableName(value = "tc_game_judge_item")
+public class GameJudgeItemEntity implements Serializable {
 
 	/**
 	 *
@@ -24,11 +23,16 @@ public class TcGameJudge implements Serializable {
 	/**
 	 *
 	 */
-	private String judgeId;
+	private Integer gameId;
 
 	/**
 	 *
 	 */
-	private String gameId;
+	private Integer judgeId;
+
+	/**
+	 *
+	 */
+	private Integer itemId;
 
 }

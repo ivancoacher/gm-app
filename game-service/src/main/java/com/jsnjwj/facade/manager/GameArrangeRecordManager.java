@@ -1,7 +1,7 @@
 package com.jsnjwj.facade.manager;
 
-import com.jsnjwj.facade.entity.TcSignArrangeRecord;
-import com.jsnjwj.facade.mapper.TcSignArrangeRecordMapper;
+import com.jsnjwj.facade.entity.SignArrangeRecordEntity;
+import com.jsnjwj.facade.mapper.SignArrangeRecordMapper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -14,13 +14,13 @@ import java.util.List;
 public class GameArrangeRecordManager {
 
     @Resource
-    private TcSignArrangeRecordMapper tcsSignArrangeRecordMapper;
+    private SignArrangeRecordMapper tcsSignArrangeRecordMapper;
 
-    private Integer updateRecord(TcSignArrangeRecord record) {
+    private Integer updateRecord(SignArrangeRecordEntity record) {
         return tcsSignArrangeRecordMapper.updateById(record);
     }
 
-    private Integer saveBatchRecord(List<TcSignArrangeRecord> list) {
+    private Integer saveBatchRecord(List<SignArrangeRecordEntity> list) {
         return tcsSignArrangeRecordMapper.insertBatchSomeColumn(list);
     }
 

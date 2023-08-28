@@ -1,7 +1,6 @@
 package com.jsnjwj.facade.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -11,58 +10,40 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * @TableName tc_game_item_grouping
+ * @TableName tc_game_rule_setting
  */
+@TableName(value = "tc_game_rule_setting")
 @Data
-@TableName(value = "tc_game_item_grouping")
-public class TcGameItemGrouping implements Serializable {
+public class SignArrangeRecordEntity implements Serializable {
 
-	/**
-	 *
-	 */
 	@TableId(type = IdType.AUTO)
-	private Integer id;
+	private Long id;
 
 	/**
-	 *
+	 * 设置编号
 	 */
-	private Integer gameId;
+	private Long settingId;
 
 	/**
-	 *
+	 * 报名信息编号
 	 */
-	private Integer itemId;
+	private Long signId;
 
 	/**
-	 *
-	 */
-	private String signId;
-
-	/**
-	 *
+	 * 排序
 	 */
 	private Integer sort;
 
 	/**
 	 *
 	 */
-	private Integer creatorId;
+	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
+	private Date createdAt;
 
 	/**
 	 *
 	 */
 	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
-	private Date createTime;
-
-	/**
-	 *
-	 */
-	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
-	private Date updateTime;
-
-	/**
-	 * 1：个人报名 2：团队报名
-	 */
-	private Integer signType;
+	private Date updatedAt;
 
 }

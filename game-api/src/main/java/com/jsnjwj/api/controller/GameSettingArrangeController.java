@@ -15,7 +15,4 @@ import javax.annotation.Resource;
 @RequestMapping("/game/setting/arrange")
 public class GameSettingArrangeController {
 
-	@Resource
-	private GameSettingService gameSettingService;
-
 }

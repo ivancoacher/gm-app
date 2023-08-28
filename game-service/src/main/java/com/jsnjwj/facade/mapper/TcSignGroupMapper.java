@@ -1,6 +1,6 @@
 package com.jsnjwj.facade.mapper;
 
-import com.jsnjwj.facade.entity.TcSignGroup;
+import com.jsnjwj.facade.entity.SignGroupEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
@@ -9,6 +9,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @createDate 2023-07-09 01:36:35
  * @Entity com.jsnjwj.service.entity.TcSignGroup
  */
-public interface TcSignGroupMapper extends BaseMapper<TcSignGroup> {
+public interface TcSignGroupMapper extends BaseMapper<SignGroupEntity> {
 
 }

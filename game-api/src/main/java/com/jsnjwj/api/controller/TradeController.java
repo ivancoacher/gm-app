@@ -2,6 +2,7 @@ package com.jsnjwj.api.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsnjwj.common.response.ApiResponse;
+import com.jsnjwj.common.utils.ThreadLocalUtil;
 import com.jsnjwj.trade.entity.TradeLog;
 import com.jsnjwj.trade.request.QueryListRequest;
 import com.jsnjwj.trade.service.TradeService;
@@ -24,7 +25,7 @@ public class TradeController {
 	@RequestMapping("/list")
 	@ResponseBody
 	public ApiResponse<Page<TradeLog>> info(QueryListRequest query, HttpServletRequest request) {
-		query.setUserId(Integer.valueOf((String) request.getAttribute("identifyId")));
+		query.setUserId(ThreadLocalUtil.getCurrentUserId());
 		return tradeService.fetchList(query);
 	}
 

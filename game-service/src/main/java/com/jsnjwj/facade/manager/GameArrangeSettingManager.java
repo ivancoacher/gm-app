@@ -1,9 +1,9 @@
 package com.jsnjwj.facade.manager;
 
-import com.jsnjwj.facade.entity.TcSignArrangeSetting;
-import com.jsnjwj.facade.entity.TcSignArrangeSettingDetail;
-import com.jsnjwj.facade.mapper.TcSignArrangeSettingDetailMapper;
-import com.jsnjwj.facade.mapper.TcSignArrangeSettingMapper;
+import com.jsnjwj.facade.entity.SignArrangeSettingEntity;
+import com.jsnjwj.facade.entity.SignArrangeSettingDetailEntity;
+import com.jsnjwj.facade.mapper.SignArrangeSettingDetailMapper;
+import com.jsnjwj.facade.mapper.SignArrangeSettingMapper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -16,16 +16,16 @@ import java.util.List;
 public class GameArrangeSettingManager {
 
     @Resource
-    private TcSignArrangeSettingDetailMapper signArrangeSettingDetailMapper;
+    private SignArrangeSettingDetailMapper signArrangeSettingDetailMapper;
 
     @Resource
-    private TcSignArrangeSettingMapper signArrangeSettingMapper;
+    private SignArrangeSettingMapper signArrangeSettingMapper;
 
-    private Integer updateSetting(TcSignArrangeSetting record) {
+    private Integer updateSetting(SignArrangeSettingEntity record) {
         return signArrangeSettingMapper.updateById(record);
     }
 
-    private Integer syncSettingDetail(Long settingId, List<TcSignArrangeSettingDetail> list) {
+    private Integer syncSettingDetail(Long settingId, List<SignArrangeSettingDetailEntity> list) {
         return signArrangeSettingDetailMapper.insertBatchSomeColumn(list);
     }
 

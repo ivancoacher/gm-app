@@ -11,11 +11,9 @@ import java.io.IOException;
 public interface SignApplyService {
 
 	ApiResponse<?> fetchSinglePage(SignSingleListQuery query);
-
 	ApiResponse<?> fetchTeamPage(SignTeamListQuery query);
-
 	ApiResponse<?> importTeam(BaseRequest baseRequest, MultipartFile file) throws IOException;
-
+	ApiResponse<?> exportTeamDemo(BaseRequest baseRequest, MultipartFile file) throws IOException;
 	ApiResponse<?> importSingle(BaseRequest baseRequest, MultipartFile file);
-
+	ApiResponse<?> exportSingleDemo(BaseRequest baseRequest, MultipartFile file);
 }

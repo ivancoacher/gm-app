@@ -65,9 +65,9 @@ public class GameArrangeServiceImpl implements GameArrangeService {
 		int courtNum = 1;
 		gameGroupingManager.resetCourt(query.getGameId());
 
-		List<TcGameArea> areas = new ArrayList<>();
+		List<GameAreaEntity> areas = new ArrayList<>();
 		while (courtNum <= query.getAreaNum()) {
-			TcGameArea area = new TcGameArea();
+			GameAreaEntity area = new GameAreaEntity();
 			area.setGameId(query.getGameId());
 			area.setAreaName("场地" + courtNum);
 			area.setAreaNo(courtNum);
@@ -81,7 +81,7 @@ public class GameArrangeServiceImpl implements GameArrangeService {
 
 	@Override
 	public ApiResponse<Boolean> saveCourt(GameGroupingAreaSetQuery query) {
-		TcGameArea area = new TcGameArea();
+		GameAreaEntity area = new GameAreaEntity();
 		area.setId(query.getAreaId());
 		area.setGameId(query.getGameId());
 		area.setAreaName(query.getAreaName());
@@ -91,8 +91,8 @@ public class GameArrangeServiceImpl implements GameArrangeService {
 	}
 
 	@Override
-	public ApiResponse<List<TcGameArea>> getCourts(Long gameId) {
-		List<TcGameArea> response = gameGroupingManager.getCourts(gameId);
+	public ApiResponse<List<GameAreaEntity>> getCourts(Long gameId) {
+		List<GameAreaEntity> response = gameGroupingManager.getCourts(gameId);
 		return ApiResponse.success(response);
 	}
 
@@ -104,14 +104,14 @@ public class GameArrangeServiceImpl implements GameArrangeService {
 	@Override
 	public ApiResponse<Boolean> setGroupingBatch(GameGroupingSetQuery query) {
 		Long gameId = query.getGameId();
-		TcGames game = gameManager.fetchInfo(gameId);
+		GamesEntity game = gameManager.fetchInfo(gameId);
 
 		if (GameStatusEnum.GAME_REGISTRATION_CLOSED.getCode() <= game.getStatus()) {
 			throw new BusinessException("赛事已开始，无法操作");
 		}
 
 		// 查询所有场地
-		List<TcGameArea> areaList = gameAreaManager.getAvailableCourts(query.getGameId());
+		List<GameAreaEntity> areaList = gameAreaManager.getAvailableCourts(query.getGameId());
 
 		return ApiResponse.success(true);
 	}
@@ -126,11 +126,11 @@ public class GameArrangeServiceImpl implements GameArrangeService {
 	public ApiResponse<Boolean> setGrouping(GameGroupingSetQuery query) {
 		gameGroupingManager.resetGrouping(query);
 
-		List<TcGameAreaItem> areaItems = new ArrayList<>();
+		List<GameAreaItemEntity> areaItems = new ArrayList<>();
 		if (!query.getItemIds().isEmpty()) {
 			Integer sort = 1;
 			for (Long i : query.getItemIds()) {
-				TcGameAreaItem item = new TcGameAreaItem();
+				GameAreaItemEntity item = new GameAreaItemEntity();
 				item.setGameId(query.getGameId());
 				item.setItemId(i);
 				item.setAreaNo(query.getAreaNo());
@@ -231,12 +231,12 @@ public class GameArrangeServiceImpl implements GameArrangeService {
 		GameGroupAreaItemListVo response = new GameGroupAreaItemListVo();
 		response.setGameId(gameId);
 		// 获取场地列表
-		List<TcGameArea> areaList = gameGroupingManager.getAvailableCourts(gameId);
+		List<GameAreaEntity> areaList = gameGroupingManager.getAvailableCourts(gameId);
 		if (CollectionUtils.isEmpty(areaList)) {
 			return ApiResponse.success(response);
 		}
 		List<GroupAreaItemDto> content = new ArrayList<>();
-		for (TcGameArea area : areaList) {
+		for (GameAreaEntity area : areaList) {
 			GroupAreaItemDto dto = new GroupAreaItemDto();
 			GameAreaDto areaDto = new GameAreaDto();
 			areaDto.setAreaName(area.getAreaName());
@@ -245,14 +245,14 @@ public class GameArrangeServiceImpl implements GameArrangeService {
 			dto.setGameArea(areaDto);
 
 			List<GameItemDto> gameItemDtoList = new ArrayList<>();
-			List<TcGameAreaItem> itemList = gameGroupingManager.fetchAreaItems(gameId, area.getId());
+			List<GameAreaItemEntity> itemList = gameGroupingManager.fetchAreaItems(gameId, area.getId());
 			if (CollectionUtils.isEmpty(itemList)) {
 				continue;
 			}
-			for (TcGameAreaItem areaItem : itemList) {
+			for (GameAreaItemEntity areaItem : itemList) {
 				GameItemDto itemDto = new GameItemDto();
-				TcGameItem itemInfo = itemManager.fetchItemInfo(areaItem.getItemId());
-				TcGameGroup groupInfo = groupManager.fetchOneInfo(itemInfo.getGameId(), itemInfo.getGroupId());
+				GameItemEntity itemInfo = itemManager.fetchItemInfo(areaItem.getItemId());
+				GameGroupEntity groupInfo = groupManager.fetchOneInfo(itemInfo.getGameId(), itemInfo.getGroupId());
 				itemDto.setItemName(itemInfo.getItemName());
 				itemDto.setGroupId(itemInfo.getGroupId());
 				itemDto.setSort(areaItem.getSort());

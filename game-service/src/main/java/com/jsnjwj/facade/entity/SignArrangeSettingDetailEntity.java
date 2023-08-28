@@ -14,25 +14,37 @@ import java.util.Date;
  */
 @TableName(value = "tc_game_rule_setting")
 @Data
-public class TcSignArrangeRecord implements Serializable {
+public class SignArrangeSettingDetailEntity implements Serializable {
 
 	@TableId(type = IdType.AUTO)
 	private Long id;
 
-	/**
-	 * 设置编号
-	 */
 	private Long settingId;
 
 	/**
-	 * 报名信息编号
+	 *
 	 */
-	private Long signId;
+	private Integer num;
 
 	/**
-	 * 排序
+	 *
 	 */
-	private Integer sort;
+	private Integer scoreRatio;
+
+	/**
+	 *
+	 */
+	private Integer scoreWeight;
+
+	/**
+	 *
+	 */
+	private Integer extraType;
+
+	/**
+	 *
+	 */
+	private String extraName;
 
 	/**
 	 *

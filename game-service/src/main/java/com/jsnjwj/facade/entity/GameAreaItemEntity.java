@@ -1,7 +1,6 @@
 package com.jsnjwj.facade.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -9,17 +8,22 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- * @TableName tc_game_area
+ * @TableName tc_game_area_item
  */
 @Data
-@TableName(value = "tc_game_area")
-public class TcGameArea implements Serializable {
+@TableName(value = "tc_game_area_item")
+public class GameAreaItemEntity implements Serializable {
 
 	/**
 	 *
 	 */
 	@TableId(type = IdType.AUTO)
-	private Long id;
+	private Integer id;
+
+	/**
+	 *
+	 */
+	private Integer areaId;
 
 	/**
 	 *
@@ -29,16 +33,10 @@ public class TcGameArea implements Serializable {
 	/**
 	 *
 	 */
-	private String areaName;
+	private Long itemId;
 
-	/**
-	 *
-	 */
-	private Integer status;
-
-	/**
-	 *
-	 */
 	private Integer areaNo;
+
+	private Integer sort;
 
 }

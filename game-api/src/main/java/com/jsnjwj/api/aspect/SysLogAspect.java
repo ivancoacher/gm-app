@@ -1,5 +1,6 @@
 package com.jsnjwj.api.aspect;
 
+import com.jsnjwj.common.utils.ThreadLocalUtil;
 import com.jsnjwj.user.dao.TcOptLogDao;
 import com.jsnjwj.user.entity.TcOptLog;
 import com.jsnjwj.user.enums.OperateTypeEnum;
@@ -37,7 +38,7 @@ public class SysLogAspect {
 		OperateTypeEnum operType = methodLog.operType();
 		TcOptLog sysLog = new TcOptLog();
 		if (!OperateTypeEnum.LOGIN.equals(operType)) {
-			String userIdStr = (String) request.getAttribute("identifyId");
+			String userIdStr = ThreadLocalUtil.getCurrentUserId().toString();
 			if (null != userIdStr) {
 				sysLog.setUserId(Long.valueOf(userIdStr));
 			}

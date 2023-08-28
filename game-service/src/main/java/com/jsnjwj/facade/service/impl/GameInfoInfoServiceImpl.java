@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsnjwj.common.response.ApiResponse;
-import com.jsnjwj.facade.entity.TcGames;
+import com.jsnjwj.facade.entity.GamesEntity;
 import com.jsnjwj.facade.enums.GameStatusEnum;
 import com.jsnjwj.facade.manager.GameManager;
 import com.jsnjwj.facade.mapper.TcGamesMapper;
@@ -37,9 +37,9 @@ public class GameInfoInfoServiceImpl implements GameInfoService {
 	@Override
 	public ApiResponse<GameListVo> queryList(GameListQuery query) {
 
-		Page<TcGames> page = new Page<>();
-		LambdaQueryWrapper<TcGames> wrapper = new LambdaQueryWrapper<>();
-		wrapper.eq(StringUtils.isNotEmpty(query.getGameName()), TcGames::getGameName, query.getGameName());
+		Page<GamesEntity> page = new Page<>();
+		LambdaQueryWrapper<GamesEntity> wrapper = new LambdaQueryWrapper<>();
+		wrapper.eq(StringUtils.isNotEmpty(query.getGameName()), GamesEntity::getGameName, query.getGameName());
 		page = gameMapper.selectPage(page, wrapper);
 
 		GameListVo gameListVo = new GameListVo();
@@ -72,10 +72,10 @@ public class GameInfoInfoServiceImpl implements GameInfoService {
 	}
 
 	@Override
-	public ApiResponse<TcGames> fetchInfo(GameInfoQuery query) {
+	public ApiResponse<GamesEntity> fetchInfo(GameInfoQuery query) {
 		GameInfoVo response = new GameInfoVo();
 
-		TcGames gameInfo = gameMapper.selectById(query.getGameId());
+		GamesEntity gameInfo = gameMapper.selectById(query.getGameId());
 		if (gameInfo != null) {
 			response.setGameId(gameInfo.getId());
 			response.setGameName(gameInfo.getGameName());
@@ -95,7 +95,7 @@ public class GameInfoInfoServiceImpl implements GameInfoService {
 
 	@Override
 	public ApiResponse<Boolean> update(GameModifyQuery query) {
-		TcGames games = new TcGames();
+		GamesEntity games = new GamesEntity();
 		games.setId(query.getGameId());
 		games.setGameName(query.getGameName());
 		games.setSignType(query.getSignType());
@@ -113,7 +113,7 @@ public class GameInfoInfoServiceImpl implements GameInfoService {
 
 	@Override
 	public ApiResponse<Boolean> save(GameAddQuery query) {
-		TcGames games = new TcGames();
+		GamesEntity games = new GamesEntity();
 		games.setGameName(query.getGameName());
 		games.setSignType(query.getSignType());
 		games.setSignStartTime(query.getSignStartTime());
@@ -130,7 +130,7 @@ public class GameInfoInfoServiceImpl implements GameInfoService {
 
 	@Override
 	public ApiResponse<Boolean> changeStatus(GameModifyQuery query) {
-		TcGames games = new TcGames();
+		GamesEntity games = new GamesEntity();
 		games.setId(query.getGameId());
 		games.setStatus(query.getStatus());
 		int result = gameManager.update(games);

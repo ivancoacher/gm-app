@@ -2,6 +2,7 @@ package com.jsnjwj.api.controller;
 
 import com.jsnjwj.api.aspect.MethodLog;
 import com.jsnjwj.common.response.ApiResponse;
+import com.jsnjwj.common.utils.ThreadLocalUtil;
 import com.jsnjwj.user.entity.UserAccount;
 import com.jsnjwj.user.enums.OperateTypeEnum;
 import com.jsnjwj.user.request.LoginRequest;
@@ -43,13 +44,13 @@ public class UserController {
 	@RequestMapping("/info")
 	@ResponseBody
 	public ApiResponse info(HttpServletRequest request) {
-		return userService.info(Long.valueOf((String) request.getAttribute("identifyId")));
+		return userService.info(ThreadLocalUtil.getCurrentUserId());
 	}
 
 	@RequestMapping("/account/info")
 	@ResponseBody
 	public ApiResponse<UserAccount> accountInfo(HttpServletRequest request) {
-		return accountService.fetch(Long.valueOf((String) request.getAttribute("identifyId")));
+		return accountService.fetch(ThreadLocalUtil.getCurrentUserId());
 	}
 
 }

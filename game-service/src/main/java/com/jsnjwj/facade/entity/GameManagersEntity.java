@@ -1,7 +1,6 @@
 package com.jsnjwj.facade.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -11,11 +10,11 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * @TableName tc_sign_single
+ * @TableName tc_game_managers
  */
 @Data
-@TableName(value = "tc_sign_single")
-public class TcSignSingle implements Serializable {
+@TableName(value = "tc_game_managers")
+public class GameManagersEntity implements Serializable {
 
 	/**
 	 *
@@ -26,57 +25,12 @@ public class TcSignSingle implements Serializable {
 	/**
 	 *
 	 */
-	private Long gameId;
+	private Integer gameId;
 
 	/**
 	 *
 	 */
-	private Long groupId;
-
-	/**
-	 *
-	 */
-	private Long itemId;
-
-	/**
-	 *
-	 */
-	private Integer teamId;
-
-	/**
-	 *
-	 */
-	private String name;
-
-	/**
-	 *
-	 */
-	private String teamName;
-
-	/**
-	 *
-	 */
-	private Integer sex;
-
-	/**
-	 *
-	 */
-	private Integer age;
-
-	/**
-	 *
-	 */
-	private String remark;
-
-	/**
-	 *
-	 */
-	private Integer signStatus;
-
-	/**
-	 *
-	 */
-	private Integer auditStatus;
+	private Integer userId;
 
 	/**
 	 *

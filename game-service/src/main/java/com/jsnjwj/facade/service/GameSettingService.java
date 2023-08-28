@@ -1,7 +1,7 @@
 package com.jsnjwj.facade.service;
 
 import com.jsnjwj.common.response.ApiResponse;
-import com.jsnjwj.facade.entity.TcGameArea;
+import com.jsnjwj.facade.entity.GameAreaEntity;
 import com.jsnjwj.facade.query.*;
 
 import java.util.List;
@@ -12,7 +12,7 @@ public interface GameSettingService {
 
 	ApiResponse<Boolean> saveCourt(GameGroupingAreaSetQuery query);
 
-	ApiResponse<List<TcGameArea>> getCourts(Long gameId);
+	ApiResponse<List<GameAreaEntity>> getCourts(Long gameId);
 
 	ApiResponse<Boolean> setGroupingBatch(GameGroupingSetQuery query);
 

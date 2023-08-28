@@ -1,15 +1,10 @@
 package com.jsnjwj.facade.manager;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.jsnjwj.facade.entity.TcGameArea;
-import com.jsnjwj.facade.entity.TcGameAreaItem;
 import com.jsnjwj.facade.entity.TcGameRuleSetting;
 import com.jsnjwj.facade.entity.TcGameRuleSettingDetail;
-import com.jsnjwj.facade.mapper.TcGameAreaItemMapper;
-import com.jsnjwj.facade.mapper.TcGameAreaMapper;
 import com.jsnjwj.facade.mapper.TcGameRuleSettingDetailMapper;
 import com.jsnjwj.facade.mapper.TcGameRuleSettingMapper;
-import com.jsnjwj.facade.query.GameGroupingSetQuery;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

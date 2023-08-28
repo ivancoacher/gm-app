@@ -1,6 +1,6 @@
 package com.jsnjwj.facade.manager;
 
-import com.jsnjwj.facade.entity.TcGames;
+import com.jsnjwj.facade.entity.GamesEntity;
 import com.jsnjwj.facade.enums.GameStatusEnum;
 import com.jsnjwj.facade.mapper.TcGamesMapper;
 import org.springframework.stereotype.Service;
@@ -14,18 +14,18 @@ public class GameManager {
 	@Resource
 	private TcGamesMapper tcGamesMapper;
 
-	public int save(TcGames games) {
+	public int save(GamesEntity games) {
 		games.setStatus(GameStatusEnum.GAME_PROJECTED.getCode());
 		games.setCreateTime(new Date());
 		games.setUpdateTime(new Date());
 		return tcGamesMapper.insert(games);
 	}
 
-	public int update(TcGames games) {
+	public int update(GamesEntity games) {
 		return tcGamesMapper.updateById(games);
 	}
 
-	public TcGames fetchInfo(Long gameId) {
+	public GamesEntity fetchInfo(Long gameId) {
 		return tcGamesMapper.selectById(gameId);
 	}
 

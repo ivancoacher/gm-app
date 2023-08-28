@@ -2,7 +2,7 @@ package com.jsnjwj.facade.service.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsnjwj.common.response.ApiResponse;
-import com.jsnjwj.facade.entity.TcGameGroup;
+import com.jsnjwj.facade.entity.GameGroupEntity;
 import com.jsnjwj.facade.manager.GameGroupManager;
 import com.jsnjwj.facade.query.GameGroupListQuery;
 import com.jsnjwj.facade.query.GameGroupSaveQuery;
@@ -52,7 +52,7 @@ public class GameGroupServiceImpl implements GameGroupService {
 
 	@Override
 	public ApiResponse<?> save(GameGroupSaveQuery query) {
-		TcGameGroup gameGroup = new TcGameGroup();
+		GameGroupEntity gameGroup = new GameGroupEntity();
 		gameGroup.setGameId(query.getGameId());
 		gameGroup.setGroupName(query.getGroupName());
 		gameGroup.setSort(query.getSort());
@@ -63,7 +63,7 @@ public class GameGroupServiceImpl implements GameGroupService {
 
 	@Override
 	public ApiResponse<?> update(GameGroupUpdateQuery query) {
-		TcGameGroup gameGroup = new TcGameGroup();
+		GameGroupEntity gameGroup = new GameGroupEntity();
 		gameGroup.setGameId(query.getGameId());
 		gameGroup.setGroupName(query.getGroupName());
 		gameGroup.setSort(query.getSort());

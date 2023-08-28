@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 
 @Data
 @TableName(value = "tc_sign_arrange_setting")
-public class TcSignArrangeSetting {
+public class SignArrangeSettingEntity {
 
 	@TableId(type = IdType.AUTO)
 	private Long id;

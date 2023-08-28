@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class BaseRequest {
 
-	private Integer userId;
+	private Long userId;
 
 	private Long gameId;
 

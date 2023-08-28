@@ -1,8 +1,8 @@
 package com.jsnjwj.facade.manager;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.jsnjwj.facade.entity.TcGameJudge;
-import com.jsnjwj.facade.entity.TcGameJudgeItem;
+import com.jsnjwj.facade.entity.GameJudgeEntity;
+import com.jsnjwj.facade.entity.GameJudgeItemEntity;
 import com.jsnjwj.facade.mapper.TcGameJudgeItemMapper;
 import com.jsnjwj.facade.mapper.TcGameJudgeMapper;
 import com.jsnjwj.facade.vo.GameJudgeVo;
@@ -30,8 +30,8 @@ public class GameJudgeManager {
 	}
 
 	public Long fetchGameJudgesCount(Long gameId) {
-		LambdaQueryWrapper<TcGameJudge> wrapper = new LambdaQueryWrapper<>();
-		wrapper.eq(TcGameJudge::getGameId, gameId);
+		LambdaQueryWrapper<GameJudgeEntity> wrapper = new LambdaQueryWrapper<>();
+		wrapper.eq(GameJudgeEntity::getGameId, gameId);
 		return gameJudgeMapper.selectCount(wrapper);
 	}
 
@@ -41,10 +41,10 @@ public class GameJudgeManager {
 	 * @param itemId
 	 * @return
 	 */
-	public List<TcGameJudgeItem> fetchItemJudge(Long gameId, Long itemId) {
-		LambdaQueryWrapper<TcGameJudgeItem> wrapper = new LambdaQueryWrapper<>();
-		wrapper.eq(TcGameJudgeItem::getGameId, gameId);
-		wrapper.eq(TcGameJudgeItem::getItemId, itemId);
+	public List<GameJudgeItemEntity> fetchItemJudge(Long gameId, Long itemId) {
+		LambdaQueryWrapper<GameJudgeItemEntity> wrapper = new LambdaQueryWrapper<>();
+		wrapper.eq(GameJudgeItemEntity::getGameId, gameId);
+		wrapper.eq(GameJudgeItemEntity::getItemId, itemId);
 		return gameJudgeItemMapper.selectList(wrapper);
 	}
 
@@ -54,29 +54,29 @@ public class GameJudgeManager {
 
 	/**
 	 * 保存裁判信息
-	 * @param tcGameJudge
+	 * @param gameJudgeEntity
 	 * @return
 	 */
-	public int save(TcGameJudge tcGameJudge) {
-		return gameJudgeMapper.insert(tcGameJudge);
+	public int save(GameJudgeEntity gameJudgeEntity) {
+		return gameJudgeMapper.insert(gameJudgeEntity);
 	}
 
 	/**
 	 * 更新裁判信息
-	 * @param tcGameJudge
+	 * @param gameJudgeEntity
 	 * @return
 	 */
-	public int update(TcGameJudge tcGameJudge) {
-		return gameJudgeMapper.updateById(tcGameJudge);
+	public int update(GameJudgeEntity gameJudgeEntity) {
+		return gameJudgeMapper.updateById(gameJudgeEntity);
 	}
 
 	/**
 	 * 删除裁判信息
-	 * @param tcGameJudge
+	 * @param gameJudgeEntity
 	 * @return
 	 */
-	public int delete(TcGameJudge tcGameJudge) {
-		return gameJudgeMapper.deleteById(tcGameJudge);
+	public int delete(GameJudgeEntity gameJudgeEntity) {
+		return gameJudgeMapper.deleteById(gameJudgeEntity);
 	}
 
 	/**
@@ -84,7 +84,7 @@ public class GameJudgeManager {
 	 * @param tcGameJudge
 	 * @return
 	 */
-	public int assign(TcGameJudgeItem tcGameJudge) {
+	public int assign(GameJudgeItemEntity tcGameJudge) {
 		return gameJudgeItemMapper.insert(tcGameJudge);
 	}
 

@@ -2,7 +2,7 @@ package com.jsnjwj.facade.service.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsnjwj.common.response.ApiResponse;
-import com.jsnjwj.facade.entity.TcGameItem;
+import com.jsnjwj.facade.entity.GameItemEntity;
 import com.jsnjwj.facade.manager.GameItemManager;
 import com.jsnjwj.facade.query.GameItemListQuery;
 import com.jsnjwj.facade.query.GameItemSaveQuery;
@@ -37,7 +37,7 @@ public class GameItemServiceImpl implements GameItemService {
 	 */
 	@Override
 	public List<ItemLabelVo> fetchList(GameItemListQuery query) {
-		List<TcGameItem> result = gameItemManager.fetchList(query);
+		List<GameItemEntity> result = gameItemManager.fetchList(query);
 
 		List<ItemLabelVo> response = new ArrayList<>();
 
@@ -58,7 +58,7 @@ public class GameItemServiceImpl implements GameItemService {
 
 	@Override
 	public int save(GameItemSaveQuery query) {
-		TcGameItem tcGameGroup = new TcGameItem();
+		GameItemEntity tcGameGroup = new GameItemEntity();
 		tcGameGroup.setGameId(query.getGameId());
 		tcGameGroup.setGroupId(query.getGroupId());
 		tcGameGroup.setItemName(query.getItemName());
@@ -68,7 +68,7 @@ public class GameItemServiceImpl implements GameItemService {
 
 	@Override
 	public int update(GameItemUpdateQuery query) {
-		TcGameItem tcGameGroup = new TcGameItem();
+		GameItemEntity tcGameGroup = new GameItemEntity();
 		tcGameGroup.setGroupId(query.getGroupId());
 		tcGameGroup.setSort(query.getSort());
 		tcGameGroup.setId(query.getItemId());
@@ -77,7 +77,7 @@ public class GameItemServiceImpl implements GameItemService {
 	}
 
 	@Override
-	public TcGameItem fetchOne(Long itemId) {
+	public GameItemEntity fetchOne(Long itemId) {
 
 		return gameItemManager.fetchItemInfo(itemId);
 	}

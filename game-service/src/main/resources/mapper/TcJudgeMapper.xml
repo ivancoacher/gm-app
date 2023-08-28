@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="service.mapper.TcJudgeMapper">
 
-    <resultMap id="BaseResultMap" type="com.jsnjwj.facade.entity.TcJudge">
+    <resultMap id="BaseResultMap" type="com.jsnjwj.facade.entity.JudgeEntity">
             <id property="id" column="id" jdbcType="INTEGER"/>
             <result property="judgeName" column="judge_name" jdbcType="VARCHAR"/>
             <result property="phone" column="phone" jdbcType="VARCHAR"/>

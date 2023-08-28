@@ -1,7 +1,6 @@
 package com.jsnjwj.facade.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -15,7 +14,7 @@ import java.util.Date;
  */
 @TableName(value = "tc_games")
 @Data
-public class TcGames implements Serializable {
+public class GamesEntity implements Serializable {
 
 	/**
 	 *

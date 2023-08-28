@@ -2,6 +2,7 @@ package com.jsnjwj.api.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsnjwj.common.response.ApiResponse;
+import com.jsnjwj.common.utils.ThreadLocalUtil;
 import com.jsnjwj.user.request.FetchOptLogRequest;
 import com.jsnjwj.user.service.UserService;
 import com.jsnjwj.user.vo.OperateLogVo;
@@ -24,7 +25,7 @@ public class OptLogController {
 	@RequestMapping("/list")
 	@ResponseBody
 	public ApiResponse<Page<OperateLogVo>> accountInfo(FetchOptLogRequest query, HttpServletRequest request) {
-		query.setUserId(Integer.valueOf((String) request.getAttribute("identifyId")));
+		query.setUserId(ThreadLocalUtil.getCurrentUserId());
 		return userService.fetchOptLogList(query);
 	}
 

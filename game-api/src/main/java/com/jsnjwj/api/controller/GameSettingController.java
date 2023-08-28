@@ -1,7 +1,7 @@
 package com.jsnjwj.api.controller;
 
 import com.jsnjwj.common.response.ApiResponse;
-import com.jsnjwj.facade.entity.TcGameArea;
+import com.jsnjwj.facade.entity.GameAreaEntity;
 import com.jsnjwj.facade.query.GameGroupingSetNumQuery;
 import com.jsnjwj.facade.query.GameGroupingAreaSetQuery;
 import com.jsnjwj.facade.service.GameSettingService;
@@ -18,7 +18,7 @@ public class GameSettingController {
 	private GameSettingService gameSettingService;
 
 	@GetMapping("/getAreas")
-	public ApiResponse<List<TcGameArea>> getAreas(@RequestParam("gameId") Long gameId) {
+	public ApiResponse<List<GameAreaEntity>> getAreas(@RequestParam("gameId") Long gameId) {
 		return gameSettingService.getCourts(gameId);
 	}
 

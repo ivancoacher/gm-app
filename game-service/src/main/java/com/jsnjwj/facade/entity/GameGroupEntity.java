@@ -10,52 +10,50 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * @TableName tc_game_rule_setting
+ * @TableName tc_game_group
  */
-@TableName(value = "tc_game_rule_setting")
+@TableName(value = "tc_game_group")
 @Data
-public class TcSignArrangeSettingDetail implements Serializable {
+public class GameGroupEntity implements Serializable {
 
+	/**
+	 *
+	 */
 	@TableId(type = IdType.AUTO)
 	private Long id;
 
-	private Long settingId;
+	/**
+	 *
+	 */
+	private Long gameId;
 
 	/**
 	 *
 	 */
-	private Integer num;
+	private String groupName;
 
 	/**
 	 *
 	 */
-	private Integer scoreRatio;
+	private Integer creatorId;
 
 	/**
 	 *
 	 */
-	private Integer scoreWeight;
-
-	/**
-	 *
-	 */
-	private Integer extraType;
-
-	/**
-	 *
-	 */
-	private String extraName;
+	private Integer sort;
 
 	/**
 	 *
 	 */
 	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
-	private Date createdAt;
+
+	private Date createTime;
 
 	/**
 	 *
 	 */
 	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
-	private Date updatedAt;
+
+	private Date updateTime;
 
 }

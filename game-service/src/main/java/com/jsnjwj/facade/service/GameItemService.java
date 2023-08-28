@@ -2,11 +2,10 @@ package com.jsnjwj.facade.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsnjwj.common.response.ApiResponse;
-import com.jsnjwj.facade.entity.TcGameItem;
+import com.jsnjwj.facade.entity.GameItemEntity;
 import com.jsnjwj.facade.query.GameItemListQuery;
 import com.jsnjwj.facade.query.GameItemSaveQuery;
 import com.jsnjwj.facade.query.GameItemUpdateQuery;
-import com.jsnjwj.facade.vo.GameItemVo;
 import com.jsnjwj.facade.vo.ItemLabelVo;
 
 import java.util.List;
@@ -23,7 +22,7 @@ public interface GameItemService {
 
 	int update(GameItemUpdateQuery query);
 
-	TcGameItem fetchOne(Long itemId);
+	GameItemEntity fetchOne(Long itemId);
 
 	ApiResponse<Integer> delete(GameItemUpdateQuery query);
 

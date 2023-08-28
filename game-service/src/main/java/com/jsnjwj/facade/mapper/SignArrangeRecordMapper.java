@@ -1,7 +1,6 @@
 package com.jsnjwj.facade.mapper;
 
-import com.jsnjwj.facade.entity.TcSignArrangeRecord;
-import com.jsnjwj.facade.entity.TcSignArrangeSetting;
+import com.jsnjwj.facade.entity.SignArrangeRecordEntity;
 
 /**
  * @author user
@@ -9,6 +8,6 @@ import com.jsnjwj.facade.entity.TcSignArrangeSetting;
  * @createDate 2023-07-09 01:36:35
  * @Entity com.jsnjwj.service.entity.TcGameAreaItem
  */
-public interface TcSignArrangeSettingMapper extends CommonMapper<TcSignArrangeSetting> {
+public interface SignArrangeRecordMapper extends CommonMapper<SignArrangeRecordEntity> {
 
 }

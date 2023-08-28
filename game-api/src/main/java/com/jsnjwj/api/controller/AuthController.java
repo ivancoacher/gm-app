@@ -1,6 +1,7 @@
 package com.jsnjwj.api.controller;
 
 import com.jsnjwj.common.response.ApiResponse;
+import com.jsnjwj.common.utils.ThreadLocalUtil;
 import com.jsnjwj.user.request.LoginRequest;
 import com.jsnjwj.user.service.UserService;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +25,7 @@ public class AuthController {
 	@RequestMapping("/info")
 	@ResponseBody
 	public ApiResponse info(HttpServletRequest request) {
-		return userService.info(Long.valueOf((String) request.getAttribute("identifyId")));
+		return userService.info(ThreadLocalUtil.getCurrentUserId());
 	}
 
 	@PostMapping("/logout")

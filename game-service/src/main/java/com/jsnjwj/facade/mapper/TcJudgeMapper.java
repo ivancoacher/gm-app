@@ -1,6 +1,6 @@
 package com.jsnjwj.facade.mapper;
 
-import com.jsnjwj.facade.entity.TcJudge;
+import com.jsnjwj.facade.entity.JudgeEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
@@ -9,6 +9,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @createDate 2023-07-09 01:36:35
  * @Entity com.jsnjwj.service.entity.TcJudge
  */
-public interface TcJudgeMapper extends BaseMapper<TcJudge> {
+public interface TcJudgeMapper extends BaseMapper<JudgeEntity> {
 
 }

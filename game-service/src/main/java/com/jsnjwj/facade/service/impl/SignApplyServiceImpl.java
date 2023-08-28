@@ -1,15 +1,12 @@
 package com.jsnjwj.facade.service.impl;
 
 import com.alibaba.excel.EasyExcel;
-import com.alibaba.excel.EasyExcelFactory;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsnjwj.common.request.BaseRequest;
 import com.jsnjwj.common.response.ApiResponse;
 import com.jsnjwj.facade.dto.ImportTeamDto;
 import com.jsnjwj.facade.dto.SignSingleDto;
-import com.jsnjwj.facade.dto.SignTeamDto;
-import com.jsnjwj.facade.entity.TcSignSingle;
-import com.jsnjwj.facade.entity.TcSignTeam;
+import com.jsnjwj.facade.entity.SignTeamEntity;
 import com.jsnjwj.facade.excel.TeamImportListener;
 import com.jsnjwj.facade.manager.SignApplyManager;
 import com.jsnjwj.facade.query.SignSingleListQuery;
@@ -46,7 +43,7 @@ public class SignApplyServiceImpl implements SignApplyService {
 	@Override
 	public ApiResponse<?> fetchTeamPage(SignTeamListQuery query) {
 
-		Page<TcSignTeam> page = signApplyManager.fetchSignTeamPage(query);
+		Page<SignTeamEntity> page = signApplyManager.fetchSignTeamPage(query);
 
 		return ApiResponse.success(page);
 	}
@@ -59,10 +56,17 @@ public class SignApplyServiceImpl implements SignApplyService {
 		EasyExcel.read(is, ImportTeamDto.class, userReadListener).sheet(0).headRowNumber(1).doRead();
 		return ApiResponse.success();
 	}
-
+	@Override
+	public ApiResponse<?> exportTeamDemo(BaseRequest baseRequest, MultipartFile file) throws IOException{
+		return null;
+	}
 	@Override
 	public ApiResponse<?> importSingle(BaseRequest request, MultipartFile file) {
 		return null;
 	}
 
+	@Override
+	public ApiResponse<?> exportSingleDemo(BaseRequest baseRequest, MultipartFile file){
+		return null;
+	}
 }

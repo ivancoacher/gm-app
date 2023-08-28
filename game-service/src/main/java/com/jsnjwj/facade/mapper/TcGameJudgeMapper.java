@@ -1,6 +1,6 @@
 package com.jsnjwj.facade.mapper;
 
-import com.jsnjwj.facade.entity.TcGameJudge;
+import com.jsnjwj.facade.entity.GameJudgeEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.jsnjwj.facade.vo.GameJudgeVo;
 import org.apache.ibatis.annotations.Param;
@@ -14,7 +14,7 @@ import java.util.List;
  * @createDate 2023-07-09 01:36:35
  * @Entity com.jsnjwj.service.entity.TcGameJudge
  */
-public interface TcGameJudgeMapper extends BaseMapper<TcGameJudge> {
+public interface TcGameJudgeMapper extends BaseMapper<GameJudgeEntity> {
 
 	@Select("select gj.id,gj.game_id as gameId,j.judge_name as judgeName,j.phone "
 			+ "from tc_game_judge as gj left join tc_judge as j on j.id = gj.judge_id "

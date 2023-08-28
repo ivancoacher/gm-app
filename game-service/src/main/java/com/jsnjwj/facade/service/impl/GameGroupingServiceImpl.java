@@ -5,9 +5,9 @@ import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsnjwj.facade.dto.GroupingDetailDto;
 import com.jsnjwj.facade.dto.GroupingItemDto;
-import com.jsnjwj.facade.entity.TcGameItem;
+import com.jsnjwj.facade.entity.GameItemEntity;
 import com.jsnjwj.facade.entity.TcGameRuleSetting;
-import com.jsnjwj.facade.entity.TcSignSingle;
+import com.jsnjwj.facade.entity.SignSingleEntity;
 import com.jsnjwj.facade.mapper.TcGameItemMapper;
 import com.jsnjwj.facade.mapper.TcGameRuleSettingMapper;
 import com.jsnjwj.facade.mapper.TcSignSingleMapper;
@@ -42,13 +42,13 @@ public class GameGroupingServiceImpl implements GameGroupingService {
 	@Override
 	public Page<GroupingItemDto> fetchGroupingItem(GameGroupingViewQuery query) {
 
-		Page<TcGameItem> page = new Page<>(query.getPage(), query.getPageSize());
+		Page<GameItemEntity> page = new Page<>(query.getPage(), query.getPageSize());
 
-		LambdaQueryWrapper<TcGameItem> wrapper = new LambdaQueryWrapper<>();
-		wrapper.eq(Objects.nonNull(query.getGroupId()), TcGameItem::getGroupId, query.getGroupId());
-		wrapper.eq(TcGameItem::getGameId, query.getGameId());
+		LambdaQueryWrapper<GameItemEntity> wrapper = new LambdaQueryWrapper<>();
+		wrapper.eq(Objects.nonNull(query.getGroupId()), GameItemEntity::getGroupId, query.getGroupId());
+		wrapper.eq(GameItemEntity::getGameId, query.getGameId());
 
-		wrapper.orderByAsc(TcGameItem::getSort);
+		wrapper.orderByAsc(GameItemEntity::getSort);
 
 		Page<ItemLabelVo> rst = tcGameItemMapper.selectByPage(page, wrapper);
 
@@ -95,13 +95,13 @@ public class GameGroupingServiceImpl implements GameGroupingService {
 	@Override
 	public GroupingDetailDto fetchGroupingDetail(GameGroupingViewQuery query) {
 
-		LambdaQueryWrapper<TcGameItem> wrapper = new LambdaQueryWrapper<>();
+		LambdaQueryWrapper<GameItemEntity> wrapper = new LambdaQueryWrapper<>();
 
-		wrapper.eq(TcGameItem::getGameId, query.getGameId());
+		wrapper.eq(GameItemEntity::getGameId, query.getGameId());
 
-		wrapper.orderByAsc(TcGameItem::getSort);
+		wrapper.orderByAsc(GameItemEntity::getSort);
 
-		List<TcGameItem> itemList = tcGameItemMapper.selectList(wrapper);
+		List<GameItemEntity> itemList = tcGameItemMapper.selectList(wrapper);
 
 		GroupingDetailDto response = new GroupingDetailDto();
 		response.setGameId(query.getGameId());
@@ -111,7 +111,7 @@ public class GameGroupingServiceImpl implements GameGroupingService {
 
 		List<GroupingDetailDto.GroupingItem> items = new ArrayList<>();
 
-		for (TcGameItem item : itemList) {
+		for (GameItemEntity item : itemList) {
 			Long itemId = item.getId();
 			Long gameId = item.getGameId();
 
@@ -122,15 +122,15 @@ public class GameGroupingServiceImpl implements GameGroupingService {
 			itemDtos.setItemId(itemId);
 
 			// 查询该item下的报名信息
-			LambdaQueryWrapper<TcSignSingle> wrapper1 = new LambdaQueryWrapper<>();
+			LambdaQueryWrapper<SignSingleEntity> wrapper1 = new LambdaQueryWrapper<>();
 
-			wrapper1.eq(TcSignSingle::getGameId, query.getGameId());
-			wrapper1.eq(TcSignSingle::getItemId, itemId);
-			List<TcSignSingle> signSingles = tcSignSingleMapper.selectList(wrapper1);
+			wrapper1.eq(SignSingleEntity::getGameId, query.getGameId());
+			wrapper1.eq(SignSingleEntity::getItemId, itemId);
+			List<SignSingleEntity> signSingles = tcSignSingleMapper.selectList(wrapper1);
 			List<GroupingDetailDto.GroupingItemSign> groupingItemSigns = new ArrayList<>();
 			if (CollectionUtils.isNotEmpty(signSingles)) {
 
-				for (TcSignSingle signSingle : signSingles) {
+				for (SignSingleEntity signSingle : signSingles) {
 					GroupingDetailDto.GroupingItemSign sign = new GroupingDetailDto.GroupingItemSign();
 					sign.setName(signSingle.getName());
 					sign.setTeam(signSingle.getTeamName());

@@ -2,7 +2,7 @@ package com.jsnjwj.facade.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.jsnjwj.facade.entity.TcGameItemGrouping;
+import com.jsnjwj.facade.entity.GameItemGroupingEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.jsnjwj.facade.vo.ItemLabelVo;
 import org.apache.ibatis.annotations.Param;
@@ -14,7 +14,7 @@ import org.apache.ibatis.annotations.Select;
  * @createDate 2023-07-09 01:36:35
  * @Entity com.jsnjwj.service.entity.TcGameItemGrouping
  */
-public interface TcGameItemGroupingMapper extends BaseMapper<TcGameItemGrouping> {
+public interface TcGameItemGroupingMapper extends BaseMapper<GameItemGroupingEntity> {
 
 	String wrapperSql = "select i.id,i.item_name ,i.group_id ,g.group_name ,i.game_id,i.sort  "
 			+ "from tc_game_item as i left join tc_game_group as g on g.id = i.group_id ";
