@@ -1,6 +1,7 @@
 package com.jsnjwj.facade.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -12,27 +13,31 @@ import java.util.Date;
 /**
  * @TableName tc_game_rule_setting
  */
-@TableName(value = "tc_game_rule_setting")
+@TableName(value = "tc_sign_arrange_record")
 @Data
 public class SignArrangeRecordEntity implements Serializable {
 
 	@TableId(type = IdType.AUTO)
 	private Long id;
 
+	private Long gameId;
+
+	private Long groupId;
+
+	private Long itemId;
+
+	@TableField("record_name")
+	private String recordName;
+
 	/**
 	 * 设置编号
 	 */
-	private Long settingId;
+	private Long recordId;
 
 	/**
 	 * 报名信息编号
 	 */
 	private Long signId;
-
-	/**
-	 * 排序
-	 */
-	private Integer sort;
 
 	/**
 	 *

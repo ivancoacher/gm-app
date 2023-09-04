@@ -11,4 +11,9 @@ public interface GameGroupingService {
 
 	GroupingDetailDto fetchGroupingDetail(GameGroupingViewQuery query);
 
+	int updateArrangeRecord();
+
+	int updateArrangeGrouping();
+
+	int initArrangeOrder();
 }

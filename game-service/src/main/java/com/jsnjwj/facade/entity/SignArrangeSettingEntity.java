@@ -25,9 +25,6 @@ public class SignArrangeSettingEntity {
 	@TableField("item_id")
 	private Long itemId;
 
-	@TableField("project_name")
-	private String projectName;
-
 	/**
 	 *
 	 */

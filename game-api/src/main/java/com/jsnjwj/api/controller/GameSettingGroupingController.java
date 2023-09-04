@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 
 /**
- * 用户-组别编排
+ * 项目编排配置
  */
 @RestController
 @RequestMapping("/game/setting/grouping")
@@ -19,6 +19,11 @@ public class GameSettingGroupingController {
 
 	@GetMapping("/index")
 	public ApiResponse<?> queryList(GameGroupingViewQuery query) {
+		return ApiResponse.success(gameGroupingService.fetchGroupingItem(query));
+	}
+
+	@GetMapping("/update")
+	public ApiResponse<?> update(GameGroupingViewQuery query) {
 		return ApiResponse.success(gameGroupingService.fetchGroupingItem(query));
 	}
 
