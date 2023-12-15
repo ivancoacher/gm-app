@@ -13,29 +13,29 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 public class AuthController {
 
-	@Resource
-	private UserService userService;
+    @Resource
+    private UserService userService;
 
-	@ResponseBody
-	@PostMapping("/login")
-	public ApiResponse login(@RequestBody LoginRequest request) {
-		return userService.login(request);
-	}
+    @ResponseBody
+    @PostMapping("/login")
+    public ApiResponse login(@RequestBody LoginRequest request) {
+        return userService.login(request);
+    }
 
-	@RequestMapping("/info")
-	@ResponseBody
-	public ApiResponse info(HttpServletRequest request) {
-		return userService.info(ThreadLocalUtil.getCurrentUserId());
-	}
+    @RequestMapping("/info")
+    @ResponseBody
+    public ApiResponse info(HttpServletRequest request) {
+        return userService.info(ThreadLocalUtil.getCurrentUserId());
+    }
 
-	@PostMapping("/logout")
-	public ApiResponse logout() {
-		return ApiResponse.success();
-	}
+    @PostMapping("/logout")
+    public ApiResponse logout() {
+        return ApiResponse.success();
+    }
 
-	@PostMapping("/register")
-	public ApiResponse register(@RequestBody LoginRequest request) {
-		return userService.register(request);
-	}
+    @PostMapping("/register")
+    public ApiResponse register(@RequestBody LoginRequest request) {
+        return userService.register(request);
+    }
 
 }

@@ -1,7 +1,6 @@
 package com.jsnjwj.facade.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -16,55 +15,55 @@ import java.util.Date;
 @TableName(value = "tc_schools")
 public class TcSchools implements Serializable {
 
-	/**
-	 *
-	 */
-	@TableId(type = IdType.AUTO)
-	private Integer id;
+    /**
+     *
+     */
+    @TableId(type = IdType.AUTO)
+    private Integer id;
 
-	/**
-	 *
-	 */
-	private String scCode;
+    /**
+     *
+     */
+    private String scCode;
 
-	/**
-	 *
-	 */
-	private Integer scId;
+    /**
+     *
+     */
+    private Integer scId;
 
-	/**
-	 *
-	 */
-	private String scName;
+    /**
+     *
+     */
+    private String scName;
 
-	/**
-	 *
-	 */
-	private Date createTime;
+    /**
+     *
+     */
+    private Date createTime;
 
-	/**
-	 *
-	 */
-	private Date updateTime;
+    /**
+     *
+     */
+    private Date updateTime;
 
-	/**
-	 *
-	 */
-	private String saName;
+    /**
+     *
+     */
+    private String saName;
 
-	/**
-	 *
-	 */
-	private String saEmail;
+    /**
+     *
+     */
+    private String saEmail;
 
-	/**
-	 *
-	 */
-	private String saTel;
+    /**
+     *
+     */
+    private String saTel;
 
-	/**
-	 *
-	 */
-	private String saStatus;
+    /**
+     *
+     */
+    private String saStatus;
 
 }

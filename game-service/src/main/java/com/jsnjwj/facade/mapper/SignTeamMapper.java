@@ -1,7 +1,7 @@
 package com.jsnjwj.facade.mapper;
 
-import com.jsnjwj.facade.entity.SignTeamEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.jsnjwj.facade.entity.SignTeamEntity;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -12,8 +12,8 @@ import java.util.List;
  * @createDate 2023-07-09 01:36:35
  * @Entity com.jsnjwj.service.entity.TcSignTeam
  */
-public interface TcSignTeamMapper extends BaseMapper<SignTeamEntity> {
+public interface SignTeamMapper extends BaseMapper<SignTeamEntity> {
 
-	void saveBatch(@Param("list") List<SignTeamEntity> list);
+    void saveBatch(@Param("list") List<SignTeamEntity> list);
 
 }

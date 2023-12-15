@@ -19,16 +19,16 @@ import java.util.List;
 @RequiredArgsConstructor
 public class GameCommonServiceImpl implements GameCommonService {
 
-	@Override
-	public ApiResponse<List<GroupLabelVo>> fetchGroup(Long gameId) {
-		List<GroupLabelVo> response = new ArrayList<>();
-		return ApiResponse.success(response);
-	}
+    @Override
+    public ApiResponse<List<GroupLabelVo>> fetchGroup(Long gameId) {
+        List<GroupLabelVo> response = new ArrayList<>();
+        return ApiResponse.success(response);
+    }
 
-	@Override
-	public ApiResponse<List<ItemLabelVo>> fetchItemByGroupId(Long gameId, Long groupId) {
-		List<ItemLabelVo> response = new ArrayList<>();
-		return ApiResponse.success(response);
-	}
+    @Override
+    public ApiResponse<List<ItemLabelVo>> fetchItemByGroupId(Long gameId, Long groupId) {
+        List<ItemLabelVo> response = new ArrayList<>();
+        return ApiResponse.success(response);
+    }
 
 }

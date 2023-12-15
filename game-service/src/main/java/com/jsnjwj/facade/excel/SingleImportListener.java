@@ -5,7 +5,6 @@ import com.alibaba.excel.read.listener.ReadListener;
 import com.alibaba.excel.util.ListUtils;
 import com.alibaba.fastjson2.JSON;
 import com.jsnjwj.facade.dto.ImportSingleDto;
-import com.jsnjwj.facade.dto.ImportTeamDto;
 import com.jsnjwj.facade.manager.SignApplyManager;
 import lombok.extern.slf4j.Slf4j;
 
@@ -15,37 +14,35 @@ import java.util.List;
 @Slf4j
 public class SingleImportListener implements ReadListener<ImportSingleDto> {
 
-	@Resource
-	private SignApplyManager signApplyManager;
+    private static final int BATCH_COUNT = 100;
+    @Resource
+    private SignApplyManager signApplyManager;
+    private Long gameId;
 
-	private static final int BATCH_COUNT = 100;
+    private List<ImportSingleDto> cachedDataList = ListUtils.newArrayListWithExpectedSize(BATCH_COUNT);
 
-	private Long gameId;
+    public SingleImportListener(Long gameId, SignApplyManager signApplyManager) {
+        // TODO document why this constructor is empty
+        this.gameId = gameId;
+        this.signApplyManager = signApplyManager;
+    }
 
-	private List<ImportSingleDto> cachedDataList = ListUtils.newArrayListWithExpectedSize(BATCH_COUNT);
+    @Override
+    public void invoke(ImportSingleDto tcSignTeam, AnalysisContext analysisContext) {
+        log.info("解析到一条数据:{}", JSON.toJSONString(tcSignTeam));
+        cachedDataList.add(tcSignTeam);
 
-	public SingleImportListener(Long gameId, SignApplyManager signApplyManager) {
-		// TODO document why this constructor is empty
-		this.gameId = gameId;
-		this.signApplyManager = signApplyManager;
-	}
+        if (cachedDataList.size() >= BATCH_COUNT) {
+            signApplyManager.saveSingleBatch(this.gameId, cachedDataList);
+            // 存储完成清理 list
+            cachedDataList = ListUtils.newArrayListWithExpectedSize(BATCH_COUNT);
+        }
+    }
 
-	@Override
-	public void invoke(ImportSingleDto tcSignTeam, AnalysisContext analysisContext) {
-		log.info("解析到一条数据:{}", JSON.toJSONString(tcSignTeam));
-		cachedDataList.add(tcSignTeam);
+    @Override
+    public void doAfterAllAnalysed(AnalysisContext analysisContext) {
+        signApplyManager.saveSingleBatch(this.gameId, cachedDataList);
 
-		if (cachedDataList.size() >= BATCH_COUNT) {
-			signApplyManager.saveSingleBatch(this.gameId, cachedDataList);
-			// 存储完成清理 list
-			cachedDataList = ListUtils.newArrayListWithExpectedSize(BATCH_COUNT);
-		}
-	}
-
-	@Override
-	public void doAfterAllAnalysed(AnalysisContext analysisContext) {
-		signApplyManager.saveSingleBatch(this.gameId, cachedDataList);
-
-	}
+    }
 
 }

@@ -1,7 +1,6 @@
 package com.jsnjwj.facade.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.jsnjwj.facade.entity.GameManagersEntity;
 import com.jsnjwj.facade.entity.SignArrangeSequenceEntity;
 
 /**

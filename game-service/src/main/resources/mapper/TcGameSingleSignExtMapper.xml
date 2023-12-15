@@ -5,11 +5,11 @@
 <mapper namespace="service.mapper.TcGameSingleSignExtMapper">
 
     <resultMap id="BaseResultMap" type="com.jsnjwj.facade.entity.TcGameSingleSignExt">
-            <id property="id" column="id" jdbcType="INTEGER"/>
-            <result property="gameId" column="game_id" jdbcType="INTEGER"/>
-            <result property="dictCode" column="dict_code" jdbcType="VARCHAR"/>
-            <result property="singValue" column="sing_value" jdbcType="VARCHAR"/>
-            <result property="singForce" column="sing_force" jdbcType="TINYINT"/>
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="gameId" column="game_id" jdbcType="INTEGER"/>
+        <result property="dictCode" column="dict_code" jdbcType="VARCHAR"/>
+        <result property="singValue" column="sing_value" jdbcType="VARCHAR"/>
+        <result property="singForce" column="sing_force" jdbcType="TINYINT"/>
     </resultMap>
 
     <sql id="Base_Column_List">

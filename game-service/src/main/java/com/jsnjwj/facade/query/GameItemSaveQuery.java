@@ -6,10 +6,10 @@ import lombok.Data;
 @Data
 public class GameItemSaveQuery extends BaseRequest {
 
-	private String itemName;
+    private String itemName;
 
-	private Long groupId;
+    private Long groupId;
 
-	private Integer sort;
+    private Integer sort;
 
 }

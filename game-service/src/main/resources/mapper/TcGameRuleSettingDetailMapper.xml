@@ -5,15 +5,15 @@
 <mapper namespace="service.mapper.TcGameRuleSettingDetailMapper">
 
     <resultMap id="BaseResultMap" type="com.jsnjwj.facade.entity.TcGameRuleSettingDetail">
-            <id property="id" column="id" jdbcType="INTEGER"/>
-            <result property="settingId" column="setting_id" jdbcType="INTEGER"/>
-            <result property="num" column="num" jdbcType="INTEGER"/>
-            <result property="scoreRatio" column="score_ratio" jdbcType="INTEGER"/>
-            <result property="scoreWeight" column="score_weight" jdbcType="INTEGER"/>
-            <result property="extraType" column="extra_type" jdbcType="TINYINT"/>
-            <result property="extraName" column="extra_name" jdbcType="VARCHAR"/>
-            <result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>
-            <result property="updatedAt" column="updated_at" jdbcType="TIMESTAMP"/>
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="settingId" column="setting_id" jdbcType="INTEGER"/>
+        <result property="num" column="num" jdbcType="INTEGER"/>
+        <result property="scoreRatio" column="score_ratio" jdbcType="INTEGER"/>
+        <result property="scoreWeight" column="score_weight" jdbcType="INTEGER"/>
+        <result property="extraType" column="extra_type" jdbcType="TINYINT"/>
+        <result property="extraName" column="extra_name" jdbcType="VARCHAR"/>
+        <result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>
+        <result property="updatedAt" column="updated_at" jdbcType="TIMESTAMP"/>
     </resultMap>
 
     <sql id="Base_Column_List">

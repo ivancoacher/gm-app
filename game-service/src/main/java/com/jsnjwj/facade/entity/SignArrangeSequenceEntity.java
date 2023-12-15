@@ -15,29 +15,29 @@ import java.time.LocalDateTime;
 @TableName(value = "tc_sign_arrange_sequence")
 public class SignArrangeSequenceEntity implements Serializable {
 
-	/**
-	 *
-	 */
-	@TableId(type = IdType.AUTO)
-	private Long id;
+    /**
+     *
+     */
+    @TableId(type = IdType.AUTO)
+    private Long id;
 
-	private Long gameId;
+    private Long gameId;
 
-	/**
-	 * 报名编号
-	 * 单人或队伍
-	 */
-	private Long signId;
+    /**
+     * 报名编号
+     * 单人或队伍
+     */
+    private Long signId;
 
-	private Integer sort;
+    private Integer sort;
 
-	/**
-	 * 分组编排编号
-	 */
-	private Integer recordId;
+    /**
+     * 分组编排编号
+     */
+    private Integer recordId;
 
-	private LocalDateTime createdAt;
+    private LocalDateTime createdAt;
 
-	private LocalDateTime updatedAt;
+    private LocalDateTime updatedAt;
 
 }

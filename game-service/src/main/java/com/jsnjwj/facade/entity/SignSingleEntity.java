@@ -16,77 +16,77 @@ import java.util.Date;
 @TableName(value = "tc_sign_single")
 public class SignSingleEntity implements Serializable {
 
-	/**
-	 *
-	 */
-	@TableId(type = IdType.AUTO)
-	private Integer id;
+    /**
+     *
+     */
+    @TableId(type = IdType.AUTO)
+    private Integer id;
 
-	/**
-	 *
-	 */
-	private Long gameId;
+    /**
+     *
+     */
+    private Long gameId;
 
-	/**
-	 *
-	 */
-	private Long groupId;
+    /**
+     *
+     */
+    private Long groupId;
 
-	/**
-	 *
-	 */
-	private Long itemId;
+    /**
+     *
+     */
+    private Long itemId;
 
-	/**
-	 *
-	 */
-	private Integer teamId;
+    /**
+     *
+     */
+    private Integer teamId;
 
-	/**
-	 *
-	 */
-	private String name;
+    /**
+     *
+     */
+    private String name;
 
-	/**
-	 *
-	 */
-	private String teamName;
+    /**
+     *
+     */
+    private String teamName;
 
-	/**
-	 *
-	 */
-	private Integer sex;
+    /**
+     *
+     */
+    private Integer sex;
 
-	/**
-	 *
-	 */
-	private Integer age;
+    /**
+     *
+     */
+    private Integer age;
 
-	/**
-	 *
-	 */
-	private String remark;
+    /**
+     *
+     */
+    private String remark;
 
-	/**
-	 *
-	 */
-	private Integer signStatus;
+    /**
+     *
+     */
+    private Integer signStatus;
 
-	/**
-	 *
-	 */
-	private Integer auditStatus;
+    /**
+     *
+     */
+    private Integer auditStatus;
 
-	/**
-	 *
-	 */
-	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
-	private Date createTime;
+    /**
+     *
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
+    private Date createTime;
 
-	/**
-	 *
-	 */
-	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
-	private Date updateTime;
+    /**
+     *
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
+    private Date updateTime;
 
 }

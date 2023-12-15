@@ -10,27 +10,27 @@ import java.util.List;
 @Data
 public class GameSettingSetRulesQuery extends BaseRequest {
 
-	private Long gameId;
+    private Long gameId;
 
-	private Long itemId;
+    private Long itemId;
 
-	private Integer judgeGroupNum;
+    private Integer judgeGroupNum;
 
-	private Integer scoreRule;
+    private Integer scoreRule;
 
-	private List<RuleContent> ruleContentList;
+    private List<RuleContent> ruleContentList;
 
-	@Data
-	public static class RuleContent {
+    @Data
+    public static class RuleContent {
 
-		public Integer ruleRatio;
+        public Integer ruleRatio;
 
-		public Integer ruleWeight;
+        public Integer ruleWeight;
 
-		public Integer ruleExtraType;
+        public Integer ruleExtraType;
 
-		public String ruleExtraName;
+        public String ruleExtraName;
 
-	}
+    }
 
 }

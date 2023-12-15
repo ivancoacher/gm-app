@@ -5,9 +5,9 @@
 <mapper namespace="service.mapper.TcGameJudgeMapper">
 
     <resultMap id="BaseResultMap" type="com.jsnjwj.facade.entity.GameJudgeEntity">
-            <id property="id" column="id" jdbcType="INTEGER"/>
-            <result property="judgeId" column="judge_id" jdbcType="VARCHAR"/>
-            <result property="gameId" column="game_id" jdbcType="VARCHAR"/>
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="judgeId" column="judge_id" jdbcType="VARCHAR"/>
+        <result property="gameId" column="game_id" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">

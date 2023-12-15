@@ -11,17 +11,17 @@ import javax.annotation.Resource;
 @RequestMapping("/game/setting/rule")
 public class GameSettingRuleController {
 
-	@Resource
-	private GameSettingService gameSettingService;
+    @Resource
+    private GameSettingService gameSettingService;
 
-	@GetMapping("/setRule")
-	public ApiResponse<?> getAreas(@RequestBody GameSettingSetRulesQuery query) {
-		return gameSettingService.setRules(query);
-	}
+    @GetMapping("/setRule")
+    public ApiResponse<?> getAreas(@RequestBody GameSettingSetRulesQuery query) {
+        return gameSettingService.setRules(query);
+    }
 
-	@PostMapping("/getRule")
-	public ApiResponse<?> setAreaNum(@RequestParam("gameId") Long gameId, @RequestParam("itemId") Long itemId) {
-		return gameSettingService.getRules(gameId, itemId);
-	}
+    @PostMapping("/getRule")
+    public ApiResponse<?> setAreaNum(@RequestParam("gameId") Long gameId, @RequestParam("itemId") Long itemId) {
+        return gameSettingService.getRules(gameId, itemId);
+    }
 
 }

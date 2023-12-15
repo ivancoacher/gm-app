@@ -14,37 +14,35 @@ import java.util.List;
 @Slf4j
 public class TeamImportListener implements ReadListener<ImportTeamDto> {
 
-	@Resource
-	private SignApplyManager signApplyManager;
+    private static final int BATCH_COUNT = 100;
+    @Resource
+    private SignApplyManager signApplyManager;
+    private Long gameId;
 
-	private static final int BATCH_COUNT = 100;
+    private List<ImportTeamDto> cachedDataList = ListUtils.newArrayListWithExpectedSize(BATCH_COUNT);
 
-	private Long gameId;
+    public TeamImportListener(Long gameId, SignApplyManager signApplyManager) {
+        // TODO document why this constructor is empty
+        this.gameId = gameId;
+        this.signApplyManager = signApplyManager;
+    }
 
-	private List<ImportTeamDto> cachedDataList = ListUtils.newArrayListWithExpectedSize(BATCH_COUNT);
+    @Override
+    public void invoke(ImportTeamDto tcSignTeam, AnalysisContext analysisContext) {
+        log.info("解析到一条数据:{}", JSON.toJSONString(tcSignTeam));
+        cachedDataList.add(tcSignTeam);
 
-	public TeamImportListener(Long gameId, SignApplyManager signApplyManager) {
-		// TODO document why this constructor is empty
-		this.gameId = gameId;
-		this.signApplyManager = signApplyManager;
-	}
+        if (cachedDataList.size() >= BATCH_COUNT) {
+            signApplyManager.saveTeamBatch(this.gameId, cachedDataList);
+            // 存储完成清理 list
+            cachedDataList = ListUtils.newArrayListWithExpectedSize(BATCH_COUNT);
+        }
+    }
 
-	@Override
-	public void invoke(ImportTeamDto tcSignTeam, AnalysisContext analysisContext) {
-		log.info("解析到一条数据:{}", JSON.toJSONString(tcSignTeam));
-		cachedDataList.add(tcSignTeam);
+    @Override
+    public void doAfterAllAnalysed(AnalysisContext analysisContext) {
+        signApplyManager.saveTeamBatch(this.gameId, cachedDataList);
 
-		if (cachedDataList.size() >= BATCH_COUNT) {
-			signApplyManager.saveTeamBatch(this.gameId, cachedDataList);
-			// 存储完成清理 list
-			cachedDataList = ListUtils.newArrayListWithExpectedSize(BATCH_COUNT);
-		}
-	}
-
-	@Override
-	public void doAfterAllAnalysed(AnalysisContext analysisContext) {
-		signApplyManager.saveTeamBatch(this.gameId, cachedDataList);
-
-	}
+    }
 
 }

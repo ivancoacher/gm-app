@@ -19,14 +19,14 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("/trade")
 public class TradeController {
 
-	@Resource
-	private TradeService tradeService;
+    @Resource
+    private TradeService tradeService;
 
-	@RequestMapping("/list")
-	@ResponseBody
-	public ApiResponse<Page<TradeLog>> info(QueryListRequest query, HttpServletRequest request) {
-		query.setUserId(ThreadLocalUtil.getCurrentUserId());
-		return tradeService.fetchList(query);
-	}
+    @RequestMapping("/list")
+    @ResponseBody
+    public ApiResponse<Page<TradeLog>> info(QueryListRequest query, HttpServletRequest request) {
+        query.setUserId(ThreadLocalUtil.getCurrentUserId());
+        return tradeService.fetchList(query);
+    }
 
 }

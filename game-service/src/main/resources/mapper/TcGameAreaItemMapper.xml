@@ -5,10 +5,10 @@
 <mapper namespace="com.jsnjwj.facade.mapper.GameAreaItemMapper">
 
     <resultMap id="BaseResultMap" type="com.jsnjwj.facade.entity.GameAreaItemEntity">
-            <id property="id" column="id" jdbcType="INTEGER"/>
-            <result property="areaId" column="area_id" jdbcType="VARCHAR"/>
-            <result property="gameId" column="game_id" jdbcType="INTEGER"/>
-            <result property="itemId" column="item_id" jdbcType="INTEGER"/>
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="areaId" column="area_id" jdbcType="VARCHAR"/>
+        <result property="gameId" column="game_id" jdbcType="INTEGER"/>
+        <result property="itemId" column="item_id" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">

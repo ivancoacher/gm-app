@@ -20,32 +20,32 @@ import java.util.List;
 @RequestMapping("/game/item")
 public class GameItemController {
 
-	@Resource
-	private GameItemService gameItemService;
+    @Resource
+    private GameItemService gameItemService;
 
-	@RequestMapping("/list")
-	public ApiResponse<Page<ItemLabelVo>> fetchPage(GameItemListQuery query) {
-		return gameItemService.fetchPages(query);
-	}
+    @RequestMapping("/list")
+    public ApiResponse<Page<ItemLabelVo>> fetchPage(GameItemListQuery query) {
+        return gameItemService.fetchPages(query);
+    }
 
-	@RequestMapping("/data")
-	public ApiResponse<List<GroupLabelVo>> fetchList(GameItemListQuery query) {
-		return ApiResponse.success(gameItemService.fetchList(query));
-	}
+    @RequestMapping("/data")
+    public ApiResponse<List<GroupLabelVo>> fetchList(GameItemListQuery query) {
+        return ApiResponse.success(gameItemService.fetchList(query));
+    }
 
-	@RequestMapping("/save")
-	public ApiResponse<List<GroupLabelVo>> save(@RequestBody GameItemSaveQuery query) {
-		return ApiResponse.success(gameItemService.save(query));
-	}
+    @RequestMapping("/save")
+    public ApiResponse<List<GroupLabelVo>> save(@RequestBody GameItemSaveQuery query) {
+        return ApiResponse.success(gameItemService.save(query));
+    }
 
-	@RequestMapping("/update")
-	public ApiResponse<List<GroupLabelVo>> update(@RequestBody GameItemUpdateQuery query) {
-		return ApiResponse.success(gameItemService.update(query));
-	}
+    @RequestMapping("/update")
+    public ApiResponse update(@RequestBody GameItemUpdateQuery query) {
+        return ApiResponse.success(gameItemService.update(query));
+    }
 
-	@DeleteMapping("/delete")
-	public ApiResponse<?> delete(GameItemUpdateQuery query) {
-		return gameItemService.delete(query);
-	}
+    @DeleteMapping("/delete")
+    public ApiResponse<?> delete(GameItemUpdateQuery query) {
+        return gameItemService.delete(query);
+    }
 
 }

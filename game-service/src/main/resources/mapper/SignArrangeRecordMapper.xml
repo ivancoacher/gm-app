@@ -5,13 +5,13 @@
 <mapper namespace="service.mapper.TcGameRuleSettingMapper">
 
     <resultMap id="BaseResultMap" type="com.jsnjwj.facade.entity.TcGameRuleSetting">
-            <id property="id" column="id" jdbcType="INTEGER"/>
-            <result property="gameId" column="game_id" jdbcType="INTEGER"/>
-            <result property="itemId" column="item_id" jdbcType="INTEGER"/>
-            <result property="judgeGroupNum" column="judge_group_num" jdbcType="INTEGER"/>
-            <result property="scoreRule" column="score_rule" jdbcType="INTEGER"/>
-            <result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>
-            <result property="updatedAt" column="updated_at" jdbcType="TIMESTAMP"/>
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="gameId" column="game_id" jdbcType="INTEGER"/>
+        <result property="itemId" column="item_id" jdbcType="INTEGER"/>
+        <result property="judgeGroupNum" column="judge_group_num" jdbcType="INTEGER"/>
+        <result property="scoreRule" column="score_rule" jdbcType="INTEGER"/>
+        <result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>
+        <result property="updatedAt" column="updated_at" jdbcType="TIMESTAMP"/>
     </resultMap>
 
     <sql id="Base_Column_List">

@@ -14,43 +14,72 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping(value = "/game")
 public class GameController {
 
-	@Resource
-	private GameInfoService gameInfoService;
+    @Resource
+    private GameInfoService gameInfoService;
 
-	@RequestMapping(value = "/list")
-	public ApiResponse<GameListVo> list(GameListQuery query, HttpServletRequest request) {
-		query.setUserId(ThreadLocalUtil.getCurrentUserId());
-		return gameInfoService.queryList(query);
-	}
+    /**
+     * 赛事列表
+     *
+     * @param query GameListQuery
+     * @return ApiResponse
+     */
+    @RequestMapping(value = "/list")
+    public ApiResponse<GameListVo> list(GameListQuery query) {
+        query.setUserId(ThreadLocalUtil.getCurrentUserId());
+        return gameInfoService.queryList(query);
+    }
 
-	@RequestMapping(value = "/info")
-	public ApiResponse<GamesEntity> info(GameInfoQuery query, HttpServletRequest request) {
-		query.setUserId(ThreadLocalUtil.getCurrentUserId());
-		return gameInfoService.fetchInfo(query);
-	}
+    /**
+     * 赛事详情
+     *
+     * @param query GameInfoQuery
+     * @return ApiResponse
+     */
+    @RequestMapping(value = "/info")
+    public ApiResponse<GamesEntity> info(GameInfoQuery query) {
+        query.setUserId(ThreadLocalUtil.getCurrentUserId());
+        return gameInfoService.fetchInfo(query);
+    }
 
-	@RequestMapping(value = "/update")
-	public ApiResponse<Boolean> update(@RequestBody GameModifyQuery query, HttpServletRequest request) {
-		query.setUserId(ThreadLocalUtil.getCurrentUserId());
-		return gameInfoService.update(query);
-	}
+    /**
+     * 赛事信息更新
+     *
+     * @param query GameModifyQuery
+     * @return ApiResponse
+     */
+    @RequestMapping(value = "/update")
+    public ApiResponse<Boolean> update(@RequestBody GameModifyQuery query) {
+        query.setUserId(ThreadLocalUtil.getCurrentUserId());
+        return gameInfoService.update(query);
+    }
 
-	@RequestMapping(value = "/save")
-	public ApiResponse<Boolean> save(@RequestBody GameAddQuery query, HttpServletRequest request) {
-		query.setUserId(ThreadLocalUtil.getCurrentUserId());
-		return gameInfoService.save(query);
-	}
+    /**
+     * 赛事新增
+     *
+     * @param query GameAddQuery
+     * @return ApiResponse
+     */
+    @RequestMapping(value = "/save")
+    public ApiResponse<Boolean> save(@RequestBody GameAddQuery query) {
+        query.setUserId(ThreadLocalUtil.getCurrentUserId());
+        return gameInfoService.save(query);
+    }
 
-	@RequestMapping(value = "/status/switch")
-	public ApiResponse<Boolean> changeStatus(@RequestBody GameModifyQuery query, HttpServletRequest request) {
-		query.setUserId(ThreadLocalUtil.getCurrentUserId());
-		return gameInfoService.changeStatus(query);
-	}
+    /**
+     * 赛事状态调整
+     *
+     * @param query GameModifyQuery
+     * @return ApiResponse
+     */
+    @RequestMapping(value = "/status/switch")
+    public ApiResponse<Boolean> changeStatus(@RequestBody GameModifyQuery query) {
+        query.setUserId(ThreadLocalUtil.getCurrentUserId());
+        return gameInfoService.changeStatus(query);
+    }
 
 }

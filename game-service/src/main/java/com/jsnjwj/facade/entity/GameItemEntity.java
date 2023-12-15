@@ -16,47 +16,47 @@ import java.util.Date;
 @TableName(value = "tc_game_item")
 public class GameItemEntity implements Serializable {
 
-	/**
-	 *
-	 */
-	@TableId(type = IdType.AUTO)
-	private Long id;
+    /**
+     *
+     */
+    @TableId(type = IdType.AUTO)
+    private Long id;
 
-	/**
-	 *
-	 */
-	private Long gameId;
+    /**
+     *
+     */
+    private Long gameId;
 
-	/**
-	 *
-	 */
-	private Long groupId;
+    /**
+     *
+     */
+    private Long groupId;
 
-	/**
-	 *
-	 */
-	private String itemName;
+    /**
+     *
+     */
+    private String itemName;
 
-	/**
-	 *
-	 */
-	private Integer sort;
+    /**
+     *
+     */
+    private Integer sort;
 
-	/**
-	 *
-	 */
-	private Integer creatorId;
+    /**
+     *
+     */
+    private Integer creatorId;
 
-	/**
-	 *
-	 */
-	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
-	private Date createTime;
+    /**
+     *
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
+    private Date createTime;
 
-	/**
-	 *
-	 */
-	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
-	private Date updateTime;
+    /**
+     *
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
+    private Date updateTime;
 
 }

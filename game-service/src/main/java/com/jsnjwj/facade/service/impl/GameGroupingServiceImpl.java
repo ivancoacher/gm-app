@@ -9,9 +9,9 @@ import com.jsnjwj.facade.entity.GameItemEntity;
 import com.jsnjwj.facade.entity.SignArrangeRecordEntity;
 import com.jsnjwj.facade.entity.SignSingleEntity;
 import com.jsnjwj.facade.entity.TcGameRuleSetting;
-import com.jsnjwj.facade.mapper.TcGameItemMapper;
-import com.jsnjwj.facade.mapper.TcGameRuleSettingMapper;
-import com.jsnjwj.facade.mapper.TcSignSingleMapper;
+import com.jsnjwj.facade.mapper.GameItemMapper;
+import com.jsnjwj.facade.mapper.GameRuleSettingMapper;
+import com.jsnjwj.facade.mapper.SignSingleMapper;
 import com.jsnjwj.facade.query.GameGroupingViewQuery;
 import com.jsnjwj.facade.service.GameGroupingService;
 import com.jsnjwj.facade.vo.ItemLabelVo;
@@ -34,11 +34,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class GameGroupingServiceImpl implements GameGroupingService {
 
-    private final TcGameItemMapper tcGameItemMapper;
+    private final GameItemMapper gameItemMapper;
 
-    private final TcGameRuleSettingMapper tcGameRuleSettingMapper;
+    private final GameRuleSettingMapper gameRuleSettingMapper;
 
-    private final TcSignSingleMapper tcSignSingleMapper;
+    private final SignSingleMapper signSingleMapper;
 
     /**
      * 查询 分组列表
@@ -55,7 +55,7 @@ public class GameGroupingServiceImpl implements GameGroupingService {
         wrapper.eq(Objects.nonNull(query.getGroupId()), SignArrangeRecordEntity::getGroupId, query.getGroupId());
         wrapper.eq(SignArrangeRecordEntity::getGameId, query.getGameId());
 
-        Page<ItemLabelVo> rst = tcGameItemMapper.selectByPage(page, wrapper);
+        Page<ItemLabelVo> rst = gameItemMapper.selectByPage(page, wrapper);
 
         Page<GroupingItemDto> response = new Page<>();
 
@@ -92,7 +92,7 @@ public class GameGroupingServiceImpl implements GameGroupingService {
     private Map<Long, TcGameRuleSetting> getRuleSettingMap(List<Long> itemIdList) {
         LambdaQueryWrapper<TcGameRuleSetting> query = new LambdaQueryWrapper<>();
         query.in(TcGameRuleSetting::getItemId, itemIdList);
-        List<TcGameRuleSetting> result = tcGameRuleSettingMapper.selectList(query);
+        List<TcGameRuleSetting> result = gameRuleSettingMapper.selectList(query);
 
         return result.stream().collect(Collectors.toMap(TcGameRuleSetting::getItemId, Function.identity()));
     }
@@ -106,7 +106,7 @@ public class GameGroupingServiceImpl implements GameGroupingService {
 
         wrapper.orderByAsc(GameItemEntity::getSort);
 
-        List<GameItemEntity> itemList = tcGameItemMapper.selectList(wrapper);
+        List<GameItemEntity> itemList = gameItemMapper.selectList(wrapper);
 
         GroupingDetailDto response = new GroupingDetailDto();
         response.setGameId(query.getGameId());
@@ -131,7 +131,7 @@ public class GameGroupingServiceImpl implements GameGroupingService {
 
             wrapper1.eq(SignSingleEntity::getGameId, query.getGameId());
             wrapper1.eq(SignSingleEntity::getItemId, itemId);
-            List<SignSingleEntity> signSingles = tcSignSingleMapper.selectList(wrapper1);
+            List<SignSingleEntity> signSingles = signSingleMapper.selectList(wrapper1);
             List<GroupingDetailDto.GroupingItemSign> groupingItemSigns = new ArrayList<>();
             if (CollectionUtils.isNotEmpty(signSingles)) {
 
@@ -174,7 +174,7 @@ public class GameGroupingServiceImpl implements GameGroupingService {
      * 生成场序表
      */
     @Override
-    public int initArrangeOrder(){
+    public int initArrangeOrder() {
         return 0;
     }
 

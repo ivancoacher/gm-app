@@ -1,7 +1,7 @@
 package com.jsnjwj.facade.manager;
 
-import com.jsnjwj.facade.entity.SignArrangeSettingEntity;
 import com.jsnjwj.facade.entity.SignArrangeSettingDetailEntity;
+import com.jsnjwj.facade.entity.SignArrangeSettingEntity;
 import com.jsnjwj.facade.mapper.SignArrangeSettingDetailMapper;
 import com.jsnjwj.facade.mapper.SignArrangeSettingMapper;
 import org.springframework.stereotype.Service;

@@ -5,11 +5,11 @@
 <mapper namespace="service.mapper.TcGameManagersMapper">
 
     <resultMap id="BaseResultMap" type="com.jsnjwj.facade.entity.GameManagersEntity">
-            <id property="id" column="id" jdbcType="INTEGER"/>
-            <result property="gameId" column="game_id" jdbcType="INTEGER"/>
-            <result property="userId" column="user_id" jdbcType="INTEGER"/>
-            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
-            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="gameId" column="game_id" jdbcType="INTEGER"/>
+        <result property="userId" column="user_id" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
     </resultMap>
 
     <sql id="Base_Column_List">

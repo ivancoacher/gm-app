@@ -5,20 +5,20 @@ import lombok.Data;
 @Data
 public class GroupingItemDto {
 
-	private Long groupId;
+    private Long groupId;
 
-	private Long gameId;
+    private Long gameId;
 
-	private Long itemId;
+    private Long itemId;
 
-	private String groupName;
+    private String groupName;
 
-	private String itemName;
+    private String itemName;
 
-	private String rule;
+    private String rule;
 
-	private Integer judgeCount = 0;
+    private Integer judgeCount = 0;
 
-	private String scoreRule;
+    private String scoreRule;
 
 }

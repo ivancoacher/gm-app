@@ -15,6 +15,7 @@ public class SignArrangeSequenceController {
 
     /**
      * 场序列表
+     *
      * @return
      */
     @GetMapping("/list")
@@ -24,19 +25,21 @@ public class SignArrangeSequenceController {
 
     /**
      * 设置场序
+     *
      * @return
      */
     @PostMapping("/set")
-    public ApiResponse<?> setSequence(){
+    public ApiResponse<?> setSequence() {
         return null;
     }
 
     /**
      * 查看场序详情
+     *
      * @return
      */
     @GetMapping
-    public ApiResponse<?> fetchSequenceInfo(){
+    public ApiResponse<?> fetchSequenceInfo() {
         return null;
     }
 

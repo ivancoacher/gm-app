@@ -1,6 +1,5 @@
 package com.jsnjwj.facade.dto;
 
-import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
@@ -8,8 +7,8 @@ import java.util.List;
 @Data
 public class GroupAreaItemDto {
 
-	public GameAreaDto gameArea;
+    public GameAreaDto gameArea;
 
-	public List<GameItemDto> itemList;
+    public List<GameItemDto> itemList;
 
 }

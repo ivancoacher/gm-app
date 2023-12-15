@@ -18,37 +18,37 @@ import java.util.Date;
 @TableName("admin_user")
 public class AdminUser {
 
-	@TableId(type = IdType.AUTO)
-	private Long id;
+    @TableId(type = IdType.AUTO)
+    private Long id;
 
-	private String username;
+    private String username;
 
-	private String avatar;
+    private String avatar;
 
-	private String passwordHash;
+    private String passwordHash;
 
-	/**
-	 * 1：正常；0：禁用
-	 */
-	private Integer enable;
+    /**
+     * 1：正常；0：禁用
+     */
+    private Integer enable;
 
-	private String phone;
+    private String phone;
 
-	private String realname;
+    private String realname;
 
-	private String remark;
+    private String remark;
 
-	/**
-	 * 所属组织编号
-	 */
-	private Long deptId;
+    /**
+     * 所属组织编号
+     */
+    private Long deptId;
 
-	private Integer sex;
+    private Integer sex;
 
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-	private Date createAt;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date createAt;
 
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-	private Date updateAt;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date updateAt;
 
 }

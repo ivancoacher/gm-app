@@ -17,38 +17,28 @@ import java.util.Date;
 @Data
 public class SignArrangeRecordEntity implements Serializable {
 
-	@TableId(type = IdType.AUTO)
-	private Long id;
+    @TableId(type = IdType.AUTO)
+    private Long id;
 
-	private Long gameId;
+    private Long gameId;
 
-	private Long groupId;
+    private Long groupId;
 
-	private Long itemId;
+    private Long itemId;
 
-	@TableField("record_name")
-	private String recordName;
+    @TableField("record_name")
+    private String recordName;
 
-	/**
-	 * 设置编号
-	 */
-	private Long recordId;
+    /**
+     *
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
+    private Date createdAt;
 
-	/**
-	 * 报名信息编号
-	 */
-	private Long signId;
-
-	/**
-	 *
-	 */
-	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
-	private Date createdAt;
-
-	/**
-	 *
-	 */
-	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
-	private Date updatedAt;
+    /**
+     *
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
+    private Date updatedAt;
 
 }

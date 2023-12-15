@@ -1,7 +1,6 @@
 package com.jsnjwj.facade.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -17,72 +16,72 @@ import java.util.Date;
 @TableName(value = "tc_games_ext")
 public class TcGamesExt implements Serializable {
 
-	/**
-	 *
-	 */
-	@TableId(type = IdType.AUTO)
-	private Integer id;
+    /**
+     *
+     */
+    @TableId(type = IdType.AUTO)
+    private Integer id;
 
-	/**
-	 *
-	 */
-	private String gameName;
+    /**
+     *
+     */
+    private String gameName;
 
-	/**
-	 *
-	 */
-	private String gameType;
+    /**
+     *
+     */
+    private String gameType;
 
-	/**
-	 *
-	 */
-	private String signType;
+    /**
+     *
+     */
+    private String signType;
 
-	/**
-	 *
-	 */
-	private Date startTime;
+    /**
+     *
+     */
+    private Date startTime;
 
-	/**
-	 *
-	 */
-	private Date endTime;
+    /**
+     *
+     */
+    private Date endTime;
 
-	/**
-	 *
-	 */
-	private Date fightStartTime;
+    /**
+     *
+     */
+    private Date fightStartTime;
 
-	/**
-	 *
-	 */
-	private Integer status;
+    /**
+     *
+     */
+    private Integer status;
 
-	/**
-	 *
-	 */
-	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
-	private Date createTime;
+    /**
+     *
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
+    private Date createTime;
 
-	/**
-	 *
-	 */
-	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
-	private Date updateTime;
+    /**
+     *
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
+    private Date updateTime;
 
-	/**
-	 *
-	 */
-	private String smallTitle;
+    /**
+     *
+     */
+    private String smallTitle;
 
-	/**
-	 *
-	 */
-	private Integer applyCount;
+    /**
+     *
+     */
+    private Integer applyCount;
 
-	/**
-	 *
-	 */
-	private Date fightEndTime;
+    /**
+     *
+     */
+    private Date fightEndTime;
 
 }

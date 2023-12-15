@@ -19,14 +19,14 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping(value = "/optlog")
 public class OptLogController {
 
-	@Resource
-	private UserService userService;
+    @Resource
+    private UserService userService;
 
-	@RequestMapping("/list")
-	@ResponseBody
-	public ApiResponse<Page<OperateLogVo>> accountInfo(FetchOptLogRequest query, HttpServletRequest request) {
-		query.setUserId(ThreadLocalUtil.getCurrentUserId());
-		return userService.fetchOptLogList(query);
-	}
+    @RequestMapping("/list")
+    @ResponseBody
+    public ApiResponse<Page<OperateLogVo>> accountInfo(FetchOptLogRequest query, HttpServletRequest request) {
+        query.setUserId(ThreadLocalUtil.getCurrentUserId());
+        return userService.fetchOptLogList(query);
+    }
 
 }

@@ -5,10 +5,10 @@
 <mapper namespace="service.mapper.TcGameJudgeItemMapper">
 
     <resultMap id="BaseResultMap" type="com.jsnjwj.facade.entity.GameJudgeItemEntity">
-            <id property="id" column="id" jdbcType="INTEGER"/>
-            <result property="gameId" column="game_id" jdbcType="INTEGER"/>
-            <result property="judgeId" column="judge_id" jdbcType="INTEGER"/>
-            <result property="itemId" column="item_id" jdbcType="INTEGER"/>
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="gameId" column="game_id" jdbcType="INTEGER"/>
+        <result property="judgeId" column="judge_id" jdbcType="INTEGER"/>
+        <result property="itemId" column="item_id" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">

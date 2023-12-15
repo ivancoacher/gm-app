@@ -2,8 +2,6 @@ package com.jsnjwj.api.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsnjwj.common.response.ApiResponse;
-import com.jsnjwj.facade.manager.GameJudgeManager;
-import com.jsnjwj.facade.query.GameGroupListQuery;
 import com.jsnjwj.facade.query.GameJudgeAssignQuery;
 import com.jsnjwj.facade.query.GameJudgeListQuery;
 import com.jsnjwj.facade.service.GameJudgeService;
@@ -17,22 +15,22 @@ import javax.annotation.Resource;
 @RequestMapping("/game/setting/judge")
 public class GameJudgeController {
 
-	@Resource
-	private GameJudgeService gameJudgeService;
+    @Resource
+    private GameJudgeService gameJudgeService;
 
-	@RequestMapping("/list")
-	public ApiResponse<Page<GroupLabelVo>> fetchPage(GameJudgeListQuery query) {
-		return ApiResponse.success(gameJudgeService.fetchPage(query));
-	}
+    @RequestMapping("/list")
+    public ApiResponse<Page<GroupLabelVo>> fetchPage(GameJudgeListQuery query) {
+        return ApiResponse.success(gameJudgeService.fetchPage(query));
+    }
 
-	@RequestMapping("/data")
-	public ApiResponse<Page<GroupLabelVo>> fetchData(GameJudgeListQuery query) {
-		return ApiResponse.success(gameJudgeService.fetchList(query.getGameId()));
-	}
+    @RequestMapping("/data")
+    public ApiResponse<Page<GroupLabelVo>> fetchData(GameJudgeListQuery query) {
+        return ApiResponse.success(gameJudgeService.fetchList(query.getGameId()));
+    }
 
-	@RequestMapping("/assign")
-	public ApiResponse<Boolean> assign(GameJudgeAssignQuery query) {
-		return ApiResponse.success(gameJudgeService.assign(query));
-	}
+    @RequestMapping("/assign")
+    public ApiResponse<Boolean> assign(GameJudgeAssignQuery query) {
+        return ApiResponse.success(gameJudgeService.assign(query));
+    }
 
 }

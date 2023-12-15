@@ -1,7 +1,6 @@
 package com.jsnjwj.facade.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -17,52 +16,52 @@ import java.util.Date;
 @Data
 public class TcGameRuleSettingDetail implements Serializable {
 
-	/**
-	 *
-	 */
-	@TableId(type = IdType.AUTO)
-	private Integer id;
+    /**
+     *
+     */
+    @TableId(type = IdType.AUTO)
+    private Integer id;
 
-	/**
-	 *
-	 */
-	private Long settingId;
+    /**
+     *
+     */
+    private Long settingId;
 
-	/**
-	 *
-	 */
-	private Integer num;
+    /**
+     *
+     */
+    private Integer num;
 
-	/**
-	 *
-	 */
-	private Integer scoreRatio;
+    /**
+     *
+     */
+    private Integer scoreRatio;
 
-	/**
-	 *
-	 */
-	private Integer scoreWeight;
+    /**
+     *
+     */
+    private Integer scoreWeight;
 
-	/**
-	 *
-	 */
-	private Integer extraType;
+    /**
+     *
+     */
+    private Integer extraType;
 
-	/**
-	 *
-	 */
-	private String extraName;
+    /**
+     *
+     */
+    private String extraName;
 
-	/**
-	 *
-	 */
-	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
-	private Date createdAt;
+    /**
+     *
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
+    private Date createdAt;
 
-	/**
-	 *
-	 */
-	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
-	private Date updatedAt;
+    /**
+     *
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
+    private Date updatedAt;
 
 }

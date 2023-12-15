@@ -8,14 +8,14 @@ import lombok.EqualsAndHashCode;
 @Data
 public class QueryListRequest extends BaseRequest {
 
-	private String startTime;
+    private String startTime;
 
-	private String endTime;
+    private String endTime;
 
-	private String key;
+    private String key;
 
-	private Integer pageIndex = 1;
+    private Integer pageIndex = 1;
 
-	private Integer pageSize = 10;
+    private Integer pageSize = 10;
 
 }

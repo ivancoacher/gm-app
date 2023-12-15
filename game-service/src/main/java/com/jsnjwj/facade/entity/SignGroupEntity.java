@@ -16,44 +16,42 @@ import java.util.Date;
 @TableName(value = "tc_sign_group")
 public class SignGroupEntity implements Serializable {
 
-	/**
-	 *
-	 */
-	@TableId(type = IdType.AUTO)
-	private Integer id;
+    /**
+     *
+     */
+    @TableId(type = IdType.AUTO)
+    private Integer id;
 
-	/**
-	 * 赛事编号
-	 *
-	 */
-	private Integer gameId;
+    /**
+     * 赛事编号
+     */
+    private Integer gameId;
 
-	/**
-	 * 组别编号
-	 *
-	 */
-	private Integer groupId;
+    /**
+     * 组别编号
+     */
+    private Integer groupId;
 
-	/**
-	 * 项目编号
-	 */
-	private Integer itemId;
+    /**
+     * 项目编号
+     */
+    private Integer itemId;
 
-	/**
-	 * 报名编号
-	 */
-	private Integer signId;
+    /**
+     * 报名编号
+     */
+    private Integer signId;
 
-	/**
-	 *
-	 */
-	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
-	private Date createTime;
+    /**
+     *
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
+    private Date createTime;
 
-	/**
-	 *
-	 */
-	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
-	private Date updateTime;
+    /**
+     *
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
+    private Date updateTime;
 
 }

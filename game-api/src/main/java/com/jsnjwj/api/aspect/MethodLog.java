@@ -9,15 +9,15 @@ import java.lang.annotation.*;
  *
  * @author zhoujian
  */
-@Target({ ElementType.METHOD, ElementType.TYPE })
+@Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface MethodLog {
 
-	OperateTypeEnum operType();
+    OperateTypeEnum operType();
 
-	String targetId();
+    String targetId();
 
-	String remark();
+    String remark();
 
 }

@@ -5,16 +5,16 @@
 <mapper namespace="service.mapper.TcSchoolsMapper">
 
     <resultMap id="BaseResultMap" type="com.jsnjwj.facade.entity.TcSchools">
-            <id property="id" column="id" jdbcType="INTEGER"/>
-            <result property="scCode" column="sc_code" jdbcType="VARCHAR"/>
-            <result property="scId" column="sc_id" jdbcType="INTEGER"/>
-            <result property="scName" column="sc_name" jdbcType="VARCHAR"/>
-            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
-            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
-            <result property="saName" column="sa_name" jdbcType="VARCHAR"/>
-            <result property="saEmail" column="sa_email" jdbcType="VARCHAR"/>
-            <result property="saTel" column="sa_tel" jdbcType="VARCHAR"/>
-            <result property="saStatus" column="sa_status" jdbcType="VARCHAR"/>
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="scCode" column="sc_code" jdbcType="VARCHAR"/>
+        <result property="scId" column="sc_id" jdbcType="INTEGER"/>
+        <result property="scName" column="sc_name" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="saName" column="sa_name" jdbcType="VARCHAR"/>
+        <result property="saEmail" column="sa_email" jdbcType="VARCHAR"/>
+        <result property="saTel" column="sa_tel" jdbcType="VARCHAR"/>
+        <result property="saStatus" column="sa_status" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">

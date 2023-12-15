@@ -5,14 +5,14 @@
 <mapper namespace="service.mapper.TcGameItemMapper">
 
     <resultMap id="BaseResultMap" type="com.jsnjwj.facade.entity.GameItemEntity">
-            <id property="id" column="id" jdbcType="INTEGER"/>
-            <result property="gameId" column="game_id" jdbcType="INTEGER"/>
-            <result property="groupId" column="group_id" jdbcType="INTEGER"/>
-            <result property="itemName" column="item_name" jdbcType="VARCHAR"/>
-            <result property="sort" column="sort" jdbcType="INTEGER"/>
-            <result property="creatorId" column="creator_id" jdbcType="INTEGER"/>
-            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
-            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="gameId" column="game_id" jdbcType="INTEGER"/>
+        <result property="groupId" column="group_id" jdbcType="INTEGER"/>
+        <result property="itemName" column="item_name" jdbcType="VARCHAR"/>
+        <result property="sort" column="sort" jdbcType="INTEGER"/>
+        <result property="creatorId" column="creator_id" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
     </resultMap>
 
     <sql id="Base_Column_List">

@@ -13,23 +13,23 @@ import java.util.Date;
 @TableName("c_user_account")
 public class UserAccount {
 
-	private Long id;
+    private Long id;
 
-	private Long userId;
+    private Long userId;
 
-	@JsonSerialize(using = ToStringSerializer.class)
-	private BigDecimal totalRecharge;
+    @JsonSerialize(using = ToStringSerializer.class)
+    private BigDecimal totalRecharge;
 
-	@JsonSerialize(using = ToStringSerializer.class)
-	private BigDecimal totalExpense;
+    @JsonSerialize(using = ToStringSerializer.class)
+    private BigDecimal totalExpense;
 
-	@JsonSerialize(using = ToStringSerializer.class)
-	private BigDecimal balance;
+    @JsonSerialize(using = ToStringSerializer.class)
+    private BigDecimal balance;
 
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-	private Date createTime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date createTime;
 
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-	private Date updateTime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date updateTime;
 
 }

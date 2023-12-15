@@ -3,7 +3,10 @@ package com.jsnjwj.api.controller;
 import com.jsnjwj.common.response.ApiResponse;
 import com.jsnjwj.facade.query.GameGroupingViewQuery;
 import com.jsnjwj.facade.service.GameGroupingService;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 
@@ -14,32 +17,32 @@ import javax.annotation.Resource;
 @RequestMapping("/game/setting/grouping")
 public class GameSettingGroupingController {
 
-	@Resource
-	private GameGroupingService gameGroupingService;
+    @Resource
+    private GameGroupingService gameGroupingService;
 
-	@GetMapping("/index")
-	public ApiResponse<?> queryList(GameGroupingViewQuery query) {
-		return ApiResponse.success(gameGroupingService.fetchGroupingItem(query));
-	}
+    @GetMapping("/index")
+    public ApiResponse<?> queryList(GameGroupingViewQuery query) {
+        return ApiResponse.success(gameGroupingService.fetchGroupingItem(query));
+    }
 
-	@GetMapping("/update")
-	public ApiResponse<?> update(GameGroupingViewQuery query) {
-		return ApiResponse.success(gameGroupingService.fetchGroupingItem(query));
-	}
+    @GetMapping("/update")
+    public ApiResponse<?> update(GameGroupingViewQuery query) {
+        return ApiResponse.success(gameGroupingService.fetchGroupingItem(query));
+    }
 
-	@GetMapping("/detail")
-	public ApiResponse<?> queryDetail(GameGroupingViewQuery query) {
-		return ApiResponse.success(gameGroupingService.fetchGroupingDetail(query));
-	}
+    @GetMapping("/detail")
+    public ApiResponse<?> queryDetail(GameGroupingViewQuery query) {
+        return ApiResponse.success(gameGroupingService.fetchGroupingDetail(query));
+    }
 
-	@PostMapping("/set")
-	public ApiResponse<?> setGrouping() {
-		return ApiResponse.success();
-	}
+    @PostMapping("/set")
+    public ApiResponse<?> setGrouping() {
+        return ApiResponse.success();
+    }
 
-	@PostMapping("/setBatch")
-	public ApiResponse<?> setGroupingBatch() {
-		return ApiResponse.success();
-	}
+    @PostMapping("/setBatch")
+    public ApiResponse<?> setGroupingBatch() {
+        return ApiResponse.success();
+    }
 
 }
