@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import java.util.List;
 
+/**
+ * 赛事项目设置
+ */
 @RestController
 @RequestMapping("/game/item")
 public class GameItemController {

@@ -1,6 +1,7 @@
 package com.jsnjwj.api.controller;
 
 import com.jsnjwj.common.response.ApiResponse;
+import com.jsnjwj.common.utils.ThreadLocalUtil;
 import com.jsnjwj.facade.entity.GameAreaEntity;
 import com.jsnjwj.facade.query.GameGroupingAreaSetQuery;
 import com.jsnjwj.facade.query.GameGroupingSetNumQuery;
@@ -23,11 +24,12 @@ public class GameSettingCourtController {
     /**
      * 场地列表
      *
-     * @param gameId
      * @return
      */
     @GetMapping("/list")
-    public ApiResponse<List<GameAreaEntity>> getAreas(@RequestParam("gameId") Long gameId) {
+    public ApiResponse<List<GameAreaEntity>> getAreas() {
+
+        Long gameId = ThreadLocalUtil.getCurrentGameId();
         return gameArrangeService.getCourts(gameId);
     }
 
@@ -39,6 +41,7 @@ public class GameSettingCourtController {
      */
     @PostMapping("/setNum")
     public ApiResponse<?> setAreaNum(@RequestBody GameGroupingSetNumQuery query) {
+        query.setGameId(ThreadLocalUtil.getCurrentGameId());
         return gameArrangeService.setCourtNum(query);
     }
 
@@ -50,6 +53,7 @@ public class GameSettingCourtController {
      */
     @PostMapping("/update")
     public ApiResponse<Boolean> saveArea(@RequestBody GameGroupingAreaSetQuery query) {
+        query.setGameId(ThreadLocalUtil.getCurrentGameId());
         return gameArrangeService.saveCourt(query);
     }
 

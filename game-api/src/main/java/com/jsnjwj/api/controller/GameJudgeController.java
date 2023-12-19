@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 
+/**
+ * 赛事裁判设置
+ */
 @RestController
 @RequestMapping("/game/setting/judge")
 public class GameJudgeController {

@@ -1,6 +1,7 @@
 package com.jsnjwj.api.controller;
 
 import com.jsnjwj.common.response.ApiResponse;
+import com.jsnjwj.common.utils.ThreadLocalUtil;
 import com.jsnjwj.facade.query.GameSettingSetRulesQuery;
 import com.jsnjwj.facade.service.GameSettingService;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,8 @@ public class GameSettingRuleController {
 
     @GetMapping("/setRule")
     public ApiResponse<?> getAreas(@RequestBody GameSettingSetRulesQuery query) {
+        query.setGameId(ThreadLocalUtil.getCurrentGameId());
+        query.setUserId(ThreadLocalUtil.getCurrentUserId());
         return gameSettingService.setRules(query);
     }
 

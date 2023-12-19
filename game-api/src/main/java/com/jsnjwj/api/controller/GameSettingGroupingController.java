@@ -1,6 +1,7 @@
 package com.jsnjwj.api.controller;
 
 import com.jsnjwj.common.response.ApiResponse;
+import com.jsnjwj.common.utils.ThreadLocalUtil;
 import com.jsnjwj.facade.query.GameGroupingViewQuery;
 import com.jsnjwj.facade.service.GameGroupingService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,16 +23,22 @@ public class GameSettingGroupingController {
 
     @GetMapping("/index")
     public ApiResponse<?> queryList(GameGroupingViewQuery query) {
+        query.setGameId(ThreadLocalUtil.getCurrentGameId());
+        query.setUserId(ThreadLocalUtil.getCurrentUserId());
         return ApiResponse.success(gameGroupingService.fetchGroupingItem(query));
     }
 
     @GetMapping("/update")
     public ApiResponse<?> update(GameGroupingViewQuery query) {
+        query.setGameId(ThreadLocalUtil.getCurrentGameId());
+        query.setUserId(ThreadLocalUtil.getCurrentUserId());
         return ApiResponse.success(gameGroupingService.fetchGroupingItem(query));
     }
 
     @GetMapping("/detail")
     public ApiResponse<?> queryDetail(GameGroupingViewQuery query) {
+        query.setGameId(ThreadLocalUtil.getCurrentGameId());
+        query.setUserId(ThreadLocalUtil.getCurrentUserId());
         return ApiResponse.success(gameGroupingService.fetchGroupingDetail(query));
     }
 

@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import java.util.List;
 
+/**
+ * 组别设置
+ */
 @RestController
 @RequestMapping("/game/group")
 public class GameGroupController {

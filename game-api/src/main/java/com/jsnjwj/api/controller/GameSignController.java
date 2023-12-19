@@ -23,6 +23,8 @@ public class GameSignController {
 
     @RequestMapping("/single/page")
     public ApiResponse<?> fetchSinglePage(SignSingleListQuery query) {
+        query.setGameId(ThreadLocalUtil.getCurrentGameId());
+        query.setUserId(ThreadLocalUtil.getCurrentUserId());
         return signApplyService.fetchSinglePage(query);
     }
 
@@ -44,6 +46,8 @@ public class GameSignController {
 
     @RequestMapping("/team/page")
     public ApiResponse<?> fetchTeamPage(SignTeamListQuery query) {
+        query.setGameId(ThreadLocalUtil.getCurrentGameId());
+        query.setUserId(ThreadLocalUtil.getCurrentUserId());
         return signApplyService.fetchTeamPage(query);
     }
 
