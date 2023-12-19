@@ -21,16 +21,31 @@ public class GameJudgeController {
     @Resource
     private GameJudgeService gameJudgeService;
 
+    /**
+     * 分页列表数据
+     * @param query
+     * @return
+     */
     @RequestMapping("/list")
     public ApiResponse<Page<GroupLabelVo>> fetchPage(GameJudgeListQuery query) {
         return ApiResponse.success(gameJudgeService.fetchPage(query));
     }
 
+    /**
+     * 全部列表数据
+     * @param query
+     * @return
+     */
     @RequestMapping("/data")
     public ApiResponse<Page<GroupLabelVo>> fetchData(GameJudgeListQuery query) {
         return ApiResponse.success(gameJudgeService.fetchList(query.getGameId()));
     }
 
+    /**
+     * 分配裁判
+     * @param query
+     * @return
+     */
     @RequestMapping("/assign")
     public ApiResponse<Boolean> assign(GameJudgeAssignQuery query) {
         return ApiResponse.success(gameJudgeService.assign(query));

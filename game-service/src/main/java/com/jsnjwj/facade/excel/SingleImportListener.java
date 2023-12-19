@@ -4,7 +4,7 @@ import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.read.listener.ReadListener;
 import com.alibaba.excel.util.ListUtils;
 import com.alibaba.fastjson2.JSON;
-import com.jsnjwj.facade.dto.ImportSingleDto;
+import com.jsnjwj.facade.easyexcel.upload.ImportSingleUploadDto;
 import com.jsnjwj.facade.manager.SignApplyManager;
 import lombok.extern.slf4j.Slf4j;
 
@@ -12,14 +12,14 @@ import javax.annotation.Resource;
 import java.util.List;
 
 @Slf4j
-public class SingleImportListener implements ReadListener<ImportSingleDto> {
+public class SingleImportListener implements ReadListener<ImportSingleUploadDto> {
 
     private static final int BATCH_COUNT = 100;
     @Resource
     private SignApplyManager signApplyManager;
     private Long gameId;
 
-    private List<ImportSingleDto> cachedDataList = ListUtils.newArrayListWithExpectedSize(BATCH_COUNT);
+    private List<ImportSingleUploadDto> cachedDataList = ListUtils.newArrayListWithExpectedSize(BATCH_COUNT);
 
     public SingleImportListener(Long gameId, SignApplyManager signApplyManager) {
         // TODO document why this constructor is empty
@@ -28,7 +28,7 @@ public class SingleImportListener implements ReadListener<ImportSingleDto> {
     }
 
     @Override
-    public void invoke(ImportSingleDto tcSignTeam, AnalysisContext analysisContext) {
+    public void invoke(ImportSingleUploadDto tcSignTeam, AnalysisContext analysisContext) {
         log.info("解析到一条数据:{}", JSON.toJSONString(tcSignTeam));
         cachedDataList.add(tcSignTeam);
 

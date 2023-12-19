@@ -4,7 +4,7 @@ import com.alibaba.excel.EasyExcel;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsnjwj.common.request.BaseRequest;
 import com.jsnjwj.common.response.ApiResponse;
-import com.jsnjwj.facade.dto.ImportTeamDto;
+import com.jsnjwj.facade.easyexcel.upload.ImportTeamUploadDto;
 import com.jsnjwj.facade.dto.SignSingleDto;
 import com.jsnjwj.facade.entity.SignTeamEntity;
 import com.jsnjwj.facade.excel.TeamImportListener;
@@ -53,7 +53,7 @@ public class SignApplyServiceImpl implements SignApplyService {
         InputStream is = file.getInputStream();
 
         TeamImportListener userReadListener = new TeamImportListener(request.getGameId(), signApplyManager);
-        EasyExcel.read(is, ImportTeamDto.class, userReadListener).sheet(0).headRowNumber(1).doRead();
+        EasyExcel.read(is, ImportTeamUploadDto.class, userReadListener).sheet(0).headRowNumber(1).doRead();
         return ApiResponse.success();
     }
 

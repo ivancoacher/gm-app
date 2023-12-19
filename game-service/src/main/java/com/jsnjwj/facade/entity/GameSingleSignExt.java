@@ -8,11 +8,11 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- * @TableName tc_game_group_sign_ext
+ * @TableName tc_game_single_sign_ext
  */
 @Data
-@TableName(value = "tc_game_group_sign_ext")
-public class TcGameGroupSignExt implements Serializable {
+@TableName(value = "tc_game_single_sign_ext")
+public class GameSingleSignExt implements Serializable {
 
     /**
      *

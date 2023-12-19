@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="service.mapper.TcGameRuleSettingMapper">
 
-    <resultMap id="BaseResultMap" type="com.jsnjwj.facade.entity.TcGameRuleSetting">
+    <resultMap id="BaseResultMap" type="com.jsnjwj.facade.entity.GameRuleSetting">
         <id property="id" column="id" jdbcType="INTEGER"/>
         <result property="gameId" column="game_id" jdbcType="INTEGER"/>
         <result property="itemId" column="item_id" jdbcType="INTEGER"/>

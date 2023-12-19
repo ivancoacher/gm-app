@@ -1,10 +1,10 @@
-package com.jsnjwj.facade.dto;
+package com.jsnjwj.facade.easyexcel.upload;
 
 import com.alibaba.excel.annotation.ExcelProperty;
 import lombok.Data;
 
 @Data
-public class ImportTeamDto {
+public class ImportTeamUploadDto {
 
     @ExcelProperty(value = "队伍名")
     private String teamName;

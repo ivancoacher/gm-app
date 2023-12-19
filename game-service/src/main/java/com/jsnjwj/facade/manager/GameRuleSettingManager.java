@@ -1,8 +1,8 @@
 package com.jsnjwj.facade.manager;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.jsnjwj.facade.entity.TcGameRuleSetting;
-import com.jsnjwj.facade.entity.TcGameRuleSettingDetail;
+import com.jsnjwj.facade.entity.GameRuleSetting;
+import com.jsnjwj.facade.entity.GameRuleSettingDetail;
 import com.jsnjwj.facade.mapper.GameRuleSettingDetailMapper;
 import com.jsnjwj.facade.mapper.GameRuleSettingMapper;
 import com.jsnjwj.facade.vo.GameRuleSettingVo;
@@ -20,10 +20,10 @@ public class GameRuleSettingManager {
     private GameRuleSettingDetailMapper gameRuleSettingDetailMapper;
 
     public GameRuleSettingVo fetchOne(Long gameId, Long itemId) {
-        LambdaQueryWrapper<TcGameRuleSetting> query = new LambdaQueryWrapper<>();
-        query.eq(TcGameRuleSetting::getGameId, gameId);
-        query.eq(TcGameRuleSetting::getItemId, itemId);
-        TcGameRuleSetting gameRuleSetting = gameRuleSettingMapper.selectOne(query);
+        LambdaQueryWrapper<GameRuleSetting> query = new LambdaQueryWrapper<>();
+        query.eq(GameRuleSetting::getGameId, gameId);
+        query.eq(GameRuleSetting::getItemId, itemId);
+        GameRuleSetting gameRuleSetting = gameRuleSettingMapper.selectOne(query);
 
         GameRuleSettingVo gameRuleSettingVo = new GameRuleSettingVo();
 
@@ -31,9 +31,9 @@ public class GameRuleSettingManager {
         gameRuleSettingVo.setItemId(itemId);
         gameRuleSettingVo.setJudgeGroupNum(gameRuleSetting.getJudgeGroupNum());
 
-        LambdaQueryWrapper<TcGameRuleSettingDetail> detailQuery = new LambdaQueryWrapper<>();
-        detailQuery.eq(TcGameRuleSettingDetail::getSettingId, gameRuleSetting.getId());
-        List<TcGameRuleSettingDetail> details = gameRuleSettingDetailMapper.selectList(detailQuery);
+        LambdaQueryWrapper<GameRuleSettingDetail> detailQuery = new LambdaQueryWrapper<>();
+        detailQuery.eq(GameRuleSettingDetail::getSettingId, gameRuleSetting.getId());
+        List<GameRuleSettingDetail> details = gameRuleSettingDetailMapper.selectList(detailQuery);
         List<GameRuleSettingVo.GameRuleDetailVo> newDetails = new ArrayList<>();
         details.forEach(item -> {
             GameRuleSettingVo.GameRuleDetailVo detail = new GameRuleSettingVo.GameRuleDetailVo();

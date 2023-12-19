@@ -10,11 +10,11 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * @TableName tc_games_ext
+ * @TableName tc_game_rule_setting_detail
  */
+@TableName(value = "tc_game_rule_setting_detail")
 @Data
-@TableName(value = "tc_games_ext")
-public class TcGamesExt implements Serializable {
+public class GameRuleSettingDetail implements Serializable {
 
     /**
      *
@@ -25,63 +25,43 @@ public class TcGamesExt implements Serializable {
     /**
      *
      */
-    private String gameName;
+    private Long settingId;
 
     /**
      *
      */
-    private String gameType;
+    private Integer num;
 
     /**
      *
      */
-    private String signType;
+    private Integer scoreRatio;
 
     /**
      *
      */
-    private Date startTime;
+    private Integer scoreWeight;
 
     /**
      *
      */
-    private Date endTime;
+    private Integer extraType;
 
     /**
      *
      */
-    private Date fightStartTime;
-
-    /**
-     *
-     */
-    private Integer status;
+    private String extraName;
 
     /**
      *
      */
     @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
-    private Date createTime;
+    private Date createdAt;
 
     /**
      *
      */
     @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
-    private Date updateTime;
-
-    /**
-     *
-     */
-    private String smallTitle;
-
-    /**
-     *
-     */
-    private Integer applyCount;
-
-    /**
-     *
-     */
-    private Date fightEndTime;
+    private Date updatedAt;
 
 }

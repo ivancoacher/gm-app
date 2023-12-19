@@ -149,15 +149,15 @@ public class GameArrangeServiceImpl implements GameArrangeService {
 
     @Override
     public ApiResponse<?> setRules(GameSettingSetRulesQuery query) {
-        TcGameRuleSetting ruleSetting = gameSettingRuleManager.fetchRule(query.getGameId(), query.getItemId());
+        GameRuleSetting ruleSetting = gameSettingRuleManager.fetchRule(query.getGameId(), query.getItemId());
 
         if (Objects.nonNull(ruleSetting)) {
             ruleSetting.setScoreRule(SettingRuleEnum.getByCode(query.getScoreRule()));
             ruleSetting.setJudgeGroupNum(query.getJudgeGroupNum());
-            List<TcGameRuleSettingDetail> details = new ArrayList<>();
+            List<GameRuleSettingDetail> details = new ArrayList<>();
 
             for (GameSettingSetRulesQuery.RuleContent ruleContent : query.getRuleContentList()) {
-                TcGameRuleSettingDetail detail = new TcGameRuleSettingDetail();
+                GameRuleSettingDetail detail = new GameRuleSettingDetail();
                 detail.setScoreWeight(ruleContent.getRuleWeight());
                 detail.setExtraName(ruleContent.getRuleExtraName());
                 detail.setScoreRatio(ruleContent.getRuleRatio());
@@ -171,7 +171,7 @@ public class GameArrangeServiceImpl implements GameArrangeService {
             return ApiResponse.success(true);
         }
 
-        ruleSetting = new TcGameRuleSetting();
+        ruleSetting = new GameRuleSetting();
 
         ruleSetting.setGameId(query.getGameId());
         ruleSetting.setItemId(query.getItemId());
@@ -180,10 +180,10 @@ public class GameArrangeServiceImpl implements GameArrangeService {
         ruleSetting.setCreatedAt(new Date());
         gameSettingRuleManager.saveRuleInfo(ruleSetting);
 
-        List<TcGameRuleSettingDetail> details = new ArrayList<>();
+        List<GameRuleSettingDetail> details = new ArrayList<>();
 
         for (GameSettingSetRulesQuery.RuleContent ruleContent : query.getRuleContentList()) {
-            TcGameRuleSettingDetail detail = new TcGameRuleSettingDetail();
+            GameRuleSettingDetail detail = new GameRuleSettingDetail();
             detail.setScoreWeight(ruleContent.getRuleWeight());
             detail.setExtraName(ruleContent.getRuleExtraName());
             detail.setScoreRatio(ruleContent.getRuleRatio());
@@ -199,9 +199,9 @@ public class GameArrangeServiceImpl implements GameArrangeService {
 
     @Override
     public ApiResponse<?> getRules(Long gameId, Long itemId) {
-        TcGameRuleSetting ruleSettingVo = gameSettingRuleManager.fetchRule(gameId, itemId);
+        GameRuleSetting ruleSettingVo = gameSettingRuleManager.fetchRule(gameId, itemId);
 
-        List<TcGameRuleSettingDetail> ruleSettingDetails = gameSettingRuleManager
+        List<GameRuleSettingDetail> ruleSettingDetails = gameSettingRuleManager
                 .fetchRuleDetail(ruleSettingVo.getId());
 
         GameRuleSettingVo response = new GameRuleSettingVo();
@@ -211,7 +211,7 @@ public class GameArrangeServiceImpl implements GameArrangeService {
         response.setItemId(gameId);
 
         List<GameRuleSettingVo.GameRuleDetailVo> ruleDetailVos = new ArrayList<>();
-        for (TcGameRuleSettingDetail detail : ruleSettingDetails) {
+        for (GameRuleSettingDetail detail : ruleSettingDetails) {
             GameRuleSettingVo.GameRuleDetailVo vo = new GameRuleSettingVo.GameRuleDetailVo();
 
             vo.setSettingId(ruleSettingVo.getId());

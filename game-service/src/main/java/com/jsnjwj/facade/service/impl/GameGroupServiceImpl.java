@@ -1,6 +1,7 @@
 package com.jsnjwj.facade.service.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.jsnjwj.common.request.BaseRequest;
 import com.jsnjwj.common.response.ApiResponse;
 import com.jsnjwj.facade.entity.GameGroupEntity;
 import com.jsnjwj.facade.manager.GameGroupManager;
@@ -11,6 +12,7 @@ import com.jsnjwj.facade.service.GameGroupService;
 import com.jsnjwj.facade.vo.GameGroupAllVo;
 import com.jsnjwj.facade.vo.GroupLabelVo;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -28,7 +30,6 @@ public class GameGroupServiceImpl implements GameGroupService {
      */
     @Override
     public Page<GroupLabelVo> fetchPages(GameGroupListQuery query) {
-
         return groupManager.fetchGroupPage(query.getGameId());
     }
 
@@ -44,8 +45,8 @@ public class GameGroupServiceImpl implements GameGroupService {
 
     /**
      * 查询包含项目数据
-     *
-     * @return
+     *  group+item
+     * @return List<GameGroupAllVo>
      */
     @Override
     public List<GameGroupAllVo> fetchAll(Long gameId) {
@@ -63,6 +64,12 @@ public class GameGroupServiceImpl implements GameGroupService {
         return ApiResponse.success(result);
     }
 
+    @Override
+    public ApiResponse<?> importData(BaseRequest request, MultipartFile file) {
+        GameGroupEntity gameGroup = new GameGroupEntity();
+        gameGroup.setGameId(request.getGameId());
+        return ApiResponse.success(true);
+    }
     @Override
     public ApiResponse<?> update(GameGroupUpdateQuery query) {
         GameGroupEntity gameGroup = new GameGroupEntity();

@@ -1,7 +1,7 @@
 package com.jsnjwj.facade.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.jsnjwj.facade.entity.TcGameGroupSignExt;
+import com.jsnjwj.facade.entity.GameGroupSignExt;
 
 /**
  * @author user
@@ -9,6 +9,6 @@ import com.jsnjwj.facade.entity.TcGameGroupSignExt;
  * @createDate 2023-07-09 01:36:35
  * @Entity com.jsnjwj.service.entity.TcGameGroupSignExt
  */
-public interface GameGroupSignExtMapper extends BaseMapper<TcGameGroupSignExt> {
+public interface GameGroupSignExtMapper extends BaseMapper<GameGroupSignExt> {
 
 }

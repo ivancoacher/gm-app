@@ -8,7 +8,7 @@ import com.jsnjwj.facade.dto.GroupingItemDto;
 import com.jsnjwj.facade.entity.GameItemEntity;
 import com.jsnjwj.facade.entity.SignArrangeRecordEntity;
 import com.jsnjwj.facade.entity.SignSingleEntity;
-import com.jsnjwj.facade.entity.TcGameRuleSetting;
+import com.jsnjwj.facade.entity.GameRuleSetting;
 import com.jsnjwj.facade.mapper.GameItemMapper;
 import com.jsnjwj.facade.mapper.GameRuleSettingMapper;
 import com.jsnjwj.facade.mapper.SignSingleMapper;
@@ -68,7 +68,7 @@ public class GameGroupingServiceImpl implements GameGroupingService {
         if (CollectionUtils.isNotEmpty(rst.getRecords())) {
 
             List<Long> itemIds = rst.getRecords().stream().map(ItemLabelVo::getItemId).collect(Collectors.toList());
-            Map<Long, TcGameRuleSetting> ruleSets = getRuleSettingMap(itemIds);
+            Map<Long, GameRuleSetting> ruleSets = getRuleSettingMap(itemIds);
             rst.getRecords().forEach(record -> {
                 GroupingItemDto groupingItemDto = new GroupingItemDto();
 
@@ -89,12 +89,12 @@ public class GameGroupingServiceImpl implements GameGroupingService {
 
     }
 
-    private Map<Long, TcGameRuleSetting> getRuleSettingMap(List<Long> itemIdList) {
-        LambdaQueryWrapper<TcGameRuleSetting> query = new LambdaQueryWrapper<>();
-        query.in(TcGameRuleSetting::getItemId, itemIdList);
-        List<TcGameRuleSetting> result = gameRuleSettingMapper.selectList(query);
+    private Map<Long, GameRuleSetting> getRuleSettingMap(List<Long> itemIdList) {
+        LambdaQueryWrapper<GameRuleSetting> query = new LambdaQueryWrapper<>();
+        query.in(GameRuleSetting::getItemId, itemIdList);
+        List<GameRuleSetting> result = gameRuleSettingMapper.selectList(query);
 
-        return result.stream().collect(Collectors.toMap(TcGameRuleSetting::getItemId, Function.identity()));
+        return result.stream().collect(Collectors.toMap(GameRuleSetting::getItemId, Function.identity()));
     }
 
     @Override

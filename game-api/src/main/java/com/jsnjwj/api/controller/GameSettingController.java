@@ -22,7 +22,7 @@ public class GameSettingController {
     private GameSettingService gameSettingService;
 
     /**
-     * 场地
+     * 场地列表
      *
      * @return
      */

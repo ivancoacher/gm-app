@@ -1,6 +1,7 @@
 package com.jsnjwj.facade.service.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.jsnjwj.common.request.BaseRequest;
 import com.jsnjwj.common.response.ApiResponse;
 import com.jsnjwj.facade.entity.GameItemEntity;
 import com.jsnjwj.facade.manager.GameItemManager;
@@ -10,6 +11,7 @@ import com.jsnjwj.facade.query.GameItemUpdateQuery;
 import com.jsnjwj.facade.service.GameItemService;
 import com.jsnjwj.facade.vo.ItemLabelVo;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -54,7 +56,7 @@ public class GameItemServiceImpl implements GameItemService {
     }
 
     @Override
-    public void importData() {
+    public void importData(BaseRequest query, MultipartFile file) {
 
     }
 

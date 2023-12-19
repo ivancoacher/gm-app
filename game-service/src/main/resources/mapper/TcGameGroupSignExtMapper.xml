@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="service.mapper.TcGameGroupSignExtMapper">
 
-    <resultMap id="BaseResultMap" type="com.jsnjwj.facade.entity.TcGameGroupSignExt">
+    <resultMap id="BaseResultMap" type="com.jsnjwj.facade.entity.GameGroupSignExt">
         <id property="id" column="id" jdbcType="INTEGER"/>
         <result property="gameId" column="game_id" jdbcType="INTEGER"/>
         <result property="dictCode" column="dict_code" jdbcType="VARCHAR"/>

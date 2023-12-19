@@ -1,8 +1,8 @@
 package com.jsnjwj.facade.manager;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.jsnjwj.facade.entity.TcGameRuleSetting;
-import com.jsnjwj.facade.entity.TcGameRuleSettingDetail;
+import com.jsnjwj.facade.entity.GameRuleSetting;
+import com.jsnjwj.facade.entity.GameRuleSettingDetail;
 import com.jsnjwj.facade.mapper.GameRuleSettingDetailMapper;
 import com.jsnjwj.facade.mapper.GameRuleSettingMapper;
 import org.springframework.stereotype.Service;
@@ -20,29 +20,29 @@ public class GameSettingRuleManager {
     @Resource
     private GameRuleSettingDetailMapper gameRuleSettingDetailMapper;
 
-    public int saveRuleInfo(TcGameRuleSetting ruleSetting) {
+    public int saveRuleInfo(GameRuleSetting ruleSetting) {
         return gameRuleSettingMapper.insert(ruleSetting);
     }
 
-    public int updateRuleInfo(TcGameRuleSetting ruleSetting) {
+    public int updateRuleInfo(GameRuleSetting ruleSetting) {
         return gameRuleSettingMapper.updateById(ruleSetting);
     }
 
-    public int saveRuleDetail(Long gameId, Long itemId, List<TcGameRuleSettingDetail> list) {
-        LambdaQueryWrapper<TcGameRuleSettingDetail> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(TcGameRuleSettingDetail::getSettingId, itemId);
+    public int saveRuleDetail(Long gameId, Long itemId, List<GameRuleSettingDetail> list) {
+        LambdaQueryWrapper<GameRuleSettingDetail> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(GameRuleSettingDetail::getSettingId, itemId);
         gameRuleSettingDetailMapper.delete(wrapper);
         return gameRuleSettingDetailMapper.insertBatchSomeColumn(list);
     }
 
-    public TcGameRuleSetting fetchRule(Long gameId, Long itemId) {
-        LambdaQueryWrapper<TcGameRuleSetting> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(TcGameRuleSetting::getGameId, gameId);
-        wrapper.eq(TcGameRuleSetting::getItemId, itemId);
+    public GameRuleSetting fetchRule(Long gameId, Long itemId) {
+        LambdaQueryWrapper<GameRuleSetting> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(GameRuleSetting::getGameId, gameId);
+        wrapper.eq(GameRuleSetting::getItemId, itemId);
         return gameRuleSettingMapper.selectById(wrapper);
     }
 
-    public List<TcGameRuleSettingDetail> fetchRuleDetail(Long settingId) {
+    public List<GameRuleSettingDetail> fetchRuleDetail(Long settingId) {
         return new ArrayList<>();
     }
 

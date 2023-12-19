@@ -1,6 +1,6 @@
 package com.jsnjwj.facade.mapper;
 
-import com.jsnjwj.facade.entity.TcGameRuleSettingDetail;
+import com.jsnjwj.facade.entity.GameRuleSettingDetail;
 
 /**
  * @author user
@@ -8,6 +8,6 @@ import com.jsnjwj.facade.entity.TcGameRuleSettingDetail;
  * @createDate 2023-07-09 01:36:35
  * @Entity com.jsnjwj.service.entity.TcGameRuleSettingDetail
  */
-public interface GameRuleSettingDetailMapper extends CommonMapper<TcGameRuleSettingDetail> {
+public interface GameRuleSettingDetailMapper extends CommonMapper<GameRuleSettingDetail> {
 
 }

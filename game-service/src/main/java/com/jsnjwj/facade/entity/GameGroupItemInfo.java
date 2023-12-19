@@ -13,9 +13,9 @@ import java.util.Date;
 /**
  * @TableName tc_game_rule_setting
  */
-@TableName(value = "tc_game_rule_setting")
+@TableName(value = "tc_game_group_item_info")
 @Data
-public class TcGameRuleSetting implements Serializable {
+public class GameGroupItemInfo implements Serializable {
 
     /**
      *
@@ -33,15 +33,9 @@ public class TcGameRuleSetting implements Serializable {
      */
     private Long itemId;
 
-    /**
-     *
-     */
-    private Integer judgeGroupNum;
+    private Long groupId;
 
-    /**
-     * 积分规则
-     */
-    private SettingRuleEnum scoreRule;
+    private String infoName;
 
     /**
      *

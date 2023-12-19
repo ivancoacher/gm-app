@@ -1,7 +1,7 @@
 package com.jsnjwj.facade.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.jsnjwj.facade.entity.TcGamesExt;
+import com.jsnjwj.facade.entity.GamesExt;
 
 /**
  * @author user
@@ -9,6 +9,6 @@ import com.jsnjwj.facade.entity.TcGamesExt;
  * @createDate 2023-07-09 01:36:35
  * @Entity com.jsnjwj.service.entity.TcGamesExt
  */
-public interface GamesExtMapper extends BaseMapper<TcGamesExt> {
+public interface GamesExtMapper extends BaseMapper<GamesExt> {
 
 }

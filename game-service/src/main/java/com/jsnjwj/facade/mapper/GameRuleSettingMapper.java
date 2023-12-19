@@ -1,7 +1,7 @@
 package com.jsnjwj.facade.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.jsnjwj.facade.entity.TcGameRuleSetting;
+import com.jsnjwj.facade.entity.GameRuleSetting;
 
 /**
  * @author user
@@ -9,6 +9,6 @@ import com.jsnjwj.facade.entity.TcGameRuleSetting;
  * @createDate 2023-07-09 01:36:35
  * @Entity com.jsnjwj.service.entity.TcGameRuleSetting
  */
-public interface GameRuleSettingMapper extends BaseMapper<TcGameRuleSetting> {
+public interface GameRuleSettingMapper extends BaseMapper<GameRuleSetting> {
 
 }

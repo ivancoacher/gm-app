@@ -2,8 +2,8 @@ package com.jsnjwj.facade.manager;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.jsnjwj.facade.dto.ImportSingleDto;
-import com.jsnjwj.facade.dto.ImportTeamDto;
+import com.jsnjwj.facade.easyexcel.upload.ImportSingleUploadDto;
+import com.jsnjwj.facade.easyexcel.upload.ImportTeamUploadDto;
 import com.jsnjwj.facade.dto.SignSingleDto;
 import com.jsnjwj.facade.entity.SignSingleEntity;
 import com.jsnjwj.facade.entity.SignTeamEntity;
@@ -58,7 +58,7 @@ public class SignApplyManager {
 
     }
 
-    public void saveTeamBatch(Long gameId, List<ImportTeamDto> data) {
+    public void saveTeamBatch(Long gameId, List<ImportTeamUploadDto> data) {
         List<SignTeamEntity> datas = new ArrayList<>();
         if (data.size() > 0) {
             data.forEach(d -> {
@@ -73,7 +73,7 @@ public class SignApplyManager {
         signTeamMapper.saveBatch(datas);
     }
 
-    public void saveSingleBatch(Long gameId, List<ImportSingleDto> data) {
+    public void saveSingleBatch(Long gameId, List<ImportSingleUploadDto> data) {
         List<SignSingleEntity> datas = new ArrayList<>();
         if (data.size() > 0) {
             data.forEach(d -> {
