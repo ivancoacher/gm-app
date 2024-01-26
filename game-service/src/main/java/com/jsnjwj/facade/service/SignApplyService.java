@@ -2,6 +2,7 @@ package com.jsnjwj.facade.service;
 
 import com.jsnjwj.common.request.BaseRequest;
 import com.jsnjwj.common.response.ApiResponse;
+import com.jsnjwj.facade.query.SignSingleImportQuery;
 import com.jsnjwj.facade.query.SignSingleListQuery;
 import com.jsnjwj.facade.query.SignTeamListQuery;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,7 +19,7 @@ public interface SignApplyService {
 
     ApiResponse<?> exportTeamDemo(BaseRequest baseRequest, MultipartFile file) throws IOException;
 
-    ApiResponse<?> importSingle(BaseRequest baseRequest, MultipartFile file);
+    ApiResponse<?> importSingle(Integer importType, MultipartFile file);
 
     ApiResponse<?> exportSingleDemo(BaseRequest baseRequest, MultipartFile file);
 }

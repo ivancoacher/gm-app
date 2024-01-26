@@ -9,6 +9,7 @@ import com.jsnjwj.facade.dto.SignSingleDto;
 import com.jsnjwj.facade.entity.SignTeamEntity;
 import com.jsnjwj.facade.excel.TeamImportListener;
 import com.jsnjwj.facade.manager.SignApplyManager;
+import com.jsnjwj.facade.query.SignSingleImportQuery;
 import com.jsnjwj.facade.query.SignSingleListQuery;
 import com.jsnjwj.facade.query.SignTeamListQuery;
 import com.jsnjwj.facade.service.SignApplyService;
@@ -63,7 +64,7 @@ public class SignApplyServiceImpl implements SignApplyService {
     }
 
     @Override
-    public ApiResponse<?> importSingle(BaseRequest request, MultipartFile file) {
+    public ApiResponse<?> importSingle(Integer importType, MultipartFile file) {
         return null;
     }
 

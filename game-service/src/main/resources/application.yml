@@ -1,9 +1,0 @@
-spring:
-  application:
-    name: contract-service
-  servlet:
-    multipart:
-      max-file-size: 5MB
-      max-request-size: 100MB
-  profiles:
-    active: dev
