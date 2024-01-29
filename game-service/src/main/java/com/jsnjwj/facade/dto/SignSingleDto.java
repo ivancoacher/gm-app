@@ -7,41 +7,40 @@ import java.util.Date;
 @Data
 public class SignSingleDto {
 
-    private Long applyId;
+	private Long applyId;
 
-    private Long teamId;
+	private Long teamId;
 
-    private Long gameId;
+	private Long gameId;
 
-    private String teamName;
+	private String teamName;
 
-    private String name;
+	private String name;
 
-    private Integer sex;
+	private Integer sex;
 
-    private Integer age;
+	private Integer age;
 
-    private Long groupId;
+	private Long groupId;
 
-    private String groupName;
+	private String groupName;
 
-    private Long itemId;
+	private Long itemId;
 
-    private String itemName;
+	private String itemName;
 
-    private String remark;
+	private String remark;
 
-    private Date createTime;
+	private Date createTime;
 
-    private Date updateTime;
+	private Date updateTime;
 
-    private Integer signStatus;
+	private Integer signStatus;
 
-    private String signStatusDesc;
+	private String signStatusDesc;
 
-    private SignTeamDto team;
+	private SignTeamDto team;
 
-    private String orgName;
-
+	private String orgName;
 
 }

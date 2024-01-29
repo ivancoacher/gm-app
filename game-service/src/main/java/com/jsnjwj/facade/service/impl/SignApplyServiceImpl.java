@@ -37,83 +37,85 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class SignApplyServiceImpl implements SignApplyService {
 
-    private final SignApplyManager signApplyManager;
+	private final SignApplyManager signApplyManager;
 
-    @Override
-    public ApiResponse<?> fetchSinglePage(SignSingleListQuery query) {
-        Page<SignSingleDto> page = new Page<>();
-        List<SignSingleDto> list = signApplyManager.fetchSignSinglePage(query);
-        list.forEach(signRecord->{
-            GameGroupEntity groupEntity = signApplyManager.getGroupById(signRecord.getGroupId());
-            GameItemEntity itemEntity = signApplyManager.getItemById(signRecord.getItemId());
-            SignTeamEntity teamEntity = signApplyManager.getTeamById(signRecord.getTeamId());
-            if (Objects.nonNull(groupEntity)){
-                signRecord.setGroupName(groupEntity.getGroupName());
-            }
-            if (Objects.nonNull(itemEntity)){
-                signRecord.setItemName(itemEntity.getItemName());
-            }
+	@Override
+	public ApiResponse<?> fetchSinglePage(SignSingleListQuery query) {
+		Page<SignSingleDto> page = new Page<>();
+		List<SignSingleDto> list = signApplyManager.fetchSignSinglePage(query);
+		list.forEach(signRecord -> {
+			GameGroupEntity groupEntity = signApplyManager.getGroupById(signRecord.getGroupId());
+			GameItemEntity itemEntity = signApplyManager.getItemById(signRecord.getItemId());
+			SignTeamEntity teamEntity = signApplyManager.getTeamById(signRecord.getTeamId());
+			if (Objects.nonNull(groupEntity)) {
+				signRecord.setGroupName(groupEntity.getGroupName());
+			}
+			if (Objects.nonNull(itemEntity)) {
+				signRecord.setItemName(itemEntity.getItemName());
+			}
 
-            if (Objects.nonNull(teamEntity)){
-                SignTeamDto teamDto = new SignTeamDto();
-                teamDto.setTeamName(teamEntity.getTeamName());
-                teamDto.setCoachName(teamEntity.getCoachName());
-                teamDto.setCoachPhone(teamEntity.getCoachTel());
-                teamDto.setLeaderName(teamEntity.getLeaderName());
-                teamDto.setLeaderPhone(teamEntity.getLeaderTel());
-                signRecord.setTeam(teamDto);
+			if (Objects.nonNull(teamEntity)) {
+				SignTeamDto teamDto = new SignTeamDto();
+				teamDto.setTeamName(teamEntity.getTeamName());
+				teamDto.setCoachName(teamEntity.getCoachName());
+				teamDto.setCoachPhone(teamEntity.getCoachTel());
+				teamDto.setLeaderName(teamEntity.getLeaderName());
+				teamDto.setLeaderPhone(teamEntity.getLeaderTel());
+				signRecord.setTeam(teamDto);
 
-            }
-        });
-        page.setRecords(list);
-        page.setTotal(signApplyManager.fetchSignSingleCount(query));
-        return ApiResponse.success(page);
-    }
+			}
+		});
+		page.setRecords(list);
+		page.setTotal(signApplyManager.fetchSignSingleCount(query));
+		return ApiResponse.success(page);
+	}
 
-    @Override
-    public ApiResponse<?> fetchTeamPage(SignTeamListQuery query) {
+	@Override
+	public ApiResponse<?> fetchTeamPage(SignTeamListQuery query) {
 
-        Page<SignTeamEntity> page = signApplyManager.fetchSignTeamPage(query);
+		Page<SignTeamEntity> page = signApplyManager.fetchSignTeamPage(query);
 
-        return ApiResponse.success(page);
-    }
+		return ApiResponse.success(page);
+	}
 
-    @Override
-    public ApiResponse<?> importTeam(BaseRequest request, MultipartFile file) throws IOException {
-        InputStream is = file.getInputStream();
+	@Override
+	public ApiResponse<?> importTeam(BaseRequest request, MultipartFile file) throws IOException {
+		InputStream is = file.getInputStream();
 
-        TeamImportListener userReadListener = new TeamImportListener(request.getGameId(), signApplyManager);
-        EasyExcel.read(is, ImportTeamUploadDto.class, userReadListener).sheet(0).headRowNumber(1).doRead();
-        return ApiResponse.success();
-    }
+		TeamImportListener userReadListener = new TeamImportListener(request.getGameId(), signApplyManager);
+		EasyExcel.read(is, ImportTeamUploadDto.class, userReadListener).sheet(0).headRowNumber(1).doRead();
+		return ApiResponse.success();
+	}
 
-    @Override
-    public ApiResponse<?> exportTeamDemo(BaseRequest baseRequest, MultipartFile file) throws IOException {
-        return null;
-    }
+	@Override
+	public ApiResponse<?> exportTeamDemo(BaseRequest baseRequest, MultipartFile file) throws IOException {
+		return null;
+	}
 
-    @Override
-    public ApiResponse<?> importSingle(Integer importType, MultipartFile file) {
+	@Override
+	public ApiResponse<?> importSingle(Integer importType, MultipartFile file) {
 
-        try{
-            //初始化监听器
-            SingleImportListener singleImportListener = new SingleImportListener(100L,signApplyManager);
-            //解析数据
-            EasyExcelFactory.read(file.getInputStream(), singleImportListener)
-                    .head(ImportSingleUploadDto.class)
-                    .headRowNumber(1)
-                    .sheet(0).doReadSync();
+		try {
+			// 初始化监听器
+			SingleImportListener singleImportListener = new SingleImportListener(100L, signApplyManager);
+			// 解析数据
+			EasyExcelFactory.read(file.getInputStream(), singleImportListener)
+				.head(ImportSingleUploadDto.class)
+				.headRowNumber(1)
+				.sheet(0)
+				.doReadSync();
 
+		}
+		catch (Exception e) {
+			log.error("importSingle exception", e);
+		}
 
-        }catch (Exception e){
-            log.error("importSingle exception",e);
-        }
+		return ApiResponse.success();
+	}
 
-        return ApiResponse.success();
-    }
+	@Override
+	public ApiResponse<?> exportSingleDemo(BaseRequest baseRequest, MultipartFile file) {
+		return null;
+	}
 
-    @Override
-    public ApiResponse<?> exportSingleDemo(BaseRequest baseRequest, MultipartFile file) {
-        return null;
-    }
 }

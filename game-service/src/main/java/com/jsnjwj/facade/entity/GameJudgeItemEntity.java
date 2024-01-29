@@ -14,25 +14,25 @@ import java.io.Serializable;
 @TableName(value = "tc_game_judge_item")
 public class GameJudgeItemEntity implements Serializable {
 
-    /**
-     *
-     */
-    @TableId(type = IdType.AUTO)
-    private Integer id;
+	/**
+	 *
+	 */
+	@TableId(type = IdType.AUTO)
+	private Integer id;
 
-    /**
-     *
-     */
-    private Integer gameId;
+	/**
+	 *
+	 */
+	private Integer gameId;
 
-    /**
-     *
-     */
-    private Integer judgeId;
+	/**
+	 *
+	 */
+	private Integer judgeId;
 
-    /**
-     *
-     */
-    private Integer itemId;
+	/**
+	 *
+	 */
+	private Integer itemId;
 
 }

@@ -6,12 +6,14 @@ import org.springframework.scheduling.annotation.Async;
 import java.util.List;
 
 public interface SignArrangeSequenceService {
-    void syncArrangeRecord();
 
-    @Async
-    void syncArrangeRecord(GameItemEntity itemEntity);
+	void syncArrangeRecord();
 
-    List<?> fetchList(Long gameId);
+	@Async
+	void syncArrangeRecord(GameItemEntity itemEntity);
 
-    int update();
+	List<?> fetchList(Long gameId);
+
+	int update();
+
 }

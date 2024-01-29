@@ -6,7 +6,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ImportTeamDto {
-    private String teamName;
 
-    private Long teamId;
+	private String teamName;
+
+	private Long teamId;
+
 }

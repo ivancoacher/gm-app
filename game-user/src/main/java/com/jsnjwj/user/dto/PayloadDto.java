@@ -7,16 +7,16 @@ import java.util.List;
 @Data
 public class PayloadDto {
 
-    private String sub;
+	private String sub;
 
-    private Long iat;
+	private Long iat;
 
-    private Long exp;
+	private Long exp;
 
-    private String jti;
+	private String jti;
 
-    private String username;
+	private String username;
 
-    private List<String> authorities;
+	private List<String> authorities;
 
 }

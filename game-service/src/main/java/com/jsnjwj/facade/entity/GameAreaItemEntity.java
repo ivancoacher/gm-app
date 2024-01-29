@@ -14,29 +14,29 @@ import java.io.Serializable;
 @TableName(value = "tc_game_area_item")
 public class GameAreaItemEntity implements Serializable {
 
-    /**
-     *
-     */
-    @TableId(type = IdType.AUTO)
-    private Integer id;
+	/**
+	 *
+	 */
+	@TableId(type = IdType.AUTO)
+	private Integer id;
 
-    /**
-     *
-     */
-    private Integer areaId;
+	/**
+	 *
+	 */
+	private Integer areaId;
 
-    /**
-     *
-     */
-    private Long gameId;
+	/**
+	 *
+	 */
+	private Long gameId;
 
-    /**
-     *
-     */
-    private Long itemId;
+	/**
+	 *
+	 */
+	private Long itemId;
 
-    private Integer areaNo;
+	private Integer areaNo;
 
-    private Integer sort;
+	private Integer sort;
 
 }

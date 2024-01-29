@@ -5,6 +5,6 @@ import com.jsnjwj.user.entity.UserAccount;
 
 public interface AccountService {
 
-    ApiResponse<UserAccount> fetch(Long userId);
+	ApiResponse<UserAccount> fetch(Long userId);
 
 }

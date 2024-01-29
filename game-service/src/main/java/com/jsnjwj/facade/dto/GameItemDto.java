@@ -5,16 +5,16 @@ import lombok.Data;
 @Data
 public class GameItemDto {
 
-    public Long gameId;
+	public Long gameId;
 
-    public Long itemId;
+	public Long itemId;
 
-    public Long groupId;
+	public Long groupId;
 
-    public String itemName;
+	public String itemName;
 
-    public String groupName;
+	public String groupName;
 
-    public Integer sort;
+	public Integer sort;
 
 }

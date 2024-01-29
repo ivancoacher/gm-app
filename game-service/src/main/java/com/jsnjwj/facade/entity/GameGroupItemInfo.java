@@ -17,36 +17,36 @@ import java.util.Date;
 @Data
 public class GameGroupItemInfo implements Serializable {
 
-    /**
-     *
-     */
-    @TableId(type = IdType.AUTO)
-    private Long id;
+	/**
+	 *
+	 */
+	@TableId(type = IdType.AUTO)
+	private Long id;
 
-    /**
-     *
-     */
-    private Long gameId;
+	/**
+	 *
+	 */
+	private Long gameId;
 
-    /**
-     *
-     */
-    private Long itemId;
+	/**
+	 *
+	 */
+	private Long itemId;
 
-    private Long groupId;
+	private Long groupId;
 
-    private String infoName;
+	private String infoName;
 
-    /**
-     *
-     */
-    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
-    private Date createdAt;
+	/**
+	 *
+	 */
+	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
+	private Date createdAt;
 
-    /**
-     *
-     */
-    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
-    private Date updatedAt;
+	/**
+	 *
+	 */
+	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
+	private Date updatedAt;
 
 }

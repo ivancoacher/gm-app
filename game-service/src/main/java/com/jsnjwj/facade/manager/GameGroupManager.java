@@ -17,74 +17,74 @@ import java.util.List;
 @RequiredArgsConstructor
 public class GameGroupManager {
 
-    private final GameGroupMapper gameGroupMapper;
+	private final GameGroupMapper gameGroupMapper;
 
-    public List<GroupLabelVo> fetchGroups(Long gameId) {
-        LambdaQueryWrapper<GameGroupEntity> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(GameGroupEntity::getGameId, gameId);
-        wrapper.orderByAsc(GameGroupEntity::getSort);
-        List<GameGroupEntity> groups = gameGroupMapper.selectList(wrapper);
-        List<GroupLabelVo> response = new ArrayList<>();
+	public List<GroupLabelVo> fetchGroups(Long gameId) {
+		LambdaQueryWrapper<GameGroupEntity> wrapper = new LambdaQueryWrapper<>();
+		wrapper.eq(GameGroupEntity::getGameId, gameId);
+		wrapper.orderByAsc(GameGroupEntity::getSort);
+		List<GameGroupEntity> groups = gameGroupMapper.selectList(wrapper);
+		List<GroupLabelVo> response = new ArrayList<>();
 
-        if (CollUtil.isNotEmpty(groups)) {
-            groups.forEach(group -> {
-                GroupLabelVo groupLabelVo = new GroupLabelVo();
-                groupLabelVo.setGameId(gameId);
-                groupLabelVo.setGroupName(group.getGroupName());
-                groupLabelVo.setGroupId(group.getId());
-                groupLabelVo.setSort(group.getSort());
-                response.add(groupLabelVo);
-            });
-        }
+		if (CollUtil.isNotEmpty(groups)) {
+			groups.forEach(group -> {
+				GroupLabelVo groupLabelVo = new GroupLabelVo();
+				groupLabelVo.setGameId(gameId);
+				groupLabelVo.setGroupName(group.getGroupName());
+				groupLabelVo.setGroupId(group.getId());
+				groupLabelVo.setSort(group.getSort());
+				response.add(groupLabelVo);
+			});
+		}
 
-        return response;
-    }
+		return response;
+	}
 
-    public Page<GroupLabelVo> fetchGroupPage(Long gameId) {
-        Page<GameGroupEntity> page = new Page<GameGroupEntity>();
-        LambdaQueryWrapper<GameGroupEntity> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(GameGroupEntity::getGameId, gameId);
-        wrapper.orderByAsc(GameGroupEntity::getSort);
-        Page<GameGroupEntity> groups = gameGroupMapper.selectPage(page, wrapper);
+	public Page<GroupLabelVo> fetchGroupPage(Long gameId) {
+		Page<GameGroupEntity> page = new Page<GameGroupEntity>();
+		LambdaQueryWrapper<GameGroupEntity> wrapper = new LambdaQueryWrapper<>();
+		wrapper.eq(GameGroupEntity::getGameId, gameId);
+		wrapper.orderByAsc(GameGroupEntity::getSort);
+		Page<GameGroupEntity> groups = gameGroupMapper.selectPage(page, wrapper);
 
-        Page<GroupLabelVo> response = new Page<>();
-        response.setRecords(new ArrayList<>());
-        if (CollUtil.isNotEmpty(groups.getRecords())) {
-            groups.getRecords().forEach(group -> {
-                GroupLabelVo groupLabelVo = new GroupLabelVo();
-                groupLabelVo.setGameId(gameId);
-                groupLabelVo.setGroupName(group.getGroupName());
-                groupLabelVo.setGroupId(group.getId());
-                groupLabelVo.setSort(group.getSort());
-                response.getRecords().add(groupLabelVo);
-            });
-        }
-        response.setPages(page.getPages());
-        response.setTotal(page.getTotal());
-        response.setCurrent(page.getCurrent());
-        response.setSize(page.getSize());
+		Page<GroupLabelVo> response = new Page<>();
+		response.setRecords(new ArrayList<>());
+		if (CollUtil.isNotEmpty(groups.getRecords())) {
+			groups.getRecords().forEach(group -> {
+				GroupLabelVo groupLabelVo = new GroupLabelVo();
+				groupLabelVo.setGameId(gameId);
+				groupLabelVo.setGroupName(group.getGroupName());
+				groupLabelVo.setGroupId(group.getId());
+				groupLabelVo.setSort(group.getSort());
+				response.getRecords().add(groupLabelVo);
+			});
+		}
+		response.setPages(page.getPages());
+		response.setTotal(page.getTotal());
+		response.setCurrent(page.getCurrent());
+		response.setSize(page.getSize());
 
-        return response;
-    }
+		return response;
+	}
 
-    public int save(GameGroupEntity gameGroup) {
-        gameGroup.setUpdateTime(new Date());
-        return gameGroupMapper.insert(gameGroup);
-    }
+	public int save(GameGroupEntity gameGroup) {
+		gameGroup.setUpdateTime(new Date());
+		return gameGroupMapper.insert(gameGroup);
+	}
 
-    public int update(GameGroupEntity gameGroup) {
-        return gameGroupMapper.updateById(gameGroup);
-    }
+	public int update(GameGroupEntity gameGroup) {
+		return gameGroupMapper.updateById(gameGroup);
+	}
 
-    public int deleteGroup(Long groupId) {
-        return gameGroupMapper.deleteById(groupId);
-    }
+	public int deleteGroup(Long groupId) {
+		return gameGroupMapper.deleteById(groupId);
+	}
 
-    public GameGroupEntity fetchOneInfo(Long gameId, Long groupId) {
-        LambdaQueryWrapper<GameGroupEntity> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(GameGroupEntity::getGameId, gameId);
-        wrapper.eq(GameGroupEntity::getId, groupId);
-        return gameGroupMapper.selectOne(wrapper);
-    }
+	public GameGroupEntity fetchOneInfo(Long gameId, Long groupId) {
+		LambdaQueryWrapper<GameGroupEntity> wrapper = new LambdaQueryWrapper<>();
+		wrapper.eq(GameGroupEntity::getGameId, gameId);
+		wrapper.eq(GameGroupEntity::getId, groupId);
+		return gameGroupMapper.selectOne(wrapper);
+	}
 
 }

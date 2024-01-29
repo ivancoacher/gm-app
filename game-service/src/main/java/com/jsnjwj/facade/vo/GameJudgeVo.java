@@ -7,12 +7,12 @@ import java.io.Serializable;
 @Data
 public class GameJudgeVo implements Serializable {
 
-    private Integer id;
+	private Integer id;
 
-    private Long gameId;
+	private Long gameId;
 
-    private String judgeName;
+	private String judgeName;
 
-    private String phone;
+	private String phone;
 
 }

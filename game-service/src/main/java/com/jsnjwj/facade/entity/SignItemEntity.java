@@ -14,10 +14,10 @@ import java.io.Serializable;
 @TableName(value = "tc_sign_item")
 public class SignItemEntity implements Serializable {
 
-    /**
-     *
-     */
-    @TableId(type = IdType.AUTO)
-    private Integer id;
+	/**
+	 *
+	 */
+	@TableId(type = IdType.AUTO)
+	private Integer id;
 
 }

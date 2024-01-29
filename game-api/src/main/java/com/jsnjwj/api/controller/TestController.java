@@ -7,8 +7,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/test")
 @RestController
 public class TestController {
-    @RequestMapping("/")
-    public Long getTest() {
-        return ThreadLocalUtil.getCurrentUserId();
-    }
+
+	@RequestMapping("/")
+	public Long getTest() {
+		return ThreadLocalUtil.getCurrentUserId();
+	}
+
 }

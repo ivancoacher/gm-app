@@ -14,18 +14,18 @@ import java.util.List;
 
 public interface GameGroupService {
 
-    Page<GroupLabelVo> fetchPages(GameGroupListQuery query);
+	Page<GroupLabelVo> fetchPages(GameGroupListQuery query);
 
-    List<GroupLabelVo> fetchList(GameGroupListQuery query);
+	List<GroupLabelVo> fetchList(GameGroupListQuery query);
 
-    List<GameGroupAllVo> fetchAll(Long gameId);
+	List<GameGroupAllVo> fetchAll(Long gameId);
 
-    ApiResponse<?> save(GameGroupSaveQuery query);
+	ApiResponse<?> save(GameGroupSaveQuery query);
 
-    ApiResponse<?> importData(BaseRequest request, MultipartFile file);
+	ApiResponse<?> importData(BaseRequest request, MultipartFile file);
 
-    ApiResponse<?> update(GameGroupUpdateQuery query);
+	ApiResponse<?> update(GameGroupUpdateQuery query);
 
-    ApiResponse<?> delete(GameGroupUpdateQuery query);
+	ApiResponse<?> delete(GameGroupUpdateQuery query);
 
 }

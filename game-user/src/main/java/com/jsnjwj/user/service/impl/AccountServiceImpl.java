@@ -11,12 +11,12 @@ import javax.annotation.Resource;
 @Service
 public class AccountServiceImpl implements AccountService {
 
-    @Resource
-    private UserAccountDao userAccountDao;
+	@Resource
+	private UserAccountDao userAccountDao;
 
-    @Override
-    public ApiResponse<UserAccount> fetch(Long userId) {
-        return ApiResponse.success(userAccountDao.selectById(userId));
-    }
+	@Override
+	public ApiResponse<UserAccount> fetch(Long userId) {
+		return ApiResponse.success(userAccountDao.selectById(userId));
+	}
 
 }

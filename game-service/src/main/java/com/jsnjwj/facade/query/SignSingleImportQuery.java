@@ -6,7 +6,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Data
 public class SignSingleImportQuery extends BaseRequest {
-    private Integer importType;
 
-    private MultipartFile file;
+	private Integer importType;
+
+	private MultipartFile file;
+
 }

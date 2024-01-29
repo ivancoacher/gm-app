@@ -18,52 +18,52 @@ import java.util.List;
 @RequiredArgsConstructor
 public class GameItemManager {
 
-    private final GameItemMapper gameItemMapper;
+	private final GameItemMapper gameItemMapper;
 
-    public List<ItemLabelVo> fetchItems(Long gameId) {
-        List<ItemLabelVo> response = new ArrayList<>();
-        return response;
-    }
+	public List<ItemLabelVo> fetchItems(Long gameId) {
+		List<ItemLabelVo> response = new ArrayList<>();
+		return response;
+	}
 
-    public ApiResponse<Page<ItemLabelVo>> fetchItemsPage(GameItemListQuery query) {
-        Long gameId = query.getGameId();
-        Page<GameItemEntity> page = new Page<>();
-        LambdaQueryWrapper<GameItemEntity> lambdaQuery = new LambdaQueryWrapper<>();
-        lambdaQuery.eq(GameItemEntity::getGameId, gameId);
+	public ApiResponse<Page<ItemLabelVo>> fetchItemsPage(GameItemListQuery query) {
+		Long gameId = query.getGameId();
+		Page<GameItemEntity> page = new Page<>();
+		LambdaQueryWrapper<GameItemEntity> lambdaQuery = new LambdaQueryWrapper<>();
+		lambdaQuery.eq(GameItemEntity::getGameId, gameId);
 
-        lambdaQuery.eq(!StringUtils.isEmpty(query.getGroupId()), GameItemEntity::getGroupId, query.getGroupId());
-        Page<ItemLabelVo> result = gameItemMapper.selectByPage(page, lambdaQuery);
+		lambdaQuery.eq(!StringUtils.isEmpty(query.getGroupId()), GameItemEntity::getGroupId, query.getGroupId());
+		Page<ItemLabelVo> result = gameItemMapper.selectByPage(page, lambdaQuery);
 
-        return ApiResponse.success(result);
-    }
+		return ApiResponse.success(result);
+	}
 
-    public List<GameItemEntity> fetchList(GameItemListQuery query) {
-        LambdaQueryWrapper<GameItemEntity> lambdaQuery = new LambdaQueryWrapper<>();
-        lambdaQuery.eq(GameItemEntity::getGameId, query.getGameId());
-        lambdaQuery.eq(GameItemEntity::getGroupId, query.getGroupId());
+	public List<GameItemEntity> fetchList(GameItemListQuery query) {
+		LambdaQueryWrapper<GameItemEntity> lambdaQuery = new LambdaQueryWrapper<>();
+		lambdaQuery.eq(GameItemEntity::getGameId, query.getGameId());
+		lambdaQuery.eq(GameItemEntity::getGroupId, query.getGroupId());
 
-        return gameItemMapper.selectList(lambdaQuery);
-    }
+		return gameItemMapper.selectList(lambdaQuery);
+	}
 
-    public List<ItemLabelVo> fetchItemsByGroupId(Long groupId) {
-        List<ItemLabelVo> response = new ArrayList<>();
-        return response;
-    }
+	public List<ItemLabelVo> fetchItemsByGroupId(Long groupId) {
+		List<ItemLabelVo> response = new ArrayList<>();
+		return response;
+	}
 
-    public int save(GameItemEntity gameItemEntity) {
-        return gameItemMapper.insert(gameItemEntity);
-    }
+	public int save(GameItemEntity gameItemEntity) {
+		return gameItemMapper.insert(gameItemEntity);
+	}
 
-    public int update(GameItemEntity gameItemEntity) {
-        return gameItemMapper.updateById(gameItemEntity);
-    }
+	public int update(GameItemEntity gameItemEntity) {
+		return gameItemMapper.updateById(gameItemEntity);
+	}
 
-    public int delete(Long itemId) {
-        return gameItemMapper.deleteById(itemId);
-    }
+	public int delete(Long itemId) {
+		return gameItemMapper.deleteById(itemId);
+	}
 
-    public GameItemEntity fetchItemInfo(Long itemId) {
-        return gameItemMapper.selectById(itemId);
-    }
+	public GameItemEntity fetchItemInfo(Long itemId) {
+		return gameItemMapper.selectById(itemId);
+	}
 
 }

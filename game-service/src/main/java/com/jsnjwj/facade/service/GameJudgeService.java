@@ -10,10 +10,10 @@ import java.util.List;
 
 public interface GameJudgeService {
 
-    ApiResponse<Page<GameJudgeVo>> fetchPage(GameJudgeListQuery query);
+	ApiResponse<Page<GameJudgeVo>> fetchPage(GameJudgeListQuery query);
 
-    ApiResponse<List<GameJudgeVo>> fetchList(Long gameId);
+	ApiResponse<List<GameJudgeVo>> fetchList(Long gameId);
 
-    ApiResponse<Boolean> assign(GameJudgeAssignQuery query);
+	ApiResponse<Boolean> assign(GameJudgeAssignQuery query);
 
 }

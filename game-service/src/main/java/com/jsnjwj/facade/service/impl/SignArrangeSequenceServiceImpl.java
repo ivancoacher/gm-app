@@ -20,77 +20,75 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 public class SignArrangeSequenceServiceImpl implements SignArrangeSequenceService {
-    private final SignArrangeRecordMapper signArrangeRecordMapper;
 
-    private final SignArrangeSequenceMapper signArrangeSequenceMapper;
+	private final SignArrangeRecordMapper signArrangeRecordMapper;
 
-    @Override
-    public void syncArrangeRecord() {
+	private final SignArrangeSequenceMapper signArrangeSequenceMapper;
 
-    }
+	@Override
+	public void syncArrangeRecord() {
 
-    /**
-     * 自动同步arrange_record数据
-     */
-    @Async
-    @Override
-    public void syncArrangeRecord(GameItemEntity itemEntity) {
-        Long gameId = itemEntity.getGameId();
-        Long itemId = itemEntity.getId();
-        LambdaQueryWrapper<SignArrangeRecordEntity> query = new LambdaQueryWrapper<>();
-        query.eq(SignArrangeRecordEntity::getGameId, gameId);
-        query.eq(SignArrangeRecordEntity::getItemId, itemId);
-        query.last("limit 1");
-        SignArrangeRecordEntity arrangeRecord = signArrangeRecordMapper.selectOne(query);
-        if (Objects.isNull(arrangeRecord)) {
-            arrangeRecord = new SignArrangeRecordEntity();
-            arrangeRecord.setGameId(gameId);
-            arrangeRecord.setGroupId(itemEntity.getGroupId());
-            arrangeRecord.setItemId(itemId);
-            arrangeRecord.setCreatedAt(new Date());
-            signArrangeRecordMapper.insert(arrangeRecord);
-        } else {
-            arrangeRecord.setGroupId(itemEntity.getGroupId());
-            arrangeRecord.setUpdatedAt(new Date());
-            signArrangeRecordMapper.updateById(arrangeRecord);
-        }
-    }
+	}
 
-    /**
-     * 选手分组信息列表
-     *
-     * @param gameId
-     * @return
-     */
-    @Override
-    public List<?> fetchList(Long gameId) {
-        LambdaQueryWrapper<SignArrangeRecordEntity> wrapper = new LambdaQueryWrapper<>();
+	/**
+	 * 自动同步arrange_record数据
+	 */
+	@Async
+	@Override
+	public void syncArrangeRecord(GameItemEntity itemEntity) {
+		Long gameId = itemEntity.getGameId();
+		Long itemId = itemEntity.getId();
+		LambdaQueryWrapper<SignArrangeRecordEntity> query = new LambdaQueryWrapper<>();
+		query.eq(SignArrangeRecordEntity::getGameId, gameId);
+		query.eq(SignArrangeRecordEntity::getItemId, itemId);
+		query.last("limit 1");
+		SignArrangeRecordEntity arrangeRecord = signArrangeRecordMapper.selectOne(query);
+		if (Objects.isNull(arrangeRecord)) {
+			arrangeRecord = new SignArrangeRecordEntity();
+			arrangeRecord.setGameId(gameId);
+			arrangeRecord.setGroupId(itemEntity.getGroupId());
+			arrangeRecord.setItemId(itemId);
+			arrangeRecord.setCreatedAt(new Date());
+			signArrangeRecordMapper.insert(arrangeRecord);
+		}
+		else {
+			arrangeRecord.setGroupId(itemEntity.getGroupId());
+			arrangeRecord.setUpdatedAt(new Date());
+			signArrangeRecordMapper.updateById(arrangeRecord);
+		}
+	}
 
-        wrapper.eq(SignArrangeRecordEntity::getGameId, gameId);
-        wrapper.orderByAsc(SignArrangeRecordEntity::getRecordName);
-        List<SignArrangeRecordEntity> records = signArrangeRecordMapper.selectList(wrapper);
+	/**
+	 * 选手分组信息列表
+	 * @param gameId
+	 * @return
+	 */
+	@Override
+	public List<?> fetchList(Long gameId) {
+		LambdaQueryWrapper<SignArrangeRecordEntity> wrapper = new LambdaQueryWrapper<>();
 
-        List<Long> recordIds = records.stream().map(SignArrangeRecordEntity::getId).collect(Collectors.toList());
+		wrapper.eq(SignArrangeRecordEntity::getGameId, gameId);
+		wrapper.orderByAsc(SignArrangeRecordEntity::getRecordName);
+		List<SignArrangeRecordEntity> records = signArrangeRecordMapper.selectList(wrapper);
 
-        LambdaQueryWrapper<SignArrangeSequenceEntity> wrapper1 = new LambdaQueryWrapper<>();
-        wrapper1.eq(SignArrangeSequenceEntity::getGameId, gameId);
-        wrapper1.orderByAsc(SignArrangeSequenceEntity::getSort);
-        List<SignArrangeSequenceEntity> sequenceEntityList = signArrangeSequenceMapper.selectList(wrapper1);
+		List<Long> recordIds = records.stream().map(SignArrangeRecordEntity::getId).collect(Collectors.toList());
 
+		LambdaQueryWrapper<SignArrangeSequenceEntity> wrapper1 = new LambdaQueryWrapper<>();
+		wrapper1.eq(SignArrangeSequenceEntity::getGameId, gameId);
+		wrapper1.orderByAsc(SignArrangeSequenceEntity::getSort);
+		List<SignArrangeSequenceEntity> sequenceEntityList = signArrangeSequenceMapper.selectList(wrapper1);
 
-        return new ArrayList<>();
+		return new ArrayList<>();
 
+	}
 
-    }
-
-    /**
-     * 更新选手出场殊勋
-     *
-     * @return
-     */
-    @Override
-    public int update() {
-        return 1;
-    }
+	/**
+	 * 更新选手出场殊勋
+	 * @return
+	 */
+	@Override
+	public int update() {
+		return 1;
+	}
 
 }

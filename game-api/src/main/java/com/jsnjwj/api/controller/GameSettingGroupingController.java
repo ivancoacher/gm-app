@@ -18,38 +18,38 @@ import javax.annotation.Resource;
 @RequestMapping("/game/setting/grouping")
 public class GameSettingGroupingController {
 
-    @Resource
-    private GameGroupingService gameGroupingService;
+	@Resource
+	private GameGroupingService gameGroupingService;
 
-    @GetMapping("/index")
-    public ApiResponse<?> queryList(GameGroupingViewQuery query) {
-        query.setGameId(ThreadLocalUtil.getCurrentGameId());
-        query.setUserId(ThreadLocalUtil.getCurrentUserId());
-        return ApiResponse.success(gameGroupingService.fetchGroupingItem(query));
-    }
+	@GetMapping("/index")
+	public ApiResponse<?> queryList(GameGroupingViewQuery query) {
+		query.setGameId(ThreadLocalUtil.getCurrentGameId());
+		query.setUserId(ThreadLocalUtil.getCurrentUserId());
+		return ApiResponse.success(gameGroupingService.fetchGroupingItem(query));
+	}
 
-    @GetMapping("/update")
-    public ApiResponse<?> update(GameGroupingViewQuery query) {
-        query.setGameId(ThreadLocalUtil.getCurrentGameId());
-        query.setUserId(ThreadLocalUtil.getCurrentUserId());
-        return ApiResponse.success(gameGroupingService.fetchGroupingItem(query));
-    }
+	@GetMapping("/update")
+	public ApiResponse<?> update(GameGroupingViewQuery query) {
+		query.setGameId(ThreadLocalUtil.getCurrentGameId());
+		query.setUserId(ThreadLocalUtil.getCurrentUserId());
+		return ApiResponse.success(gameGroupingService.fetchGroupingItem(query));
+	}
 
-    @GetMapping("/detail")
-    public ApiResponse<?> queryDetail(GameGroupingViewQuery query) {
-        query.setGameId(ThreadLocalUtil.getCurrentGameId());
-        query.setUserId(ThreadLocalUtil.getCurrentUserId());
-        return ApiResponse.success(gameGroupingService.fetchGroupingDetail(query));
-    }
+	@GetMapping("/detail")
+	public ApiResponse<?> queryDetail(GameGroupingViewQuery query) {
+		query.setGameId(ThreadLocalUtil.getCurrentGameId());
+		query.setUserId(ThreadLocalUtil.getCurrentUserId());
+		return ApiResponse.success(gameGroupingService.fetchGroupingDetail(query));
+	}
 
-    @PostMapping("/set")
-    public ApiResponse<?> setGrouping() {
-        return ApiResponse.success();
-    }
+	@PostMapping("/set")
+	public ApiResponse<?> setGrouping() {
+		return ApiResponse.success();
+	}
 
-    @PostMapping("/setBatch")
-    public ApiResponse<?> setGroupingBatch() {
-        return ApiResponse.success();
-    }
+	@PostMapping("/setBatch")
+	public ApiResponse<?> setGroupingBatch() {
+		return ApiResponse.success();
+	}
 
 }

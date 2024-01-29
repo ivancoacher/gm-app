@@ -14,18 +14,18 @@ import java.util.List;
 
 public interface GameItemService {
 
-    ApiResponse<Page<ItemLabelVo>> fetchPages(GameItemListQuery query);
+	ApiResponse<Page<ItemLabelVo>> fetchPages(GameItemListQuery query);
 
-    List<ItemLabelVo> fetchList(GameItemListQuery query);
+	List<ItemLabelVo> fetchList(GameItemListQuery query);
 
-    void importData(BaseRequest query, MultipartFile file);
+	void importData(BaseRequest query, MultipartFile file);
 
-    int save(GameItemSaveQuery query);
+	int save(GameItemSaveQuery query);
 
-    int update(GameItemUpdateQuery query);
+	int update(GameItemUpdateQuery query);
 
-    GameItemEntity fetchOne(Long itemId);
+	GameItemEntity fetchOne(Long itemId);
 
-    ApiResponse<Integer> delete(GameItemUpdateQuery query);
+	ApiResponse<Integer> delete(GameItemUpdateQuery query);
 
 }

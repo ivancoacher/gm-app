@@ -20,75 +20,73 @@ import java.util.List;
 @Service
 public class GameItemServiceImpl implements GameItemService {
 
-    @Resource
-    private GameItemManager gameItemManager;
+	@Resource
+	private GameItemManager gameItemManager;
 
-    /**
-     * 分页查询
-     *
-     * @return
-     */
-    @Override
-    public ApiResponse<Page<ItemLabelVo>> fetchPages(GameItemListQuery query) {
+	/**
+	 * 分页查询
+	 * @return
+	 */
+	@Override
+	public ApiResponse<Page<ItemLabelVo>> fetchPages(GameItemListQuery query) {
 
-        return gameItemManager.fetchItemsPage(query);
-    }
+		return gameItemManager.fetchItemsPage(query);
+	}
 
-    /**
-     * 查询全部
-     *
-     * @return
-     */
-    @Override
-    public List<ItemLabelVo> fetchList(GameItemListQuery query) {
-        List<GameItemEntity> result = gameItemManager.fetchList(query);
+	/**
+	 * 查询全部
+	 * @return
+	 */
+	@Override
+	public List<ItemLabelVo> fetchList(GameItemListQuery query) {
+		List<GameItemEntity> result = gameItemManager.fetchList(query);
 
-        List<ItemLabelVo> response = new ArrayList<>();
+		List<ItemLabelVo> response = new ArrayList<>();
 
-        result.forEach(item -> {
-            ItemLabelVo vo = new ItemLabelVo();
-            vo.setItemName(item.getItemName());
-            vo.setItemId(item.getId());
-            response.add(vo);
-        });
-        return response;
+		result.forEach(item -> {
+			ItemLabelVo vo = new ItemLabelVo();
+			vo.setItemName(item.getItemName());
+			vo.setItemId(item.getId());
+			response.add(vo);
+		});
+		return response;
 
-    }
+	}
 
-    @Override
-    public void importData(BaseRequest query, MultipartFile file) {
+	@Override
+	public void importData(BaseRequest query, MultipartFile file) {
 
-    }
+	}
 
-    @Override
-    public int save(GameItemSaveQuery query) {
-        GameItemEntity tcGameGroup = new GameItemEntity();
-        tcGameGroup.setGameId(query.getGameId());
-        tcGameGroup.setGroupId(query.getGroupId());
-        tcGameGroup.setItemName(query.getItemName());
-        tcGameGroup.setSort(query.getSort());
-        return gameItemManager.save(tcGameGroup);
-    }
+	@Override
+	public int save(GameItemSaveQuery query) {
+		GameItemEntity tcGameGroup = new GameItemEntity();
+		tcGameGroup.setGameId(query.getGameId());
+		tcGameGroup.setGroupId(query.getGroupId());
+		tcGameGroup.setItemName(query.getItemName());
+		tcGameGroup.setSort(query.getSort());
+		return gameItemManager.save(tcGameGroup);
+	}
 
-    @Override
-    public int update(GameItemUpdateQuery query) {
-        GameItemEntity tcGameGroup = new GameItemEntity();
-        tcGameGroup.setGroupId(query.getGroupId());
-        tcGameGroup.setSort(query.getSort());
-        tcGameGroup.setId(query.getItemId());
-        tcGameGroup.setItemName(query.getItemName());
-        return gameItemManager.update(tcGameGroup);
-    }
+	@Override
+	public int update(GameItemUpdateQuery query) {
+		GameItemEntity tcGameGroup = new GameItemEntity();
+		tcGameGroup.setGroupId(query.getGroupId());
+		tcGameGroup.setSort(query.getSort());
+		tcGameGroup.setId(query.getItemId());
+		tcGameGroup.setItemName(query.getItemName());
+		return gameItemManager.update(tcGameGroup);
+	}
 
-    @Override
-    public GameItemEntity fetchOne(Long itemId) {
+	@Override
+	public GameItemEntity fetchOne(Long itemId) {
 
-        return gameItemManager.fetchItemInfo(itemId);
-    }
+		return gameItemManager.fetchItemInfo(itemId);
+	}
 
-    @Override
-    public ApiResponse<Integer> delete(GameItemUpdateQuery query) {
-        return ApiResponse.success(gameItemManager.delete(query.getItemId()));
-    }
+	@Override
+	public ApiResponse<Integer> delete(GameItemUpdateQuery query) {
+		return ApiResponse.success(gameItemManager.delete(query.getItemId()));
+	}
 
 }

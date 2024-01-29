@@ -8,8 +8,8 @@ import lombok.EqualsAndHashCode;
 @Data
 public class GameJudgeListQuery extends BaseRequest {
 
-    private Integer page;
+	private Integer page;
 
-    private Integer limit;
+	private Integer limit;
 
 }

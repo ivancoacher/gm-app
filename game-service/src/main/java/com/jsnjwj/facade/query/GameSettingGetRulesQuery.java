@@ -8,8 +8,8 @@ import lombok.EqualsAndHashCode;
 @Data
 public class GameSettingGetRulesQuery extends BaseRequest {
 
-    private Long gameId;
+	private Long gameId;
 
-    private Long itemId;
+	private Long itemId;
 
 }
