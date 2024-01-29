@@ -5,8 +5,10 @@ import com.jsnjwj.user.config.JwtConfig;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.SignatureException;
 import lombok.NonNull;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.annotation.Resource;
@@ -25,11 +27,23 @@ public class AccessTokenInterceptor implements HandlerInterceptor {
 	@Override
 	public boolean preHandle(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler)
 			throws Exception {
+
+		if (RequestMethod.OPTIONS.name().equals(request.getMethod())) {
+			// response.setHeader("Cache-Control","no-cache");
+			response.setHeader("Access-control-Allow-Origin", "*");
+			response.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS,PUT,DELETE");
+			response.setHeader("Access-Control-Allow-Headers", "*");
+			// 跨域时会首先发送一个OPTIONS请求，这里我们给OPTIONS请求直接返回正常状态
+			response.setStatus(HttpStatus.OK.value());
+			return true;
+		}
+
 		/** 地址过滤 */
 		String uri = request.getRequestURI();
 		if (uri.contains("/auth/login") || uri.contains("/auth/register") || uri.contains("/file")) {
 			return true;
 		}
+
 		/** Token 验证 */
 		String token = request.getHeader(jwtConfig.getHeader());
 		if (null == token || StringUtils.isEmpty(token)) {
