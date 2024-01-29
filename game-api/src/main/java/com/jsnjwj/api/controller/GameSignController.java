@@ -29,7 +29,8 @@ public class GameSignController {
 
     @RequestMapping("/single/page")
     public ApiResponse<?> fetchSinglePage(SignSingleListQuery query) {
-        query.setGameId(ThreadLocalUtil.getCurrentGameId());
+//        query.setGameId(ThreadLocalUtil.getCurrentGameId());
+        query.setGameId(100L);
         query.setUserId(ThreadLocalUtil.getCurrentUserId());
         return signApplyService.fetchSinglePage(query);
     }

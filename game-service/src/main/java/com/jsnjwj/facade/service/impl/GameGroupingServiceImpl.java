@@ -138,7 +138,6 @@ public class GameGroupingServiceImpl implements GameGroupingService {
                 for (SignSingleEntity signSingle : signSingles) {
                     GroupingDetailDto.GroupingItemSign sign = new GroupingDetailDto.GroupingItemSign();
                     sign.setName(signSingle.getName());
-                    sign.setTeam(signSingle.getTeamName());
                     groupingItemSigns.add(sign);
                 }
 

@@ -41,4 +41,7 @@ public class SignSingleDto {
 
     private SignTeamDto team;
 
+    private String orgName;
+
+
 }

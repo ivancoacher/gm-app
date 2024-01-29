@@ -40,17 +40,22 @@ public class SignSingleEntity implements Serializable {
     /**
      *
      */
-    private Integer teamId;
+    private Long teamId;
 
     /**
      *
      */
     private String name;
 
-    /**
-     *
-     */
-    private String teamName;
+    private String orgName;
+
+    private String country;
+
+    private String nation;
+
+    private String cardNum;
+
+    private String studentNum;
 
     /**
      *

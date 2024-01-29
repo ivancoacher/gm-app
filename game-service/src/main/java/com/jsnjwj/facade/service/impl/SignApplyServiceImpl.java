@@ -1,12 +1,18 @@
 package com.jsnjwj.facade.service.impl;
 
 import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.EasyExcelFactory;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsnjwj.common.request.BaseRequest;
 import com.jsnjwj.common.response.ApiResponse;
+import com.jsnjwj.facade.dto.SignTeamDto;
+import com.jsnjwj.facade.easyexcel.upload.ImportSingleUploadDto;
 import com.jsnjwj.facade.easyexcel.upload.ImportTeamUploadDto;
 import com.jsnjwj.facade.dto.SignSingleDto;
+import com.jsnjwj.facade.entity.GameGroupEntity;
+import com.jsnjwj.facade.entity.GameItemEntity;
 import com.jsnjwj.facade.entity.SignTeamEntity;
+import com.jsnjwj.facade.excel.SingleImportListener;
 import com.jsnjwj.facade.excel.TeamImportListener;
 import com.jsnjwj.facade.manager.SignApplyManager;
 import com.jsnjwj.facade.query.SignSingleImportQuery;
@@ -21,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 合同比对service
@@ -36,6 +43,28 @@ public class SignApplyServiceImpl implements SignApplyService {
     public ApiResponse<?> fetchSinglePage(SignSingleListQuery query) {
         Page<SignSingleDto> page = new Page<>();
         List<SignSingleDto> list = signApplyManager.fetchSignSinglePage(query);
+        list.forEach(signRecord->{
+            GameGroupEntity groupEntity = signApplyManager.getGroupById(signRecord.getGroupId());
+            GameItemEntity itemEntity = signApplyManager.getItemById(signRecord.getItemId());
+            SignTeamEntity teamEntity = signApplyManager.getTeamById(signRecord.getTeamId());
+            if (Objects.nonNull(groupEntity)){
+                signRecord.setGroupName(groupEntity.getGroupName());
+            }
+            if (Objects.nonNull(itemEntity)){
+                signRecord.setItemName(itemEntity.getItemName());
+            }
+
+            if (Objects.nonNull(teamEntity)){
+                SignTeamDto teamDto = new SignTeamDto();
+                teamDto.setTeamName(teamEntity.getTeamName());
+                teamDto.setCoachName(teamEntity.getCoachName());
+                teamDto.setCoachPhone(teamEntity.getCoachTel());
+                teamDto.setLeaderName(teamEntity.getLeaderName());
+                teamDto.setLeaderPhone(teamEntity.getLeaderTel());
+                signRecord.setTeam(teamDto);
+
+            }
+        });
         page.setRecords(list);
         page.setTotal(signApplyManager.fetchSignSingleCount(query));
         return ApiResponse.success(page);
@@ -65,7 +94,22 @@ public class SignApplyServiceImpl implements SignApplyService {
 
     @Override
     public ApiResponse<?> importSingle(Integer importType, MultipartFile file) {
-        return null;
+
+        try{
+            //初始化监听器
+            SingleImportListener singleImportListener = new SingleImportListener(100L,signApplyManager);
+            //解析数据
+            EasyExcelFactory.read(file.getInputStream(), singleImportListener)
+                    .head(ImportSingleUploadDto.class)
+                    .headRowNumber(1)
+                    .sheet(0).doReadSync();
+
+
+        }catch (Exception e){
+            log.error("importSingle exception",e);
+        }
+
+        return ApiResponse.success();
     }
 
     @Override

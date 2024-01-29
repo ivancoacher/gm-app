@@ -26,7 +26,7 @@ public class SignTeamEntity implements Serializable {
      *
      */
     @TableId(type = IdType.AUTO)
-    private Integer id;
+    private Long id;
 
     /**
      *
@@ -77,10 +77,5 @@ public class SignTeamEntity implements Serializable {
      */
     @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
     private Date updateTime;
-
-    /**
-     *
-     */
-    private Integer signStatus;
 
 }

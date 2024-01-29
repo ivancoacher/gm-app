@@ -15,6 +15,10 @@ public class SignTeamDto {
 
     private String leaderPhone;
 
+    private String coachName;
+
+    private String coachPhone;
+
     private String remark;
 
 }
