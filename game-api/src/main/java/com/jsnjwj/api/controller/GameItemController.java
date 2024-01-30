@@ -3,6 +3,7 @@ package com.jsnjwj.api.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsnjwj.common.request.BaseRequest;
 import com.jsnjwj.common.response.ApiResponse;
+import com.jsnjwj.common.utils.ThreadLocalUtil;
 import com.jsnjwj.facade.query.GameItemListQuery;
 import com.jsnjwj.facade.query.GameItemSaveQuery;
 import com.jsnjwj.facade.query.GameItemUpdateQuery;
@@ -30,6 +31,7 @@ public class GameItemController {
 
 	@RequestMapping("/list")
 	public ApiResponse<Page<ItemLabelVo>> fetchPage(GameItemListQuery query) {
+		query.setGameId(ThreadLocalUtil.getCurrentGameId());
 		return gameItemService.fetchPages(query);
 	}
 

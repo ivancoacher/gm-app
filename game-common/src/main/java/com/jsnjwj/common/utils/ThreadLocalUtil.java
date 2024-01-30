@@ -26,13 +26,8 @@ public class ThreadLocalUtil {
 	}
 
 	public static Long getCurrentGameId() {
-		if (getCurrentUserId() <= 0L) {
-			return 0L;
-		}
-		else {
-			Long currentCompanyId = gameThreadLocal.get();
-			return Objects.isNull(currentCompanyId) ? 0L : currentCompanyId;
-		}
+		Long currentGameId = gameThreadLocal.get();
+		return Objects.isNull(currentGameId) ? 0L : currentGameId;
 	}
 
 	public static void remove() {

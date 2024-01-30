@@ -3,6 +3,7 @@ package com.jsnjwj.api.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsnjwj.common.request.BaseRequest;
 import com.jsnjwj.common.response.ApiResponse;
+import com.jsnjwj.common.utils.ThreadLocalUtil;
 import com.jsnjwj.facade.query.GameGroupListQuery;
 import com.jsnjwj.facade.query.GameGroupSaveQuery;
 import com.jsnjwj.facade.query.GameGroupUpdateQuery;
@@ -29,11 +30,13 @@ public class GameGroupController {
 
 	@RequestMapping("/list")
 	public ApiResponse<Page<GroupLabelVo>> fetchPage(GameGroupListQuery query) {
+		query.setGameId(ThreadLocalUtil.getCurrentGameId());
 		return ApiResponse.success(gameGroupService.fetchPages(query));
 	}
 
 	@RequestMapping("/data")
 	public ApiResponse<List<GroupLabelVo>> fetchList(GameGroupListQuery query) {
+		query.setGameId(ThreadLocalUtil.getCurrentGameId());
 		return ApiResponse.success(gameGroupService.fetchList(query));
 	}
 

@@ -14,6 +14,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Objects;
 
 /**
  * @author chenmingyong
@@ -59,8 +60,11 @@ public class AccessTokenInterceptor implements HandlerInterceptor {
 			if (claims == null || jwtConfig.isTokenExpired(claims.getExpiration())) {
 				throw new SignatureException(jwtConfig.getHeader() + "失效，请重新登录。");
 			}
+			String gameId = request.getHeader("game-id");
+
 			ThreadLocalUtil.addCurrentUser(Long.valueOf(claims.getSubject()));
-			request.setAttribute("identifyId", claims.getSubject());
+			ThreadLocalUtil.addCurrentGame(Objects.nonNull(gameId)?Long.parseLong(gameId):0L);
+
 		}
 		catch (Exception e) {
 			throw new SignatureException(jwtConfig.getHeader() + "失效，请重新登录。");
