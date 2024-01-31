@@ -111,7 +111,8 @@ public class SignApplyServiceImpl implements SignApplyService {
 
 		try {
 			// 初始化监听器
-			SingleImportListener singleImportListener = new SingleImportListener(100L, signApplyManager);
+			SingleImportListener singleImportListener = new SingleImportListener(ThreadLocalUtil.getCurrentGameId(),
+					signApplyManager);
 			// 解析数据
 			EasyExcelFactory.read(file.getInputStream(), singleImportListener)
 				.head(ImportSingleUploadDto.class)

@@ -49,7 +49,7 @@ public class ImportSingleUploadDto {
 	private String nation;
 
 	@ExcelProperty(value = "学校")
-	private String school;
+	private String orgName;
 
 	@ExcelProperty(value = "团队")
 	private String teamName;
