@@ -63,7 +63,7 @@ public class AccessTokenInterceptor implements HandlerInterceptor {
 			String gameId = request.getHeader("game-id");
 
 			ThreadLocalUtil.addCurrentUser(Long.valueOf(claims.getSubject()));
-			ThreadLocalUtil.addCurrentGame(Objects.nonNull(gameId)?Long.parseLong(gameId):0L);
+			ThreadLocalUtil.addCurrentGame(Objects.nonNull(gameId) ? Long.parseLong(gameId) : 0L);
 
 		}
 		catch (Exception e) {

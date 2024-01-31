@@ -16,7 +16,10 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @Slf4j
 @Data
@@ -105,10 +108,11 @@ public class SingleImportListener extends AnalysisEventListener<ImportSingleUplo
 	 */
 	private void getOrCreateItem(ImportSingleUploadDto singleUploadDto) {
 		String itemName = singleUploadDto.getItemName();
+		String groupName = singleUploadDto.getGroupName();
 		Long groupId = singleUploadDto.getGroupId();
 		Long itemId;
 		// 从缓存中获取组别
-		ImportItemDto itemDto = itemMap.getOrDefault(itemName, null);
+		ImportItemDto itemDto = itemMap.getOrDefault(groupName + itemName, null);
 		if (itemDto == null) {
 			if (!signApplyManager.checkItemExist(this.gameId, groupId, itemName)) {
 				itemId = signApplyManager.saveItem(this.gameId, groupId, itemName);
@@ -121,7 +125,7 @@ public class SingleImportListener extends AnalysisEventListener<ImportSingleUplo
 			itemDto.setItemId(itemId);
 			itemDto.setItemName(itemName);
 			// 将组别保存到缓存中
-			itemMap.put(itemName, itemDto);
+			itemMap.put(groupName + itemName, itemDto);
 		}
 		else {
 			itemId = itemDto.getItemId();

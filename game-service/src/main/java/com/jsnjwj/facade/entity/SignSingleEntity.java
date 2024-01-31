@@ -47,6 +47,9 @@ public class SignSingleEntity implements Serializable {
 	 */
 	private String name;
 
+	/**
+	 * 单位
+	 */
 	private String orgName;
 
 	private String country;

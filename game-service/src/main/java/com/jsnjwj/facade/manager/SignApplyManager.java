@@ -114,11 +114,11 @@ public class SignApplyManager {
 				team.setSex("男".equals(d.getSex()) ? 1 : 0);
 				team.setGroupId(d.getGroupId());
 				team.setItemId(d.getItemId());
-				team.setOrgName(d.getSchool());
 				team.setCountry(d.getCountry());
 				team.setNation(d.getNation());
 				team.setStudentNum(d.getStudentNum());
 				team.setCardNum(d.getCardNum());
+				team.setOrgName(d.getOrgName());
 				datas.add(team);
 			});
 		}
