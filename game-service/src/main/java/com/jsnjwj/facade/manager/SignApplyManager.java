@@ -3,6 +3,7 @@ package com.jsnjwj.facade.manager;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsnjwj.facade.easyexcel.upload.ImportSingleUploadDto;
 import com.jsnjwj.facade.easyexcel.upload.ImportTeamUploadDto;
@@ -59,9 +60,9 @@ public class SignApplyManager {
 		wrapper.eq(null != query.getGameId(), SignSingleEntity::getGameId, query.getGameId());
 		wrapper.eq(null != query.getGroupId(), SignSingleEntity::getGroupId, query.getGroupId());
 		wrapper.eq(null != query.getItemId(), SignSingleEntity::getItemId, query.getItemId());
-		wrapper.eq(null != query.getTeamId(), SignSingleEntity::getItemId, query.getTeamId());
-		wrapper.like(null != query.getKey(), SignSingleEntity::getName, query.getKey());
-		return signSingleMapper.selectByPage((query.getPage() - 1) * query.getLimit(), query.getLimit(), wrapper);
+		wrapper.eq(null != query.getTeamId(), SignSingleEntity::getTeamId, query.getTeamId());
+		wrapper.like(StringUtils.isNotBlank(query.getKey()), SignSingleEntity::getName, query.getKey());
+		return signSingleMapper.selectByPage((query.getPage() - 1) * query.getPageSize(), query.getPageSize(), wrapper);
 	}
 
 	public long fetchSignSingleCount(SignSingleListQuery query) {
@@ -69,8 +70,8 @@ public class SignApplyManager {
 		wrapper.eq(null != query.getGameId(), SignSingleEntity::getGameId, query.getGameId());
 		wrapper.eq(null != query.getGroupId(), SignSingleEntity::getGroupId, query.getGroupId());
 		wrapper.eq(null != query.getItemId(), SignSingleEntity::getItemId, query.getItemId());
-		wrapper.eq(null != query.getTeamId(), SignSingleEntity::getItemId, query.getTeamId());
-		wrapper.like(null != query.getKey(), SignSingleEntity::getName, query.getKey());
+		wrapper.eq(null != query.getTeamId(), SignSingleEntity::getTeamId, query.getTeamId());
+		wrapper.like(StringUtils.isNotBlank(query.getKey()), SignSingleEntity::getName, query.getKey());
 		return signSingleMapper.selectCount(wrapper);
 	}
 
@@ -83,6 +84,15 @@ public class SignApplyManager {
 		page.setCurrent(query.getPage());
 		page.setSize(query.getLimit());
 		return signTeamMapper.selectPage(page, wrapper);
+
+	}
+
+	public List<SignTeamEntity> fetchSignTeamData(SignTeamListQuery query) {
+		LambdaQueryWrapper<SignTeamEntity> wrapper = new LambdaQueryWrapper<>();
+		wrapper.eq(null != query.getGameId(), SignTeamEntity::getGameId, query.getGameId());
+		wrapper.like(null != query.getKey(), SignTeamEntity::getTeamName, query.getKey());
+
+		return signTeamMapper.selectList(wrapper);
 
 	}
 

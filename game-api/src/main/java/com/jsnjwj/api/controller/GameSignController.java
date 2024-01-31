@@ -6,6 +6,7 @@ import com.jsnjwj.common.response.ApiResponse;
 import com.jsnjwj.common.utils.ThreadLocalUtil;
 import com.jsnjwj.facade.query.SignSingleImportQuery;
 import com.jsnjwj.facade.query.SignSingleListQuery;
+import com.jsnjwj.facade.query.SignSingleProgramExportQuery;
 import com.jsnjwj.facade.query.SignTeamListQuery;
 import com.jsnjwj.facade.service.SignApplyService;
 import lombok.extern.slf4j.Slf4j;
@@ -29,8 +30,7 @@ public class GameSignController {
 
 	@RequestMapping("/single/page")
 	public ApiResponse<?> fetchSinglePage(SignSingleListQuery query) {
-		// query.setGameId(ThreadLocalUtil.getCurrentGameId());
-		query.setGameId(100L);
+		query.setGameId(ThreadLocalUtil.getCurrentGameId());
 		query.setUserId(ThreadLocalUtil.getCurrentUserId());
 		return signApplyService.fetchSinglePage(query);
 	}
@@ -39,6 +39,12 @@ public class GameSignController {
 	public ApiResponse<?> singleImport(@RequestParam("importType") Integer importType,
 			@RequestParam("file") MultipartFile sourceFile) {
 		return signApplyService.importSingle(importType, sourceFile);
+	}
+
+	@RequestMapping("/single/program/export")
+	public ApiResponse<?> singleImport(@RequestBody SignSingleProgramExportQuery request) {
+		request.setGameId(ThreadLocalUtil.getCurrentGameId());
+		return signApplyService.exportSignProgram(request);
 	}
 
 	@RequestMapping("/single/demo/import")
@@ -52,6 +58,12 @@ public class GameSignController {
 		query.setGameId(ThreadLocalUtil.getCurrentGameId());
 		query.setUserId(ThreadLocalUtil.getCurrentUserId());
 		return signApplyService.fetchTeamPage(query);
+	}
+
+	@RequestMapping("/team/data")
+	public ApiResponse<?> fetchTeamData(SignTeamListQuery query) {
+		query.setGameId(ThreadLocalUtil.getCurrentGameId());
+		return signApplyService.fetchTeamData(query);
 	}
 
 	@RequestMapping("/team/import")

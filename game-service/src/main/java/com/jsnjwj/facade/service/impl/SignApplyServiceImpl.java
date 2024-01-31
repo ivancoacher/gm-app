@@ -5,6 +5,7 @@ import com.alibaba.excel.EasyExcelFactory;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsnjwj.common.request.BaseRequest;
 import com.jsnjwj.common.response.ApiResponse;
+import com.jsnjwj.common.utils.ThreadLocalUtil;
 import com.jsnjwj.facade.dto.SignTeamDto;
 import com.jsnjwj.facade.easyexcel.upload.ImportSingleUploadDto;
 import com.jsnjwj.facade.easyexcel.upload.ImportTeamUploadDto;
@@ -15,8 +16,8 @@ import com.jsnjwj.facade.entity.SignTeamEntity;
 import com.jsnjwj.facade.excel.SingleImportListener;
 import com.jsnjwj.facade.excel.TeamImportListener;
 import com.jsnjwj.facade.manager.SignApplyManager;
-import com.jsnjwj.facade.query.SignSingleImportQuery;
 import com.jsnjwj.facade.query.SignSingleListQuery;
+import com.jsnjwj.facade.query.SignSingleProgramExportQuery;
 import com.jsnjwj.facade.query.SignTeamListQuery;
 import com.jsnjwj.facade.service.SignApplyService;
 import lombok.RequiredArgsConstructor;
@@ -72,8 +73,16 @@ public class SignApplyServiceImpl implements SignApplyService {
 
 	@Override
 	public ApiResponse<?> fetchTeamPage(SignTeamListQuery query) {
-
+		query.setGameId(ThreadLocalUtil.getCurrentGameId());
 		Page<SignTeamEntity> page = signApplyManager.fetchSignTeamPage(query);
+
+		return ApiResponse.success(page);
+	}
+
+	@Override
+	public ApiResponse<?> fetchTeamData(SignTeamListQuery query) {
+		query.setGameId(ThreadLocalUtil.getCurrentGameId());
+		List<SignTeamEntity> page = signApplyManager.fetchSignTeamData(query);
 
 		return ApiResponse.success(page);
 	}
@@ -90,6 +99,11 @@ public class SignApplyServiceImpl implements SignApplyService {
 	@Override
 	public ApiResponse<?> exportTeamDemo(BaseRequest baseRequest, MultipartFile file) throws IOException {
 		return null;
+	}
+
+	@Override
+	public ApiResponse<?> exportSignProgram(SignSingleProgramExportQuery request) {
+		return ApiResponse.success();
 	}
 
 	@Override

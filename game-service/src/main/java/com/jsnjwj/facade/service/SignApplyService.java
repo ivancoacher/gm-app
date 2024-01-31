@@ -4,6 +4,7 @@ import com.jsnjwj.common.request.BaseRequest;
 import com.jsnjwj.common.response.ApiResponse;
 import com.jsnjwj.facade.query.SignSingleImportQuery;
 import com.jsnjwj.facade.query.SignSingleListQuery;
+import com.jsnjwj.facade.query.SignSingleProgramExportQuery;
 import com.jsnjwj.facade.query.SignTeamListQuery;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,9 +16,13 @@ public interface SignApplyService {
 
 	ApiResponse<?> fetchTeamPage(SignTeamListQuery query);
 
+	ApiResponse<?> fetchTeamData(SignTeamListQuery query);
+
 	ApiResponse<?> importTeam(BaseRequest baseRequest, MultipartFile file) throws IOException;
 
 	ApiResponse<?> exportTeamDemo(BaseRequest baseRequest, MultipartFile file) throws IOException;
+
+	ApiResponse<?> exportSignProgram(SignSingleProgramExportQuery request);
 
 	ApiResponse<?> importSingle(Integer importType, MultipartFile file);
 

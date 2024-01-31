@@ -37,6 +37,7 @@ public class GameItemController {
 
 	@RequestMapping("/data")
 	public ApiResponse<List<GroupLabelVo>> fetchList(GameItemListQuery query) {
+		query.setGameId(ThreadLocalUtil.getCurrentGameId());
 		return ApiResponse.success(gameItemService.fetchList(query));
 	}
 

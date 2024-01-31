@@ -16,6 +16,6 @@ public class SignSingleListQuery extends BaseRequest {
 
 	private Integer page = 1;
 
-	private Integer limit = 10;
+	private Integer pageSize = 10;
 
 }
