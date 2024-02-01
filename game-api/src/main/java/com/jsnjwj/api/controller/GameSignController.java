@@ -41,6 +41,11 @@ public class GameSignController {
 		return signApplyService.importSingle(importType, sourceFile);
 	}
 
+	/**
+	 * 秩序册导出
+	 * @param request SignSingleProgramExportQuery
+	 * @return ApiResponse
+	 */
 	@RequestMapping("/single/program/export")
 	public ApiResponse<?> singleImport(@RequestBody SignSingleProgramExportQuery request) {
 		request.setGameId(ThreadLocalUtil.getCurrentGameId());

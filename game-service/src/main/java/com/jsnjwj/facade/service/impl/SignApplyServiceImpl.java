@@ -2,6 +2,11 @@ package com.jsnjwj.facade.service.impl;
 
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.EasyExcelFactory;
+import com.alibaba.excel.ExcelWriter;
+import com.alibaba.excel.support.ExcelTypeEnum;
+import com.alibaba.excel.write.metadata.style.WriteCellStyle;
+import com.alibaba.excel.write.metadata.style.WriteFont;
+import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsnjwj.common.request.BaseRequest;
 import com.jsnjwj.common.response.ApiResponse;
@@ -22,6 +27,8 @@ import com.jsnjwj.facade.query.SignTeamListQuery;
 import com.jsnjwj.facade.service.SignApplyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.sl.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -103,7 +110,38 @@ public class SignApplyServiceImpl implements SignApplyService {
 
 	@Override
 	public ApiResponse<?> exportSignProgram(SignSingleProgramExportQuery request) {
-		return ApiResponse.success();
+		WriteCellStyle contentWriteCellStyle = new WriteCellStyle();
+		int cellCount = 10;
+
+		// 计算每个单元格的宽度（假设以300 DPI打印）
+		int paperWidthInPixels = 2480;  // A4纸的宽度（像素）
+		int cellWidthInPixels = paperWidthInPixels / cellCount;
+
+		// 转换像素为字符宽度
+		int charWidth = cellWidthInPixels / 7;  // 假设使用默认的字体和字号，每个字符宽度为7像素
+
+		// 自动换行
+		contentWriteCellStyle.setWrapped(true);
+		// 字体策略
+		WriteFont contentWriteFont = new WriteFont();
+		// 字体大小
+		contentWriteFont.setFontHeightInPoints((short) 12);
+		contentWriteCellStyle.setWriteFont(contentWriteFont);
+
+		WriteCellStyle headWriteCellStyle = new WriteCellStyle();
+
+		EasyExcel.write()
+				//设置输出excel版本,不设置默认为xlsx
+				.excelType(ExcelTypeEnum.XLS)
+				.head(PilebodycheckMonthDto.class)
+				//设置拦截器或自定义样式
+				.registerWriteHandler(new MonthSheetWriteHandler())
+				.registerWriteHandler(new HorizontalCellStyleStrategy(headWriteCellStyle,contentWriteCellStyle))
+				.sheet("存量建筑垃圾堆体治理进度月报表")
+				//设置默认样式及写入头信息开始的行数
+				.useDefaultStyle(true).relativeHeadRowIndex(3)
+				.doWrite();
+
 	}
 
 	@Override
