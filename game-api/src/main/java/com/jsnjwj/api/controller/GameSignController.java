@@ -8,7 +8,9 @@ import com.jsnjwj.facade.query.SignSingleImportQuery;
 import com.jsnjwj.facade.query.SignSingleListQuery;
 import com.jsnjwj.facade.query.SignSingleProgramExportQuery;
 import com.jsnjwj.facade.query.SignTeamListQuery;
+import com.jsnjwj.facade.service.SignApplyExportService;
 import com.jsnjwj.facade.service.SignApplyService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,10 +25,12 @@ import javax.servlet.http.HttpServletRequest;
 @Slf4j
 @RestController
 @RequestMapping("/game/sign")
+@RequiredArgsConstructor
 public class GameSignController {
 
-	@Resource
-	private SignApplyService signApplyService;
+	private final SignApplyService signApplyService;
+
+	private final SignApplyExportService signApplyExportService;
 
 	@RequestMapping("/single/page")
 	public ApiResponse<?> fetchSinglePage(SignSingleListQuery query) {
@@ -49,7 +53,7 @@ public class GameSignController {
 	@RequestMapping("/single/program/export")
 	public ApiResponse<?> singleImport(@RequestBody SignSingleProgramExportQuery request) {
 		request.setGameId(ThreadLocalUtil.getCurrentGameId());
-		return signApplyService.exportSignProgram(request);
+		return signApplyExportService.exportSignProgram(request);
 	}
 
 	@RequestMapping("/single/demo/import")

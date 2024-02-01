@@ -22,8 +22,6 @@ public interface SignApplyService {
 
 	ApiResponse<?> exportTeamDemo(BaseRequest baseRequest, MultipartFile file) throws IOException;
 
-	ApiResponse<?> exportSignProgram(SignSingleProgramExportQuery request);
-
 	ApiResponse<?> importSingle(Integer importType, MultipartFile file);
 
 	ApiResponse<?> exportSingleDemo(BaseRequest baseRequest, MultipartFile file);
