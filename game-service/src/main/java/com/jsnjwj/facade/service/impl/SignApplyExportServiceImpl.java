@@ -1,6 +1,7 @@
 package com.jsnjwj.facade.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import com.alibaba.fastjson2.JSON;
 import com.jsnjwj.common.response.ApiResponse;
 import com.jsnjwj.facade.entity.GameGroupEntity;
 import com.jsnjwj.facade.entity.SignSingleEntity;
@@ -13,10 +14,17 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
-
+import com.aliyun.oss.OSS;
+import com.aliyun.oss.OSSClientBuilder;
+import com.aliyun.oss.model.PutObjectResult;
 import com.jsnjwj.facade.manager.SignApplyManager;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,6 +49,8 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
         } else {
             return exportAll(gameId);
         }
+
+
 
     }
 
@@ -223,19 +233,55 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 
             // 保存文件
             String filePath = "./file.xlsx";
+
             try (FileOutputStream fileOut = new FileOutputStream(filePath)) {
                 workbook.write(fileOut);
             }
-
-            // 关闭工作簿
-            workbook.close();
-
+            String fileName = "秩序表-组别.xlsx";
+            String fileUrl = updateToOss(filePath,fileName);
             log.info("Excel文件已生成！");
+
+            return ApiResponse.success(fileUrl);
+
 
         } catch (Exception e) {
             log.error("export error", e);
+            return ApiResponse.error("导出失败");
+
         }
-        return ApiResponse.success();
+    }
+
+
+    /**
+     * 上传导出文件到oss
+     * @param fileName
+     * @param orgName
+     * @return
+     * @throws IOException
+     */
+    private String updateToOss(String fileName,String orgName) throws IOException {
+
+        String endpoint = "https://oss-cn-beijing.aliyuncs.com";
+        // 阿里云主账号AccessKey拥有所有API的访问权限，风险很高。强烈建议您创建并使用RAM账号进行API访问或日常运维，请登录RAM控制台创建RAM账号。
+        // 这里填写上面获取的 accessKeyId、 accessKeySecret
+        String accessKeyId = "LTAI5tGUes1rJF4GMVDUGrWk";
+        String accessKeySecret = "HgBCLqvx31QlXMetWRyPyZWGAJcofi";
+
+        OSS client = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
+
+        //2. 通过client发起上传文件的请求
+        String bulkName = "dynamicycle";
+//        String key = UUID.randomUUID().toString() + "git-bash.pdf"; //文件的唯一标识，通常是不重复的文件名
+
+        InputStream in = Files.newInputStream(Paths.get(fileName));
+
+        // 上传文件到指定的存储空间（bucketName）并将其保存为指定的文件名称（key）。
+        PutObjectResult resul = client.putObject(bulkName, orgName, in);
+        log.info(JSON.toJSONString(resul));
+//        return resul.getResponse().getUri();
+//        return "https://shfamily-school.oss-cn-shanghai.aliyuncs.com/"+key;
+        return "https://doc.dynamicycle.com/" + orgName;
+
     }
 
 
