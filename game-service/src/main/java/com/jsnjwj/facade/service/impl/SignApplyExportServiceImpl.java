@@ -92,9 +92,8 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 			PrintSetup printSetup = sheet.getPrintSetup();
 			printSetup.setFitWidth((short) 1); // 将 Fit Width 设置为 1
 
-			Row rowBlank = sheet.createRow(1); // 新增的空白行
-			Cell cellBlank = rowBlank.createCell(0);
-			cellBlank.setCellStyle(cellStyle);
+			// 新增空白行
+			addBlankRow(sheet,1);
 
 			int i = 2;
 			List<SignSingleEntity> groupEntities = signApplyManager.getSignGroups(gameId);
@@ -126,12 +125,14 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 					addMergedRegion(sheet, i, i, 0, 9);
 
 					i++;
+
 					Long groupId = signSingleEntity.getGroupId();
 					// 填充报名信息 查询该group下，所有单位信息
 					List<SignSingleEntity> orgEnties = signApplyManager.getOrgsByGroupId(gameId, groupId);
 					if (CollUtil.isNotEmpty(orgEnties)) {
 						for (SignSingleEntity orgEntity : orgEnties) {
-
+							addBlankRow(sheet,i);
+							i++;
 							Row orgRow = sheet.createRow(i);
 							orgRow.setHeightInPoints(20);
 
@@ -229,6 +230,8 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 							}
 
 						}
+						addBlankRow(sheet,i);
+						i++;
 
 					}
 
@@ -237,7 +240,7 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 
 			// 合并单元格
 			addMergedRegion(sheet, 0, 0, 0, 9);
-			addMergedRegion(sheet, 1, 1, 0, 9);
+
 
 			// 保存文件
 			String filePath = "./file.xlsx";
@@ -259,13 +262,24 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 		}
 	}
 
-	/**
-	 * 上传导出文件到oss
-	 * @param fileName
-	 * @param orgName
-	 * @return
-	 * @throws IOException
-	 */
+	private void addBlankRow(Sheet sheet, int i) {
+		// 创建行
+		Row teamRow = sheet.createRow(i);
+		teamRow.setHeightInPoints(20);
+
+		// 新增单元格
+		teamRow.createCell(0);
+
+		addMergedRegion(sheet, i, i, 0, 9);
+	}
+
+		/**
+         * 上传导出文件到oss
+         * @param fileName
+         * @param orgName
+         * @return
+         * @throws IOException
+         */
 	private String updateToOss(String fileName, String orgName) throws IOException {
 
 		String endpoint = "https://oss-cn-beijing.aliyuncs.com";
