@@ -1,12 +1,8 @@
 package com.jsnjwj.facade.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.EasyExcelFactory;
-import com.alibaba.excel.ExcelWriter;
-import com.alibaba.excel.support.ExcelTypeEnum;
-import com.alibaba.excel.write.metadata.style.WriteCellStyle;
-import com.alibaba.excel.write.metadata.style.WriteFont;
-import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsnjwj.common.request.BaseRequest;
 import com.jsnjwj.common.response.ApiResponse;
@@ -17,26 +13,22 @@ import com.jsnjwj.facade.easyexcel.upload.ImportTeamUploadDto;
 import com.jsnjwj.facade.dto.SignSingleDto;
 import com.jsnjwj.facade.entity.GameGroupEntity;
 import com.jsnjwj.facade.entity.GameItemEntity;
+import com.jsnjwj.facade.entity.SignOrgEntity;
 import com.jsnjwj.facade.entity.SignTeamEntity;
 import com.jsnjwj.facade.excel.SingleImportListener;
 import com.jsnjwj.facade.excel.TeamImportListener;
 import com.jsnjwj.facade.manager.SignApplyManager;
 import com.jsnjwj.facade.query.SignSingleListQuery;
-import com.jsnjwj.facade.query.SignSingleProgramExportQuery;
 import com.jsnjwj.facade.query.SignTeamListQuery;
 import com.jsnjwj.facade.service.SignApplyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.hssf.usermodel.*;
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -69,9 +61,9 @@ public class SignApplyServiceImpl implements SignApplyService {
 				SignTeamDto teamDto = new SignTeamDto();
 				teamDto.setTeamName(teamEntity.getTeamName());
 				teamDto.setCoachName(teamEntity.getCoachName());
-				teamDto.setCoachPhone(teamEntity.getCoachTel());
+				teamDto.setCoachTel(teamEntity.getCoachTel());
 				teamDto.setLeaderName(teamEntity.getLeaderName());
-				teamDto.setLeaderPhone(teamEntity.getLeaderTel());
+				teamDto.setLeaderTel(teamEntity.getLeaderTel());
 				signRecord.setTeam(teamDto);
 
 			}
@@ -85,8 +77,28 @@ public class SignApplyServiceImpl implements SignApplyService {
 	public ApiResponse<?> fetchTeamPage(SignTeamListQuery query) {
 		query.setGameId(ThreadLocalUtil.getCurrentGameId());
 		Page<SignTeamEntity> page = signApplyManager.fetchSignTeamPage(query);
+		List<SignTeamDto> teamDtoList = new ArrayList<>();
+		if (!page.getRecords().isEmpty()) {
+			for (SignTeamEntity entity : page.getRecords()) {
+				SignTeamDto signTeamDto = new SignTeamDto();
+				BeanUtil.copyProperties(entity, signTeamDto);
+				Long orgId = entity.getOrgId();
+				if (Objects.nonNull(orgId) && orgId > 0L) {
+					SignOrgEntity orgEntity = signApplyManager.getSignOrgById(orgId);
+					if (Objects.nonNull(orgEntity)) {
+						signTeamDto.setOrgName(orgEntity.getOrgName());
+					}
+				}
+				teamDtoList.add(signTeamDto);
 
-		return ApiResponse.success(page);
+			}
+		}
+
+		Page<SignTeamDto> response = new Page<>(query.getPage(), query.getLimit());
+		response.setRecords(teamDtoList);
+		response.setTotal(page.getTotal());
+
+		return ApiResponse.success(response);
 	}
 
 	@Override

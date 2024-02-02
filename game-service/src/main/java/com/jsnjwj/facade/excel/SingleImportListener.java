@@ -4,12 +4,10 @@ import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.excel.util.ListUtils;
 import com.alibaba.fastjson2.JSON;
-import com.jsnjwj.facade.easyexcel.upload.ImportGroupDto;
-import com.jsnjwj.facade.easyexcel.upload.ImportItemDto;
-import com.jsnjwj.facade.easyexcel.upload.ImportSingleUploadDto;
-import com.jsnjwj.facade.easyexcel.upload.ImportTeamDto;
+import com.jsnjwj.facade.easyexcel.upload.*;
 import com.jsnjwj.facade.entity.GameGroupEntity;
 import com.jsnjwj.facade.entity.GameItemEntity;
+import com.jsnjwj.facade.entity.SignOrgEntity;
 import com.jsnjwj.facade.entity.SignTeamEntity;
 import com.jsnjwj.facade.manager.SignApplyManager;
 import lombok.Data;
@@ -36,6 +34,8 @@ public class SingleImportListener extends AnalysisEventListener<ImportSingleUplo
 
 	Map<String, ImportTeamDto> teamMap = new HashMap<>();
 
+	Map<String, ImportOrgDto> orgMap = new HashMap<>();
+
 	private final Long gameId;
 
 	private List<ImportSingleUploadDto> cachedDataList = ListUtils.newArrayListWithExpectedSize(BATCH_COUNT);
@@ -56,6 +56,7 @@ public class SingleImportListener extends AnalysisEventListener<ImportSingleUplo
 		log.info("解析到一条数据 before:{}", JSON.toJSONString(singleUploadDto));
 		getOrCreateGroup(singleUploadDto);
 		getOrCreateItem(singleUploadDto);
+		getOrCreateOrg(singleUploadDto);
 		getOrCreateTeam(singleUploadDto);
 		cachedDataList.add(singleUploadDto);
 		log.info("解析到一条数据 after:{}", JSON.toJSONString(singleUploadDto));
@@ -71,6 +72,35 @@ public class SingleImportListener extends AnalysisEventListener<ImportSingleUplo
 	@Override
 	public void doAfterAllAnalysed(AnalysisContext analysisContext) {
 		signApplyManager.saveSingleBatch(this.gameId, cachedDataList);
+	}
+
+	/**
+	 * 获取单位信息
+	 * @param singleUploadDto
+	 */
+	private void getOrCreateOrg(ImportSingleUploadDto singleUploadDto) {
+		String orgName = singleUploadDto.getOrgName();
+		Long orgId;
+		// 从缓存中获取组别
+		ImportOrgDto org = orgMap.get(orgName);
+		if (org == null) {
+			if (!signApplyManager.checkOrgExist(this.gameId, orgName)) {
+				orgId = signApplyManager.saveOrg(this.gameId, orgName);
+			}
+			else {
+				SignOrgEntity orgEntity = signApplyManager.getOrgEntity(gameId, orgName);
+				orgId = orgEntity.getId();
+			}
+			org = new ImportOrgDto();
+			org.setOrgId(orgId);
+			org.setOrgName(orgName);
+			// 将组别保存到缓存中
+			orgMap.put(orgName, org);
+		}
+		else {
+			orgId = org.getOrgId();
+		}
+		singleUploadDto.setOrgId(String.valueOf(orgId));
 	}
 
 	/**
@@ -115,7 +145,7 @@ public class SingleImportListener extends AnalysisEventListener<ImportSingleUplo
 		ImportItemDto itemDto = itemMap.getOrDefault(groupName + itemName, null);
 		if (itemDto == null) {
 			if (!signApplyManager.checkItemExist(this.gameId, groupId, itemName)) {
-				itemId = signApplyManager.saveItem(this.gameId, groupId, itemName);
+				itemId = signApplyManager.saveItem(this.gameId, groupId, itemName, singleUploadDto.getItemType());
 			}
 			else {
 				GameItemEntity itemEntity = signApplyManager.getItemEntity(gameId, groupId, itemName);

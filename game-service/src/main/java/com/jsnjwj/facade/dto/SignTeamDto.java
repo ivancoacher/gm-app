@@ -13,12 +13,14 @@ public class SignTeamDto {
 
 	private String leaderName;
 
-	private String leaderPhone;
+	private String leaderTel;
 
 	private String coachName;
 
-	private String coachPhone;
+	private String coachTel;
 
 	private String remark;
+
+	private String orgName;
 
 }

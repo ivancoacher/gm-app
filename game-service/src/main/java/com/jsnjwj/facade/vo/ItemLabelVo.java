@@ -17,4 +17,6 @@ public class ItemLabelVo {
 
 	private Integer sort;
 
+	private String itemType;
+
 }

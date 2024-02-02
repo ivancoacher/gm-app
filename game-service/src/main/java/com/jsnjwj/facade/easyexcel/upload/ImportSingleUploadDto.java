@@ -4,13 +4,11 @@ import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.util.StringUtils;
 import lombok.Data;
 
-import java.util.Objects;
-
 @Data
 public class ImportSingleUploadDto {
 
-	@ExcelProperty(value = "比赛类别")
-	private String gameType;
+	@ExcelProperty(value = "项目类别")
+	private String itemType;
 
 	@ExcelProperty(value = "比赛项目")
 	private String itemName;
@@ -80,6 +78,12 @@ public class ImportSingleUploadDto {
 	 * 队伍编号
 	 */
 	private String teamId;
+
+	private String orgId;
+
+	public Long getOrgId() {
+		return StringUtils.isNotBlank(orgId) ? Long.parseLong(orgId) : 0L;
+	}
 
 	public Long getGroupId() {
 		return StringUtils.isNotBlank(groupId) ? Long.parseLong(groupId) : 0L;

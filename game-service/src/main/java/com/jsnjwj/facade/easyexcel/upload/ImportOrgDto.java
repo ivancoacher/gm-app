@@ -5,11 +5,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ImportTeamDto {
+public class ImportOrgDto {
 
-	private String teamName;
-
-	private Long teamId;
+	private String orgName;
 
 	private Long orgId;
 

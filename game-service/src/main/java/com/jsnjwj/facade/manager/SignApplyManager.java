@@ -8,14 +8,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsnjwj.facade.dto.SignSingleDto;
 import com.jsnjwj.facade.easyexcel.upload.ImportSingleUploadDto;
 import com.jsnjwj.facade.easyexcel.upload.ImportTeamUploadDto;
-import com.jsnjwj.facade.entity.GameGroupEntity;
-import com.jsnjwj.facade.entity.GameItemEntity;
-import com.jsnjwj.facade.entity.SignSingleEntity;
-import com.jsnjwj.facade.entity.SignTeamEntity;
-import com.jsnjwj.facade.mapper.GameGroupMapper;
-import com.jsnjwj.facade.mapper.GameItemMapper;
-import com.jsnjwj.facade.mapper.SignSingleMapper;
-import com.jsnjwj.facade.mapper.SignTeamMapper;
+import com.jsnjwj.facade.entity.*;
+import com.jsnjwj.facade.mapper.*;
 import com.jsnjwj.facade.query.SignSingleListQuery;
 import com.jsnjwj.facade.query.SignTeamListQuery;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +28,8 @@ public class SignApplyManager {
 
 	private final SignTeamMapper signTeamMapper;
 
+	private final SignOrgMapper signOrgMapper;
+
 	private final GameGroupMapper gameGroupMapper;
 
 	private final GameItemMapper gameItemMapper;
@@ -43,14 +39,17 @@ public class SignApplyManager {
 		QueryWrapper<GameGroupEntity> groupQuery = new QueryWrapper<>();
 		QueryWrapper<GameItemEntity> itemQuery = new QueryWrapper<>();
 		QueryWrapper<SignSingleEntity> signQuery = new QueryWrapper<>();
+		QueryWrapper<SignOrgEntity> orgQuery = new QueryWrapper<>();
 		teamQuery.eq("game_id", gameId);
 		groupQuery.eq("game_id", gameId);
 		itemQuery.eq("game_id", gameId);
 		signQuery.eq("game_id", gameId);
+		orgQuery.eq("game_id", gameId);
 		signTeamMapper.delete(teamQuery);
 		gameGroupMapper.delete(groupQuery);
 		gameItemMapper.delete(itemQuery);
 		signSingleMapper.delete(signQuery);
+		signOrgMapper.delete(orgQuery);
 
 	}
 
@@ -84,6 +83,13 @@ public class SignApplyManager {
 		page.setSize(query.getLimit());
 		return signTeamMapper.selectPage(page, wrapper);
 
+	}
+
+	public SignOrgEntity getSignOrgById(Long orgId) {
+		LambdaQueryWrapper<SignOrgEntity> queryWrapper = new LambdaQueryWrapper<>();
+		queryWrapper.eq(SignOrgEntity::getId, orgId);
+		queryWrapper.last("limit 1");
+		return signOrgMapper.selectOne(queryWrapper);
 	}
 
 	public List<SignTeamEntity> fetchSignTeamData(SignTeamListQuery query) {
@@ -142,6 +148,29 @@ public class SignApplyManager {
 		return gameGroupMapper.exists(queryWrapper);
 	}
 
+	public boolean checkOrgExist(Long gameId, String orgName) {
+		LambdaQueryWrapper<SignOrgEntity> queryWrapper = new LambdaQueryWrapper<>();
+		queryWrapper.eq(SignOrgEntity::getGameId, gameId);
+		queryWrapper.eq(SignOrgEntity::getOrgName, orgName);
+		return signOrgMapper.exists(queryWrapper);
+	}
+
+	public Long saveOrg(Long gameId, String orgName) {
+		SignOrgEntity orgEntity = new SignOrgEntity();
+		orgEntity.setOrgName(orgName);
+		orgEntity.setGameId(gameId);
+		signOrgMapper.insert(orgEntity);
+		return orgEntity.getId();
+	}
+
+	public SignOrgEntity getOrgEntity(Long gameId, String orgName) {
+		LambdaQueryWrapper<SignOrgEntity> queryWrapper = new LambdaQueryWrapper<>();
+		queryWrapper.eq(SignOrgEntity::getGameId, gameId);
+		queryWrapper.eq(SignOrgEntity::getOrgName, orgName);
+		queryWrapper.last("limit 1");
+		return signOrgMapper.selectOne(queryWrapper);
+	}
+
 	public GameGroupEntity getGroupEntity(Long gameId, String groupName) {
 		LambdaQueryWrapper<GameGroupEntity> queryWrapper = new LambdaQueryWrapper<>();
 		queryWrapper.eq(GameGroupEntity::getGameId, gameId);
@@ -166,11 +195,12 @@ public class SignApplyManager {
 		return gameItemMapper.exists(queryWrapper);
 	}
 
-	public Long saveItem(Long gameId, Long groupId, String itemName) {
+	public Long saveItem(Long gameId, Long groupId, String itemName, String itemType) {
 		GameItemEntity itemEntity = new GameItemEntity();
 		itemEntity.setItemName(itemName);
 		itemEntity.setGroupId(groupId);
 		itemEntity.setGameId(gameId);
+		itemEntity.setItemType(itemType);
 		gameItemMapper.insert(itemEntity);
 		return itemEntity.getId();
 	}
@@ -199,6 +229,7 @@ public class SignApplyManager {
 		teamEntity.setCoachTel(singleUploadDto.getCoachPhone());
 		teamEntity.setLeaderName(singleUploadDto.getLeaderName());
 		teamEntity.setLeaderTel(singleUploadDto.getLeaderPhone());
+		teamEntity.setOrgId(singleUploadDto.getOrgId());
 
 		signTeamMapper.insert(teamEntity);
 		return teamEntity.getId();

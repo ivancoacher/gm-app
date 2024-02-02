@@ -10,11 +10,11 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * @TableName tc_game_item
+ * @TableName tc_game_group
  */
+@TableName(value = "tc_sign_org")
 @Data
-@TableName(value = "tc_game_item")
-public class GameItemEntity implements Serializable {
+public class SignOrgEntity implements Serializable {
 
 	/**
 	 *
@@ -30,35 +30,20 @@ public class GameItemEntity implements Serializable {
 	/**
 	 *
 	 */
-	private Long groupId;
-
-	/**
-	 *
-	 */
-	private String itemName;
-
-	private String itemType;
-
-	/**
-	 *
-	 */
-	private Integer sort;
-
-	/**
-	 *
-	 */
-	private Integer creatorId;
+	private String orgName;
 
 	/**
 	 *
 	 */
 	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
-	private Date createTime;
+
+	private Date createdAt;
 
 	/**
 	 *
 	 */
 	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
-	private Date updateTime;
+
+	private Date updatedAt;
 
 }
