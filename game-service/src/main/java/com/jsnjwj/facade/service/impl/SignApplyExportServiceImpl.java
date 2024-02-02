@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollUtil;
 import com.alibaba.fastjson2.JSON;
 import com.jsnjwj.common.response.ApiResponse;
 import com.jsnjwj.facade.entity.GameGroupEntity;
+import com.jsnjwj.facade.entity.GameItemEntity;
 import com.jsnjwj.facade.entity.SignSingleEntity;
 import com.jsnjwj.facade.entity.SignTeamEntity;
 import com.jsnjwj.facade.query.SignSingleProgramExportQuery;
@@ -54,6 +55,11 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 
 	}
 
+	/**
+	 * 根据组别导出
+	 * @param gameId
+	 * @return
+	 */
 	private ApiResponse<?> exportByGroup(Long gameId) {
 		try {
 			// 创建工作簿
@@ -399,6 +405,11 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 		sheet.addMergedRegion(new CellRangeAddress(startRow, endRow, startCol, endCol));
 	}
 
+	/**
+	 * 根据项目导出
+	 * @param gameId
+	 * @return
+	 */
 	private ApiResponse<?> exportByItem(Long gameId) {
 		try {
 			// 创建工作簿
@@ -422,11 +433,11 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 			row.setHeightInPoints(37);
 
 			// 设置垂直对齐方式为垂直居中
-			cellStyle.setVerticalAlignment(VerticalAlignment.JUSTIFY);
+			cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
 
 			// 创建单元格
 			Cell cell = row.createCell(0);
-			cell.setCellValue("秩序册");
+			cell.setCellValue("秩序册-项目");
 			cell.setCellStyle(cellStyle);
 
 			// 设置单元格宽度
@@ -437,37 +448,177 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 			PrintSetup printSetup = sheet.getPrintSetup();
 			printSetup.setFitWidth((short) 1); // 将 Fit Width 设置为 1
 
-			Row rowBlank = sheet.createRow(1); // 新增的空白行
-			Cell cellBlank = rowBlank.createCell(0);
-			cellBlank.setCellStyle(cellStyle);
+			// 新增空白行
+			addBlankRow(sheet,1);
 
-			List<SignSingleEntity> groupEntities = signApplyManager.getSignGroups(gameId);
+			int i = 2;
+			List<SignSingleEntity> itemEntities = signApplyManager.getSignItems(gameId);
+			if (CollUtil.isNotEmpty(itemEntities)) {
+				int orgCode = 1;
+
+				for (SignSingleEntity signSingleEntity : itemEntities) {
+					// 填充group信息
+					GameGroupEntity groupEntity = signApplyManager.getGroupById(signSingleEntity.getGroupId());
+					GameItemEntity itemEntity = signApplyManager.getItemById(signSingleEntity.getItemId());
+
+					Row itemRow = sheet.createRow(i);
+					itemRow.setHeightInPoints(24);
+
+					Font groupFont = workbook.createFont();
+					groupFont.setFontName("Arial");
+					groupFont.setFontHeightInPoints((short) 15);
+
+					itemRow.setHeightInPoints(24);
+
+					CellStyle itemCellStyle = workbook.createCellStyle();
+					itemCellStyle.setAlignment(HorizontalAlignment.CENTER);
+					itemCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+
+					itemCellStyle.setFont(groupFont);
+
+					Cell itemCell = itemRow.createCell(0);
+					itemCell.setCellValue(groupEntity.getGroupName()+" - "+itemEntity.getItemName());
+					itemCell.setCellStyle(itemCellStyle);
+
+					addMergedRegion(sheet, i, i, 0, 9);
+
+					i++;
+
+					Long groupId = signSingleEntity.getGroupId();
+					Long itemId = signSingleEntity.getItemId();
+					// 填充报名信息 查询该group下，所有单位信息
+					List<SignSingleEntity> orgEnties = signApplyManager.getOrgsByGroupIdAndItemId(gameId, groupId, itemId);
+					if (CollUtil.isNotEmpty(orgEnties)) {
+						for (SignSingleEntity orgEntity : orgEnties) {
+							addBlankRow(sheet,i);
+							i++;
+							Row orgRow = sheet.createRow(i);
+							orgRow.setHeightInPoints(20);
+
+							Font orgFont = workbook.createFont();
+							orgFont.setFontName("Arial");
+							orgFont.setFontHeightInPoints((short) 11);
+
+							CellStyle orgCellStyle = workbook.createCellStyle();
+							orgCellStyle.setAlignment(HorizontalAlignment.CENTER);
+							orgCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+							orgCellStyle.setFont(orgFont);
+
+							// 编号
+							Cell orgCellCode = orgRow.createCell(0);
+
+							String orgCodeStr = String.format("%03d", orgCode);
+							orgCellCode.setCellValue(orgCodeStr);
+							orgCellCode.setCellStyle(orgCellStyle);
+
+							// 队伍名
+							Cell orgCellName = orgRow.createCell(1);
+							orgCellName.setCellValue(orgEntity.getOrgName());
+							orgCellName.setCellStyle(orgCellStyle);
+							addMergedRegion(sheet, i, i, 1, 8);
+
+							orgCode++;
+							i++;
+
+							String orgName = orgEntity.getOrgName();
+							// 查询每个组织下具体的报名信息
+							List<SignSingleEntity> singleEntities = signApplyManager.getApplyByOrgAndGroupId(gameId,
+									groupId, orgName);
+
+							if (CollUtil.isNotEmpty(singleEntities)) {
+								List<Long> teamIds = singleEntities.stream()
+										.map(SignSingleEntity::getTeamId)
+										.distinct()
+										.collect(Collectors.toList());
+								// 有队伍参赛的情况，生成领队和教练信息
+								if (CollUtil.isNotEmpty(teamIds)) {
+									List<SignTeamEntity> teamEntities = signApplyManager.getTeamsByIds(gameId, teamIds);
+
+									// 领队
+									List<String> leaderEntity = teamEntities.stream()
+											.map(SignTeamEntity::getLeaderName)
+											.collect(Collectors.toList());
+									String leaderEntityStr = String.join(",", leaderEntity);
+									addTeamRow(workbook, sheet, i, "领队", leaderEntityStr);
+									i++;
+									// 教练
+									List<String> coachEntity = teamEntities.stream()
+											.map(SignTeamEntity::getCoachName)
+											.collect(Collectors.toList());
+									String coachEntityStr = String.join(",", coachEntity);
+									addTeamRow(workbook, sheet, i, "教练", coachEntityStr);
+									i++;
+								}
+
+								// 男运动员
+								List<SignSingleEntity> maleEntities = singleEntities.stream()
+										.filter(item -> item.getSex() == 1)
+										.collect(Collectors.toList());
+								if (CollUtil.isNotEmpty(maleEntities)) {
+									addPlayerTitleRow(workbook, sheet, i, "男运动员");
+									i++;
+									int maleCellIndex = 0;
+									for (SignSingleEntity signSingle : maleEntities) {
+										addPlayerContentRow(workbook, sheet, i, maleCellIndex, signSingle.getName());
+										maleCellIndex++;
+										if (maleCellIndex >= 10) {
+											i++;
+											maleCellIndex = 0;
+										}
+									}
+									i++;
+								}
+								// 女运动员
+								List<SignSingleEntity> femaleEntities = singleEntities.stream()
+										.filter(item -> item.getSex() == 0)
+										.collect(Collectors.toList());
+								if (CollUtil.isNotEmpty(femaleEntities)) {
+									addPlayerTitleRow(workbook, sheet, i, "女运动员");
+									i++;
+									int femaleCellIndex = 0;
+									for (SignSingleEntity signSingle : femaleEntities) {
+										addPlayerContentRow(workbook, sheet, i, femaleCellIndex, signSingle.getName());
+										femaleCellIndex++;
+										if (femaleCellIndex >= 10) {
+											i++;
+											femaleCellIndex = 0;
+										}
+									}
+									i++;
+								}
+							}
+
+						}
+						addBlankRow(sheet,i);
+						i++;
+
+					}
+
+				}
+			}
 
 			// 合并单元格
-			sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 9));
-			sheet.addMergedRegion(new CellRangeAddress(1, 1, 0, 9)); // 合并空白单元格
+			addMergedRegion(sheet, 0, 0, 0, 9);
 
-			// 查询所有报名数据
-			// List<GameItemEntity> itemEntities = signApplyManager.
 
 			// 保存文件
 			String filePath = "./file.xlsx";
+
 			try (FileOutputStream fileOut = new FileOutputStream(filePath)) {
 				workbook.write(fileOut);
 			}
-
-			// 关闭工作簿
-			workbook.close();
-
+			String fileName = "秩序表-项目.xlsx";
+			String fileUrl = updateToOss(filePath, fileName);
 			log.info("Excel文件已生成！");
+
+			return ApiResponse.success(fileUrl);
 
 		}
 		catch (Exception e) {
 			log.error("export error", e);
+			return ApiResponse.error("导出失败");
+
 		}
-
-		return ApiResponse.success();
-
 	}
 
 	private ApiResponse<?> exportAll(Long gameId) {

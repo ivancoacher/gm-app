@@ -294,6 +294,15 @@ public class SignApplyManager {
 		return signSingleMapper.selectList(wrapper);
 	}
 
+	public List<SignSingleEntity> getOrgsByGroupIdAndItemId(Long gameId, Long groupId, Long itemId) {
+		LambdaQueryWrapper<SignSingleEntity> wrapper = new LambdaQueryWrapper<>();
+		wrapper.eq(SignSingleEntity::getGameId, gameId);
+		wrapper.eq(SignSingleEntity::getGroupId, groupId);
+		wrapper.eq(SignSingleEntity::getItemId, itemId);
+		wrapper.groupBy(SignSingleEntity::getOrgName);
+		return signSingleMapper.selectList(wrapper);
+	}
+
 	public List<SignTeamEntity> getTeamsByIds(Long gameId, List<Long> teamIds) {
 		LambdaQueryWrapper<SignTeamEntity> wrapper = new LambdaQueryWrapper<>();
 		wrapper.eq(SignTeamEntity::getGameId, gameId);
