@@ -302,10 +302,27 @@ public class SignApplyManager {
 		return signSingleMapper.selectList(wrapper);
 	}
 
+	/**
+	 * 获取报名数据中所有orgName
+	 */
+	public List<SignSingleEntity> getSignTeams(Long gameId) {
+		LambdaQueryWrapper<SignSingleEntity> wrapper = new LambdaQueryWrapper<>();
+		wrapper.eq(SignSingleEntity::getGameId, gameId);
+		wrapper.groupBy(SignSingleEntity::getTeamId);
+		return signSingleMapper.selectList(wrapper);
+	}
+
 	public List<SignSingleEntity> getApplyByOrg(Long gameId, String orgName) {
 		LambdaQueryWrapper<SignSingleEntity> wrapper = new LambdaQueryWrapper<>();
 		wrapper.eq(SignSingleEntity::getGameId, gameId);
 		wrapper.eq(SignSingleEntity::getOrgName, orgName);
+		return signSingleMapper.selectList(wrapper);
+	}
+
+	public List<SignSingleEntity> getApplyByTeam(Long gameId, Long teamId) {
+		LambdaQueryWrapper<SignSingleEntity> wrapper = new LambdaQueryWrapper<>();
+		wrapper.eq(SignSingleEntity::getGameId, gameId);
+		wrapper.eq(SignSingleEntity::getTeamId, teamId);
 		return signSingleMapper.selectList(wrapper);
 	}
 
@@ -331,6 +348,40 @@ public class SignApplyManager {
 		wrapper.eq(SignSingleEntity::getGroupId, groupId);
 		wrapper.eq(SignSingleEntity::getItemId, itemId);
 		wrapper.groupBy(SignSingleEntity::getOrgName);
+		return signSingleMapper.selectList(wrapper);
+	}
+
+	public List<SignSingleEntity> getTeamByGroupId(Long gameId, Long groupId) {
+		LambdaQueryWrapper<SignSingleEntity> wrapper = new LambdaQueryWrapper<>();
+		wrapper.eq(SignSingleEntity::getGameId, gameId);
+		wrapper.eq(SignSingleEntity::getGroupId, groupId);
+		wrapper.groupBy(SignSingleEntity::getTeamId);
+		return signSingleMapper.selectList(wrapper);
+	}
+
+	public List<SignSingleEntity> getTeamByGroupIdAndItemId(Long gameId, Long groupId, Long itemId) {
+		LambdaQueryWrapper<SignSingleEntity> wrapper = new LambdaQueryWrapper<>();
+		wrapper.eq(SignSingleEntity::getGameId, gameId);
+		wrapper.eq(SignSingleEntity::getGroupId, groupId);
+		wrapper.eq(SignSingleEntity::getItemId, itemId);
+		wrapper.groupBy(SignSingleEntity::getTeamId);
+		return signSingleMapper.selectList(wrapper);
+	}
+
+	public List<SignSingleEntity> getApplyByItemIdAndTeamId(Long gameId, Long groupId, Long itemId, Long teamId) {
+		LambdaQueryWrapper<SignSingleEntity> wrapper = new LambdaQueryWrapper<>();
+		wrapper.eq(SignSingleEntity::getGameId, gameId);
+		wrapper.eq(SignSingleEntity::getGroupId, groupId);
+		wrapper.eq(SignSingleEntity::getItemId, itemId);
+		wrapper.eq(SignSingleEntity::getTeamId, teamId);
+		return signSingleMapper.selectList(wrapper);
+	}
+
+	public List<SignSingleEntity> getApplyByGroupIdAndTeamId(Long gameId, Long groupId, Long teamId) {
+		LambdaQueryWrapper<SignSingleEntity> wrapper = new LambdaQueryWrapper<>();
+		wrapper.eq(SignSingleEntity::getGameId, gameId);
+		wrapper.eq(SignSingleEntity::getGroupId, groupId);
+		wrapper.eq(SignSingleEntity::getTeamId, teamId);
 		return signSingleMapper.selectList(wrapper);
 	}
 
