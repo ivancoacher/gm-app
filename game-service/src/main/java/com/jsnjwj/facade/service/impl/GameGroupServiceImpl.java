@@ -1,16 +1,23 @@
 package com.jsnjwj.facade.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsnjwj.common.request.BaseRequest;
 import com.jsnjwj.common.response.ApiResponse;
+import com.jsnjwj.common.utils.ThreadLocalUtil;
 import com.jsnjwj.facade.entity.GameGroupEntity;
+import com.jsnjwj.facade.entity.SignSingleEntity;
 import com.jsnjwj.facade.manager.GameGroupManager;
+import com.jsnjwj.facade.manager.SignApplyManager;
 import com.jsnjwj.facade.query.GameGroupListQuery;
 import com.jsnjwj.facade.query.GameGroupSaveQuery;
 import com.jsnjwj.facade.query.GameGroupUpdateQuery;
 import com.jsnjwj.facade.service.GameGroupService;
+import com.jsnjwj.facade.service.SignApplyService;
 import com.jsnjwj.facade.vo.GameGroupAllVo;
 import com.jsnjwj.facade.vo.GroupLabelVo;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,10 +25,12 @@ import javax.annotation.Resource;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class GameGroupServiceImpl implements GameGroupService {
 
-	@Resource
-	private GameGroupManager groupManager;
+	private final GameGroupManager groupManager;
+
+	private final SignApplyManager signApplyManager;
 
 	/**
 	 * 分页查询
@@ -80,9 +89,19 @@ public class GameGroupServiceImpl implements GameGroupService {
 	}
 
 	@Override
-	public ApiResponse<?> delete(GameGroupUpdateQuery query) {
-		int result = groupManager.deleteGroup(query.getGroupId());
-		return ApiResponse.success(result);
+	public ApiResponse<?> delete(Long groupId) {
+		Long gameId = ThreadLocalUtil.getCurrentGameId();
+		// 判断该组别下是否还有报名信息
+		List<SignSingleEntity> singleEntities = signApplyManager.getSignByGroupId(gameId, groupId);
+		ApiResponse<Boolean> response = new ApiResponse<>();
+		if (CollUtil.isNotEmpty(singleEntities)) {
+			response.setData(false);
+			response.setMessage("请先删除该组别下所有报名信息");
+			return response;
+		}
+
+		int result = groupManager.deleteGroup(groupId);
+		return ApiResponse.success(result > 0);
 	}
 
 }

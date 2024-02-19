@@ -11,14 +11,12 @@ import com.jsnjwj.facade.dto.SignTeamDto;
 import com.jsnjwj.facade.easyexcel.upload.ImportSingleUploadDto;
 import com.jsnjwj.facade.easyexcel.upload.ImportTeamUploadDto;
 import com.jsnjwj.facade.dto.SignSingleDto;
-import com.jsnjwj.facade.entity.GameGroupEntity;
-import com.jsnjwj.facade.entity.GameItemEntity;
-import com.jsnjwj.facade.entity.SignOrgEntity;
-import com.jsnjwj.facade.entity.SignTeamEntity;
+import com.jsnjwj.facade.entity.*;
 import com.jsnjwj.facade.excel.SingleImportListener;
 import com.jsnjwj.facade.excel.TeamImportListener;
 import com.jsnjwj.facade.manager.SignApplyManager;
 import com.jsnjwj.facade.query.SignSingleListQuery;
+import com.jsnjwj.facade.query.SignSingleUpdateQuery;
 import com.jsnjwj.facade.query.SignTeamListQuery;
 import com.jsnjwj.facade.query.SignTeamUpdateQuery;
 import com.jsnjwj.facade.service.SignApplyService;
@@ -188,6 +186,29 @@ public class SignApplyServiceImpl implements SignApplyService {
 	@Override
 	public ApiResponse<?> exportSingleDemo(BaseRequest baseRequest, MultipartFile file) {
 		return null;
+	}
+
+	@Override
+	public ApiResponse<?> signDelete(Long signId) {
+		int res = signApplyManager.deleteById(signId);
+		return ApiResponse.success(res > 0);
+	}
+
+	@Override
+	public ApiResponse<?> signDeleteBatch(List<Long> signIds) {
+		int res = signApplyManager.deleteByIds(signIds);
+		return ApiResponse.success(res > 0);
+	}
+
+	@Override
+	public ApiResponse<?> signUpdate(SignSingleUpdateQuery request) {
+		SignSingleEntity signSingleEntity = new SignSingleEntity();
+		signSingleEntity.setId(request.getApplyId());
+		signSingleEntity.setName(request.getName());
+		signSingleEntity.setAge(request.getAge());
+		signSingleEntity.setSex(request.getSex());
+		int result = signApplyManager.updateSingle(signSingleEntity);
+		return ApiResponse.success(result > 0);
 	}
 
 }

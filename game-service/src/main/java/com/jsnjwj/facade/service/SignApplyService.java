@@ -6,6 +6,7 @@ import com.jsnjwj.facade.query.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 public interface SignApplyService {
 
@@ -28,5 +29,11 @@ public interface SignApplyService {
 	ApiResponse<?> importSingle(Integer importType, MultipartFile file);
 
 	ApiResponse<?> exportSingleDemo(BaseRequest baseRequest, MultipartFile file);
+
+	ApiResponse<?> signDelete(Long signId);
+
+	ApiResponse<?> signDeleteBatch(List<Long> signIds);
+
+	ApiResponse<?> signUpdate(SignSingleUpdateQuery request);
 
 }

@@ -9,10 +9,7 @@ import com.jsnjwj.facade.query.GameGroupSaveQuery;
 import com.jsnjwj.facade.query.GameGroupUpdateQuery;
 import com.jsnjwj.facade.service.GameGroupService;
 import com.jsnjwj.facade.vo.GroupLabelVo;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -50,9 +47,9 @@ public class GameGroupController {
 		return ApiResponse.success(gameGroupService.update(query));
 	}
 
-	@DeleteMapping("/delete")
-	public ApiResponse<?> delete(GameGroupUpdateQuery query) {
-		return gameGroupService.delete(query);
+	@DeleteMapping("/{groupId}")
+	public ApiResponse<?> delete(@PathVariable Long groupId) {
+		return gameGroupService.delete(groupId);
 	}
 
 }

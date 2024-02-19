@@ -42,6 +42,7 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 	private final SignApplyManager signApplyManager;
 
 	private final static String SHEET_NAME = "sheet1";
+
 	@Override
 	public ApiResponse<?> exportSignProgram(SignSingleProgramExportQuery request) {
 		Long gameId = request.getGameId();
@@ -66,8 +67,8 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 
 	/**
 	 * 根据组别导出
-	 * @param gameId 	比赛编号
-	 * @return			ApiResponse
+	 * @param gameId 比赛编号
+	 * @return ApiResponse
 	 */
 	private ApiResponse<?> exportByGroupAndTeam(Long gameId) {
 		try {
@@ -582,10 +583,10 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 
 	/**
 	 * 上传导出文件到oss
-	 * @param fileName	String
-	 * @param orgName	String
-	 * @return	String
-	 * @throws IOException	IOException
+	 * @param fileName String
+	 * @param orgName String
+	 * @return String
+	 * @throws IOException IOException
 	 */
 	private String updateToOss(String fileName, String orgName) throws IOException {
 
@@ -615,10 +616,10 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 
 	/**
 	 * 绘制运动员信息
-	 * @param workbook			Workbook
-	 * @param sheet				Sheet
-	 * @param i					int
-	 * @param titleName			标题名
+	 * @param workbook Workbook
+	 * @param sheet Sheet
+	 * @param i int
+	 * @param titleName 标题名
 	 */
 	private void addPlayerTitleRow(Workbook workbook, Sheet sheet, int i, String titleName) {
 		Row teamRow = sheet.createRow(i);
@@ -645,10 +646,10 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 
 	/**
 	 * 设置队员信息单元格
-	 * @param workbook	Workbook
-	 * @param sheet		Sheet
-	 * @param rowId		行数
-	 * @param cellId	列数
+	 * @param workbook Workbook
+	 * @param sheet Sheet
+	 * @param rowId 行数
+	 * @param cellId 列数
 	 * @param columnContent 内容
 	 */
 	private void addPlayerContentRow(Workbook workbook, Sheet sheet, int rowId, int cellId, String columnContent) {
@@ -715,11 +716,11 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 
 	/**
 	 * 合并单元格
-	 * @param sheet		Sheet
-	 * @param startRow	开始行
-	 * @param endRow	结束行
-	 * @param startCol	开始列
-	 * @param endCol	结束列
+	 * @param sheet Sheet
+	 * @param startRow 开始行
+	 * @param endRow 结束行
+	 * @param startCol 开始列
+	 * @param endCol 结束列
 	 */
 	private void addMergedRegion(Sheet sheet, int startRow, int endRow, int startCol, int endCol) {
 		sheet.addMergedRegion(new CellRangeAddress(startRow, endRow, startCol, endCol));
@@ -727,7 +728,7 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 
 	/**
 	 * 根据项目导出(队伍)
-	 * @param gameId	比赛编号
+	 * @param gameId 比赛编号
 	 * @return
 	 */
 	private ApiResponse<?> exportByItemAndTeam(Long gameId) {
@@ -1020,7 +1021,7 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 
 	/**
 	 * 根据项目导出
-	 * @param gameId	比赛编号
+	 * @param gameId 比赛编号
 	 * @return
 	 */
 	private ApiResponse<?> exportByItemAndOrg(Long gameId) {
@@ -1238,7 +1239,7 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 
 	/**
 	 * 根据组织导出
-	 * @param gameId	比赛编号
+	 * @param gameId 比赛编号
 	 * @return
 	 */
 	private ApiResponse<?> exportByOrg(Long gameId) {
@@ -1425,8 +1426,8 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 
 	/**
 	 * 根据队伍导出
-	 * @param gameId	比赛编号
-	 * @return			ApiResponse
+	 * @param gameId 比赛编号
+	 * @return ApiResponse
 	 */
 	private ApiResponse<?> exportByTeam(Long gameId) {
 		try {

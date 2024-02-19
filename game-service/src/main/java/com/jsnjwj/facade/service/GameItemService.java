@@ -26,6 +26,6 @@ public interface GameItemService {
 
 	GameItemEntity fetchOne(Long itemId);
 
-	ApiResponse<Integer> delete(GameItemUpdateQuery query);
+	ApiResponse<?> delete(Long itemId);
 
 }

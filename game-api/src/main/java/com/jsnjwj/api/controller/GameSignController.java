@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -82,6 +83,18 @@ public class GameSignController {
 		return signApplyService.deleteTeam(teamId);
 	}
 
+	@DeleteMapping("/single/{signId}")
+	public ApiResponse<?> deleteSign(@PathVariable Long signId) {
+
+		return signApplyService.signDelete(signId);
+	}
+
+	@PostMapping("/single")
+	public ApiResponse<?> deleteSigns(@RequestBody List<Long> signIds) {
+
+		return signApplyService.signDeleteBatch(signIds);
+	}
+
 	@RequestMapping("/team/info/{id}")
 	public ApiResponse<?> fetchTeam(@PathVariable Long id) {
 		return signApplyService.fetchTeam(id);
@@ -101,6 +114,13 @@ public class GameSignController {
 		MultipartFile sourceFile = multiRequest.getFile("file");
 		query.setUserId(ThreadLocalUtil.getCurrentUserId());
 		return signApplyService.exportTeamDemo(query, sourceFile);
+	}
+
+	@RequestMapping("/single/update")
+	public ApiResponse<?> teamDemoExport(@RequestBody SignSingleUpdateQuery request) {
+		request.setGameId(ThreadLocalUtil.getCurrentGameId());
+		request.setUserId(ThreadLocalUtil.getCurrentUserId());
+		return signApplyService.signUpdate(request);
 	}
 
 }

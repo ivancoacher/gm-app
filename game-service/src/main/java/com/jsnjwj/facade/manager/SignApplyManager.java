@@ -3,6 +3,7 @@ package com.jsnjwj.facade.manager;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsnjwj.facade.dto.SignSingleDto;
@@ -11,6 +12,7 @@ import com.jsnjwj.facade.easyexcel.upload.ImportTeamUploadDto;
 import com.jsnjwj.facade.entity.*;
 import com.jsnjwj.facade.mapper.*;
 import com.jsnjwj.facade.query.SignSingleListQuery;
+import com.jsnjwj.facade.query.SignSingleUpdateQuery;
 import com.jsnjwj.facade.query.SignTeamListQuery;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -402,6 +404,39 @@ public class SignApplyManager {
 
 	public int deleteTeam(Long teamId) {
 		return signTeamMapper.deleteById(teamId);
+	}
+
+	public List<SignSingleEntity> getSignByGroupId(Long gameId, Long groupId) {
+		LambdaQueryWrapper<SignSingleEntity> queryWrapper = new LambdaQueryWrapper<>();
+		queryWrapper.eq(SignSingleEntity::getGameId, gameId);
+		queryWrapper.eq(SignSingleEntity::getGroupId, groupId);
+		return signSingleMapper.selectList(queryWrapper);
+	}
+
+	public List<SignSingleEntity> getSingByItemId(Long gameId, Long itemId) {
+		LambdaQueryWrapper<SignSingleEntity> queryWrapper = new LambdaQueryWrapper<>();
+		queryWrapper.eq(SignSingleEntity::getGameId, gameId);
+		queryWrapper.eq(SignSingleEntity::getItemId, itemId);
+		return signSingleMapper.selectList(queryWrapper);
+	}
+
+	public int deleteById(Long signId) {
+		return signSingleMapper.deleteById(signId);
+	}
+
+	public int deleteByIds(List<Long> signIds) {
+		LambdaQueryWrapper<SignSingleEntity> queryWrapper = new LambdaQueryWrapper<>();
+		queryWrapper.in(SignSingleEntity::getId, signIds);
+		return signSingleMapper.delete(queryWrapper);
+	}
+
+	public int updateSingle(SignSingleEntity signSingleEntity) {
+		LambdaUpdateWrapper<SignSingleEntity> queryWrapper = new LambdaUpdateWrapper<>();
+		queryWrapper.set(SignSingleEntity::getName, signSingleEntity.getName());
+		queryWrapper.set(SignSingleEntity::getAge, signSingleEntity.getAge());
+		queryWrapper.set(SignSingleEntity::getSex, signSingleEntity.getSex());
+		queryWrapper.eq(SignSingleEntity::getId, signSingleEntity.getId());
+		return signSingleMapper.update(null, queryWrapper);
 	}
 
 }

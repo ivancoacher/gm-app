@@ -26,6 +26,6 @@ public interface GameGroupService {
 
 	ApiResponse<?> update(GameGroupUpdateQuery query);
 
-	ApiResponse<?> delete(GameGroupUpdateQuery query);
+	ApiResponse<?> delete(Long groupId);
 
 }

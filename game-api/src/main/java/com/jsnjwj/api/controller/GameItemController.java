@@ -55,9 +55,9 @@ public class GameItemController {
 		return ApiResponse.success(gameItemService.update(query));
 	}
 
-	@DeleteMapping("/delete")
-	public ApiResponse<?> delete(GameItemUpdateQuery query) {
-		return gameItemService.delete(query);
+	@DeleteMapping("/{itemId}")
+	public ApiResponse<?> delete(@PathVariable Long itemId) {
+		return gameItemService.delete(itemId);
 	}
 
 }

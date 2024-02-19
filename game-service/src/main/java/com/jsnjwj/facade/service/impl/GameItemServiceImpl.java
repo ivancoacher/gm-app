@@ -1,15 +1,20 @@
 package com.jsnjwj.facade.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsnjwj.common.request.BaseRequest;
 import com.jsnjwj.common.response.ApiResponse;
+import com.jsnjwj.common.utils.ThreadLocalUtil;
 import com.jsnjwj.facade.entity.GameItemEntity;
+import com.jsnjwj.facade.entity.SignSingleEntity;
 import com.jsnjwj.facade.manager.GameItemManager;
+import com.jsnjwj.facade.manager.SignApplyManager;
 import com.jsnjwj.facade.query.GameItemListQuery;
 import com.jsnjwj.facade.query.GameItemSaveQuery;
 import com.jsnjwj.facade.query.GameItemUpdateQuery;
 import com.jsnjwj.facade.service.GameItemService;
 import com.jsnjwj.facade.vo.ItemLabelVo;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,10 +23,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class GameItemServiceImpl implements GameItemService {
 
-	@Resource
-	private GameItemManager gameItemManager;
+	private final GameItemManager gameItemManager;
+
+	private final SignApplyManager signApplyManager;
 
 	/**
 	 * 分页查询
@@ -86,8 +93,19 @@ public class GameItemServiceImpl implements GameItemService {
 	}
 
 	@Override
-	public ApiResponse<Integer> delete(GameItemUpdateQuery query) {
-		return ApiResponse.success(gameItemManager.delete(query.getItemId()));
+	public ApiResponse<?> delete(Long itemId) {
+
+		Long gameId = ThreadLocalUtil.getCurrentGameId();
+		// 判断该组别下是否还有报名信息
+		List<SignSingleEntity> singleEntities = signApplyManager.getSingByItemId(gameId, itemId);
+		ApiResponse<Boolean> response = new ApiResponse<>();
+		if (CollUtil.isNotEmpty(singleEntities)) {
+			response.setData(false);
+			response.setMessage("请先删除该项目下所有报名信息");
+			return response;
+		}
+		int result = gameItemManager.delete(itemId);
+		return ApiResponse.success(result > 0);
 	}
 
 }
