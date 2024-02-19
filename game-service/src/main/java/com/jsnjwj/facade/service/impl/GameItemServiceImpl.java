@@ -73,8 +73,9 @@ public class GameItemServiceImpl implements GameItemService {
 		GameItemEntity tcGameGroup = new GameItemEntity();
 		tcGameGroup.setGroupId(query.getGroupId());
 		tcGameGroup.setSort(query.getSort());
-		tcGameGroup.setId(query.getItemId());
+		tcGameGroup.setId(query.getId());
 		tcGameGroup.setItemName(query.getItemName());
+		tcGameGroup.setItemType(query.getItemType());
 		return gameItemManager.update(tcGameGroup);
 	}
 

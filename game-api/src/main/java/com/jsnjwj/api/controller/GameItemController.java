@@ -10,13 +10,11 @@ import com.jsnjwj.facade.query.GameItemUpdateQuery;
 import com.jsnjwj.facade.service.GameItemService;
 import com.jsnjwj.facade.vo.GroupLabelVo;
 import com.jsnjwj.facade.vo.ItemLabelVo;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.websocket.server.PathParam;
 import java.util.List;
 
 /**
@@ -39,6 +37,12 @@ public class GameItemController {
 	public ApiResponse<List<GroupLabelVo>> fetchList(GameItemListQuery query) {
 		query.setGameId(ThreadLocalUtil.getCurrentGameId());
 		return ApiResponse.success(gameItemService.fetchList(query));
+	}
+
+	@GetMapping("/info/{id}")
+	public ApiResponse<List<GroupLabelVo>> fetchOne(@PathVariable("id") Long itemId) {
+
+		return ApiResponse.success(gameItemService.fetchOne(itemId));
 	}
 
 	@RequestMapping("/save")

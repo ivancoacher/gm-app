@@ -21,6 +21,8 @@ public class SignTeamDto {
 
 	private String remark;
 
+	private Long orgId;
+
 	private String orgName;
 
 }

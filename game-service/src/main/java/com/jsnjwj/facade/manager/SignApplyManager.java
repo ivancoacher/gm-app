@@ -392,4 +392,16 @@ public class SignApplyManager {
 		return signTeamMapper.selectList(wrapper);
 	}
 
+	public int updateTeam(SignTeamEntity teamEntity) {
+		return signTeamMapper.updateById(teamEntity);
+	}
+
+	public int updateOrg(SignOrgEntity orgEntity) {
+		return signOrgMapper.updateById(orgEntity);
+	}
+
+	public int deleteTeam(Long teamId) {
+		return signTeamMapper.deleteById(teamId);
+	}
+
 }

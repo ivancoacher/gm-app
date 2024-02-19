@@ -20,6 +20,7 @@ import com.jsnjwj.facade.excel.TeamImportListener;
 import com.jsnjwj.facade.manager.SignApplyManager;
 import com.jsnjwj.facade.query.SignSingleListQuery;
 import com.jsnjwj.facade.query.SignTeamListQuery;
+import com.jsnjwj.facade.query.SignTeamUpdateQuery;
 import com.jsnjwj.facade.service.SignApplyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -82,6 +83,8 @@ public class SignApplyServiceImpl implements SignApplyService {
 			for (SignTeamEntity entity : page.getRecords()) {
 				SignTeamDto signTeamDto = new SignTeamDto();
 				BeanUtil.copyProperties(entity, signTeamDto);
+				signTeamDto.setTeamId(entity.getId());
+				signTeamDto.setOrgId(entity.getOrgId());
 				Long orgId = entity.getOrgId();
 				if (Objects.nonNull(orgId) && orgId > 0L) {
 					SignOrgEntity orgEntity = signApplyManager.getSignOrgById(orgId);
@@ -107,6 +110,43 @@ public class SignApplyServiceImpl implements SignApplyService {
 		List<SignTeamEntity> page = signApplyManager.fetchSignTeamData(query);
 
 		return ApiResponse.success(page);
+	}
+
+	@Override
+	public ApiResponse<?> updateTeam(SignTeamUpdateQuery query) {
+		SignTeamEntity signTeamEntity = new SignTeamEntity();
+		signTeamEntity.setId(query.getTeamId());
+		signTeamEntity.setTeamName(query.getTeamName());
+		int result = signApplyManager.updateTeam(signTeamEntity);
+
+		SignOrgEntity signOrgEntity = new SignOrgEntity();
+		signOrgEntity.setId(query.getOrgId());
+		signOrgEntity.setOrgName(query.getOrgName());
+		signApplyManager.updateOrg(signOrgEntity);
+
+		return ApiResponse.success(result > 0);
+	}
+
+	@Override
+	public ApiResponse<?> deleteTeam(Long teamId) {
+		// 校验该队伍下面，是否有选手
+		SignSingleListQuery query = new SignSingleListQuery();
+		query.setTeamId(teamId);
+		long signSingleCount = signApplyManager.fetchSignSingleCount(query);
+		if (signSingleCount > 0) {
+			ApiResponse response = new ApiResponse<>();
+			response.setMessage("请先删除该队伍下所有选手");
+			response.setData(false);
+			return response;
+		}
+		int result = signApplyManager.deleteTeam(teamId);
+		return ApiResponse.success(result > 0);
+	}
+
+	@Override
+	public ApiResponse<?> fetchTeam(Long teamId) {
+		SignTeamEntity result = signApplyManager.getTeamById(teamId);
+		return ApiResponse.success(result);
 	}
 
 	@Override

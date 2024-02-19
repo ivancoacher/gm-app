@@ -4,18 +4,12 @@ import com.alibaba.fastjson2.JSON;
 import com.jsnjwj.common.request.BaseRequest;
 import com.jsnjwj.common.response.ApiResponse;
 import com.jsnjwj.common.utils.ThreadLocalUtil;
-import com.jsnjwj.facade.query.SignSingleImportQuery;
-import com.jsnjwj.facade.query.SignSingleListQuery;
-import com.jsnjwj.facade.query.SignSingleProgramExportQuery;
-import com.jsnjwj.facade.query.SignTeamListQuery;
+import com.jsnjwj.facade.query.*;
 import com.jsnjwj.facade.service.SignApplyExportService;
 import com.jsnjwj.facade.service.SignApplyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
@@ -74,6 +68,23 @@ public class GameSignController {
 	public ApiResponse<?> fetchTeamData(SignTeamListQuery query) {
 		query.setGameId(ThreadLocalUtil.getCurrentGameId());
 		return signApplyService.fetchTeamData(query);
+	}
+
+	@RequestMapping("/team/update")
+	public ApiResponse<?> updateTeam(@RequestBody SignTeamUpdateQuery query) {
+		query.setGameId(ThreadLocalUtil.getCurrentGameId());
+		return signApplyService.updateTeam(query);
+	}
+
+	@DeleteMapping("/team/{teamId}")
+	public ApiResponse<?> deleteTeam(@PathVariable Long teamId) {
+
+		return signApplyService.deleteTeam(teamId);
+	}
+
+	@RequestMapping("/team/info/{id}")
+	public ApiResponse<?> fetchTeam(@PathVariable Long id) {
+		return signApplyService.fetchTeam(id);
 	}
 
 	@RequestMapping("/team/import")

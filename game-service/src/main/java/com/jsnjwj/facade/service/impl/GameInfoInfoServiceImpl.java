@@ -40,6 +40,7 @@ public class GameInfoInfoServiceImpl implements GameInfoService {
 		Page<GamesEntity> page = new Page<>();
 		LambdaQueryWrapper<GamesEntity> wrapper = new LambdaQueryWrapper<>();
 		wrapper.eq(StringUtils.isNotEmpty(query.getGameName()), GamesEntity::getGameName, query.getGameName());
+		wrapper.orderByDesc(GamesEntity::getId);
 		page = gameMapper.selectPage(page, wrapper);
 
 		GameListVo gameListVo = new GameListVo();
