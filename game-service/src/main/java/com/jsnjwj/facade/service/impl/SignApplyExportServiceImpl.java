@@ -41,6 +41,7 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 
 	private final SignApplyManager signApplyManager;
 
+	private final static String SHEET_NAME = "sheet1";
 	@Override
 	public ApiResponse<?> exportSignProgram(SignSingleProgramExportQuery request) {
 		Long gameId = request.getGameId();
@@ -65,14 +66,14 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 
 	/**
 	 * 根据组别导出
-	 * @param gameId
-	 * @return
+	 * @param gameId 	比赛编号
+	 * @return			ApiResponse
 	 */
 	private ApiResponse<?> exportByGroupAndTeam(Long gameId) {
 		try {
 			// 创建工作簿
 			Workbook workbook = new XSSFWorkbook();
-			Sheet sheet = workbook.createSheet("Sheet1");
+			Sheet sheet = workbook.createSheet(SHEET_NAME);
 
 			// 创建行
 			Row row = sheet.createRow(0);
@@ -362,7 +363,7 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 		try {
 			// 创建工作簿
 			Workbook workbook = new XSSFWorkbook();
-			Sheet sheet = workbook.createSheet("Sheet1");
+			Sheet sheet = workbook.createSheet(SHEET_NAME);
 
 			// 创建行
 			Row row = sheet.createRow(0);
@@ -581,10 +582,10 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 
 	/**
 	 * 上传导出文件到oss
-	 * @param fileName
-	 * @param orgName
-	 * @return
-	 * @throws IOException
+	 * @param fileName	String
+	 * @param orgName	String
+	 * @return	String
+	 * @throws IOException	IOException
 	 */
 	private String updateToOss(String fileName, String orgName) throws IOException {
 
@@ -614,12 +615,12 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 
 	/**
 	 * 绘制运动员信息
-	 * @param workbook
-	 * @param sheet
-	 * @param i
-	 * @param columnTitleName
+	 * @param workbook			Workbook
+	 * @param sheet				Sheet
+	 * @param i					int
+	 * @param titleName			标题名
 	 */
-	private void addPlayerTitleRow(Workbook workbook, Sheet sheet, int i, String columnTitleName) {
+	private void addPlayerTitleRow(Workbook workbook, Sheet sheet, int i, String titleName) {
 		Row teamRow = sheet.createRow(i);
 		teamRow.setHeightInPoints(20);
 
@@ -635,13 +636,21 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 		// title
 		Cell titleCellCode = teamRow.createCell(0);
 
-		titleCellCode.setCellValue(columnTitleName + ":");
+		titleCellCode.setCellValue(titleName + ":");
 		titleCellCode.setCellStyle(teamCellStyle);
 
 		addMergedRegion(sheet, i, i, 0, 9);
 
 	}
 
+	/**
+	 * 设置队员信息单元格
+	 * @param workbook	Workbook
+	 * @param sheet		Sheet
+	 * @param rowId		行数
+	 * @param cellId	列数
+	 * @param columnContent 内容
+	 */
 	private void addPlayerContentRow(Workbook workbook, Sheet sheet, int rowId, int cellId, String columnContent) {
 		Row playerRow = sheet.getRow(rowId); // 获取当前行
 		if (playerRow == null) {
@@ -653,18 +662,18 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 		orgFont.setFontName("Arial");
 		orgFont.setFontHeightInPoints((short) 11);
 
-		CellStyle teamCellStyle = workbook.createCellStyle();
-		teamCellStyle.setAlignment(HorizontalAlignment.CENTER);
-		teamCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
-		teamCellStyle.setFont(orgFont);
+		CellStyle playerCellStyle = workbook.createCellStyle();
+		playerCellStyle.setAlignment(HorizontalAlignment.CENTER);
+		playerCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+		playerCellStyle.setFont(orgFont);
 
 		// 编号
 		Cell titleCellCode = playerRow.createCell(cellId);
 
 		titleCellCode.setCellValue(columnContent);
-		teamCellStyle.setWrapText(true); // 设置自动换行
+		playerCellStyle.setWrapText(true); // 设置自动换行
 
-		titleCellCode.setCellStyle(teamCellStyle);
+		titleCellCode.setCellStyle(playerCellStyle);
 
 	}
 
@@ -704,20 +713,28 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 
 	}
 
+	/**
+	 * 合并单元格
+	 * @param sheet		Sheet
+	 * @param startRow	开始行
+	 * @param endRow	结束行
+	 * @param startCol	开始列
+	 * @param endCol	结束列
+	 */
 	private void addMergedRegion(Sheet sheet, int startRow, int endRow, int startCol, int endCol) {
 		sheet.addMergedRegion(new CellRangeAddress(startRow, endRow, startCol, endCol));
 	}
 
 	/**
 	 * 根据项目导出(队伍)
-	 * @param gameId
+	 * @param gameId	比赛编号
 	 * @return
 	 */
 	private ApiResponse<?> exportByItemAndTeam(Long gameId) {
 		try {
 			// 创建工作簿
 			Workbook workbook = new XSSFWorkbook();
-			Sheet sheet = workbook.createSheet("Sheet1");
+			Sheet sheet = workbook.createSheet(SHEET_NAME);
 
 			// 创建行
 			Row row = sheet.createRow(0);
@@ -1003,14 +1020,14 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 
 	/**
 	 * 根据项目导出
-	 * @param gameId
+	 * @param gameId	比赛编号
 	 * @return
 	 */
 	private ApiResponse<?> exportByItemAndOrg(Long gameId) {
 		try {
 			// 创建工作簿
 			Workbook workbook = new XSSFWorkbook();
-			Sheet sheet = workbook.createSheet("Sheet1");
+			Sheet sheet = workbook.createSheet(SHEET_NAME);
 
 			// 创建行
 			Row row = sheet.createRow(0);
@@ -1219,11 +1236,16 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 		}
 	}
 
+	/**
+	 * 根据组织导出
+	 * @param gameId	比赛编号
+	 * @return
+	 */
 	private ApiResponse<?> exportByOrg(Long gameId) {
 		try {
 			// 创建工作簿
 			Workbook workbook = new XSSFWorkbook();
-			Sheet sheet = workbook.createSheet("Sheet1");
+			Sheet sheet = workbook.createSheet(SHEET_NAME);
 
 			// 创建行
 			Row row = sheet.createRow(0);
@@ -1401,11 +1423,16 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 		}
 	}
 
+	/**
+	 * 根据队伍导出
+	 * @param gameId	比赛编号
+	 * @return			ApiResponse
+	 */
 	private ApiResponse<?> exportByTeam(Long gameId) {
 		try {
 			// 创建工作簿
 			Workbook workbook = new XSSFWorkbook();
-			Sheet sheet = workbook.createSheet("Sheet1");
+			Sheet sheet = workbook.createSheet(SHEET_NAME);
 
 			// 创建行
 			Row row = sheet.createRow(0);

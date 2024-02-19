@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8'>
+<style>
+	body {margin: 0; padding: 10px; background-color: #ffffff}
+	h1 {margin: 5px 0 0 0; font-size: 18px; font-weight: normal; text-align: center}
+	header {margin: -24px 0 5px 0; line-height: 24px}
+	button {font: 12px sans-serif; cursor: pointer}
+	p {margin: 5px 0 5px 0}
+	a {color: #0366d6}
+	#hl {position: absolute; display: none; overflow: hidden; white-space: nowrap; pointer-events: none; background-color: #ffffe0; outline: 1px solid #ffc000; height: 15px}
+	#hl span {padding: 0 3px 0 3px}
+	#status {overflow: hidden; white-space: nowrap}
+	#match {overflow: hidden; white-space: nowrap; display: none; float: right; text-align: right}
+	#reset {cursor: pointer}
+	#canvas {width: 100%; height: 1072px}
+</style>
+</head>
+<body style='font: 12px Verdana, sans-serif'>
+<h1>CPU profile</h1>
+<header style='text-align: left'><button id='reverse' title='Reverse'>&#x1f53b;</button>&nbsp;&nbsp;<button id='search' title='Search'>&#x1f50d;</button></header>
+<header style='text-align: right'>Produced by <a href='https://github.com/jvm-profiling-tools/async-profiler'>async-profiler</a></header>
+<canvas id='canvas'></canvas>
+<div id='hl'><span></span></div>
+<p id='match'>Matched: <span id='matchval'></span> <span id='reset' title='Clear'>&#x274c;</span></p>
+<p id='status'>&nbsp;</p>
+<script>
+	// Copyright 2020 Andrei Pangin
+	// Licensed under the Apache License, Version 2.0.
+	'use strict';
+	var root, rootLevel, px, pattern;
+	var reverse = false;
+	const levels = Array(67);
+	for (let h = 0; h < levels.length; h++) {
+		levels[h] = [];
+	}
+
+	const canvas = document.getElementById('canvas');
+	const c = canvas.getContext('2d');
+	const hl = document.getElementById('hl');
+	const status = document.getElementById('status');
+
+	const canvasWidth = canvas.offsetWidth;
+	const canvasHeight = canvas.offsetHeight;
+	canvas.style.width = canvasWidth + 'px';
+	canvas.width = canvasWidth * (devicePixelRatio || 1);
+	canvas.height = canvasHeight * (devicePixelRatio || 1);
+	if (devicePixelRatio) c.scale(devicePixelRatio, devicePixelRatio);
+	c.font = document.body.style.font;
+
+	const palette = [
+		[0xb2e1b2, 20, 20, 20],
+		[0x50e150, 30, 30, 30],
+		[0x50cccc, 30, 30, 30],
+		[0xe15a5a, 30, 40, 40],
+		[0xc8c83c, 30, 30, 10],
+		[0xe17d00, 30, 30,  0],
+		[0xcce880, 20, 20, 20],
+	];
+
+	function getColor(p) {
+		const v = Math.random();
+		return '#' + (p[0] + ((p[1] * v) << 16 | (p[2] * v) << 8 | (p[3] * v))).toString(16);
+	}
+
+	function f(level, left, width, type, title, inln, c1, int) {
+		levels[level].push({left: left, width: width, color: getColor(palette[type]), title: title,
+			details: (int ? ', int=' + int : '') + (c1 ? ', c1=' + c1 : '') + (inln ? ', inln=' + inln : '')
+		});
+	}
+
+	function samples(n) {
+		return n === 1 ? '1 sample' : n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') + ' samples';
+	}
+
+	function pct(a, b) {
+		return a >= b ? '100' : (100 * a / b).toFixed(2);
+	}
+
+	function findFrame(frames, x) {
+		let left = 0;
+		let right = frames.length - 1;
+
+		while (left <= right) {
+			const mid = (left + right) >>> 1;
+			const f = frames[mid];
+
+			if (f.left > x) {
+				right = mid - 1;
+			} else if (f.left + f.width <= x) {
+				left = mid + 1;
+			} else {
+				return f;
+			}
+		}
+
+		if (frames[left] && (frames[left].left - x) * px < 0.5) return frames[left];
+		if (frames[right] && (x - (frames[right].left + frames[right].width)) * px < 0.5) return frames[right];
+
+		return null;
+	}
+
+	function search(r) {
+		if (r === true && (r = prompt('Enter regexp to search:', '')) === null) {
+			return;
+		}
+
+		pattern = r ? RegExp(r) : undefined;
+		const matched = render(root, rootLevel);
+		document.getElementById('matchval').textContent = pct(matched, root.width) + '%';
+		document.getElementById('match').style.display = r ? 'inherit' : 'none';
+	}
+
+	function render(newRoot, newLevel) {
+		if (root) {
+			c.fillStyle = '#ffffff';
+			c.fillRect(0, 0, canvasWidth, canvasHeight);
+		}
+
+		root = newRoot || levels[0][0];
+		rootLevel = newLevel || 0;
+		px = canvasWidth / root.width;
+
+		const x0 = root.left;
+		const x1 = x0 + root.width;
+		const marked = [];
+
+		function mark(f) {
+			return marked[f.left] >= f.width || (marked[f.left] = f.width);
+		}
+
+		function totalMarked() {
+			let total = 0;
+			let left = 0;
+			Object.keys(marked).sort(function(a, b) { return a - b; }).forEach(function(x) {
+				if (+x >= left) {
+					total += marked[x];
+					left = +x + marked[x];
+				}
+			});
+			return total;
+		}
+
+		function drawFrame(f, y, alpha) {
+			if (f.left < x1 && f.left + f.width > x0) {
+				c.fillStyle = pattern && f.title.match(pattern) && mark(f) ? '#ee00ee' : f.color;
+				c.fillRect((f.left - x0) * px, y, f.width * px, 15);
+
+				if (f.width * px >= 21) {
+					const chars = Math.floor(f.width * px / 7);
+					const title = f.title.length <= chars ? f.title : f.title.substring(0, chars - 2) + '..';
+					c.fillStyle = '#000000';
+					c.fillText(title, Math.max(f.left - x0, 0) * px + 3, y + 12, f.width * px - 6);
+				}
+
+				if (alpha) {
+					c.fillStyle = 'rgba(255, 255, 255, 0.5)';
+					c.fillRect((f.left - x0) * px, y, f.width * px, 15);
+				}
+			}
+		}
+
+		for (let h = 0; h < levels.length; h++) {
+			const y = reverse ? h * 16 : canvasHeight - (h + 1) * 16;
+			const frames = levels[h];
+			for (let i = 0; i < frames.length; i++) {
+				drawFrame(frames[i], y, h < rootLevel);
+			}
+		}
+
+		return totalMarked();
+	}
+
+	canvas.onmousemove = function() {
+		const h = Math.floor((reverse ? event.offsetY : (canvasHeight - event.offsetY)) / 16);
+		if (h >= 0 && h < levels.length) {
+			const f = findFrame(levels[h], event.offsetX / px + root.left);
+			if (f) {
+				if (f != root) getSelection().removeAllRanges();
+				hl.style.left = (Math.max(f.left - root.left, 0) * px + canvas.offsetLeft) + 'px';
+				hl.style.width = (Math.min(f.width, root.width) * px) + 'px';
+				hl.style.top = ((reverse ? h * 16 : canvasHeight - (h + 1) * 16) + canvas.offsetTop) + 'px';
+				hl.firstChild.textContent = f.title;
+				hl.style.display = 'block';
+				canvas.title = f.title + '\n(' + samples(f.width) + f.details + ', ' + pct(f.width, levels[0][0].width) + '%)';
+				canvas.style.cursor = 'pointer';
+				canvas.onclick = function() {
+					if (f != root) {
+						render(f, h);
+						canvas.onmousemove();
+					}
+				};
+				status.textContent = 'Function: ' + canvas.title;
+				return;
+			}
+		}
+		canvas.onmouseout();
+	}
+
+	canvas.onmouseout = function() {
+		hl.style.display = 'none';
+		status.textContent = '\xa0';
+		canvas.title = '';
+		canvas.style.cursor = '';
+		canvas.onclick = '';
+	}
+
+	canvas.ondblclick = function() {
+		getSelection().selectAllChildren(hl);
+	}
+
+	document.getElementById('reverse').onclick = function() {
+		reverse = !reverse;
+		render();
+	}
+
+	document.getElementById('search').onclick = function() {
+		search(true);
+	}
+
+	document.getElementById('reset').onclick = function() {
+		search(false);
+	}
+
+	window.onkeydown = function() {
+		if (event.ctrlKey && event.keyCode === 70) {
+			event.preventDefault();
+			search(true);
+		} else if (event.keyCode === 27) {
+			search(false);
+		}
+	}
+
+f(0,0,154,3,'all')
+f(1,0,4,3,'[deoptimization]')
+f(2,0,1,4,'Deoptimization::fetch_unroll_info(JavaThread*)')
+f(3,0,1,4,'Deoptimization::fetch_unroll_info_helper(JavaThread*)')
+f(4,0,1,4,'Deoptimization::create_vframeArray(JavaThread*, frame, RegisterMap*, GrowableArray<compiledVFrame*>*, bool)')
+f(5,0,1,4,'vframeArray::allocate(JavaThread*, int, GrowableArray<compiledVFrame*>*, RegisterMap*, frame, frame, frame, bool)')
+f(6,0,1,4,'vframeArray::fill_in(JavaThread*, int, GrowableArray<compiledVFrame*>*, RegisterMap const*, bool)')
+f(7,0,1,4,'vframeArrayElement::fill_in(compiledVFrame*, bool)')
+f(8,0,1,4,'compiledVFrame::locals() const')
+f(9,0,1,4,'Arena::Amalloc(unsigned long, AllocFailStrategy::AllocFailEnum)')
+f(10,0,1,4,'Arena::check_for_overflow(unsigned long, char const*, AllocFailStrategy::AllocFailEnum) const')
+f(2,1,3,4,'Deoptimization::unpack_frames(JavaThread*, int)')
+f(3,1,1,4,'Deoptimization::cleanup_deopt_info(JavaThread*, vframeArray*)')
+f(4,1,1,3,'free')
+f(3,2,1,4,'Events::log(Thread*, char const*, ...)')
+f(4,2,1,4,'StringEventLog::logv(Thread*, char const*, __va_list_tag*)')
+f(5,2,1,4,'os::vsnprintf(char*, unsigned long, char const*, __va_list_tag*)')
+f(6,2,1,3,'vsnprintf')
+f(7,2,1,3,'_vsnprintf')
+f(8,2,1,3,'__vfprintf')
+f(3,3,1,4,'JavaThread::pd_last_frame()')
+f(4,3,1,4,'CodeCache::find_blob(void*)')
+f(5,3,1,4,'CodeCache::find_blob_unsafe(void*)')
+f(6,3,1,4,'CodeHeap::find_start(void*) const')
+f(1,4,1,3,'[not_walkable_Java]')
+f(2,4,1,3,'Interpreter')
+f(1,5,5,1,'com/taobao/arthas/core/shell/term/impl/httptelnet/ProtocolDetectHandler.channelRead')
+f(2,5,1,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.fireChannelRead')
+f(3,5,1,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.invokeChannelRead')
+f(4,5,1,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.invokeChannelRead')
+f(5,5,1,1,'com/alibaba/arthas/deps/io/netty/channel/CombinedChannelDuplexHandler.channelRead')
+f(6,5,1,1,'com/alibaba/arthas/deps/io/netty/handler/codec/ByteToMessageDecoder.channelRead')
+f(7,5,1,1,'com/alibaba/arthas/deps/io/netty/handler/codec/ByteToMessageDecoder.callDecode')
+f(8,5,1,1,'com/alibaba/arthas/deps/io/netty/handler/codec/ByteToMessageDecoder.decodeRemovalReentryProtection')
+f(9,5,1,1,'com/alibaba/arthas/deps/io/netty/handler/codec/http/HttpServerCodec$HttpServerRequestDecoder.decode')
+f(10,5,1,1,'com/alibaba/arthas/deps/io/netty/handler/codec/http/HttpObjectDecoder.decode')
+f(11,5,1,1,'com/alibaba/arthas/deps/io/netty/handler/codec/http/HttpObjectDecoder.readHeaders')
+f(12,5,1,1,'java/lang/ClassLoader.loadClass')
+f(13,5,1,1,'com/taobao/arthas/agent/ArthasClassloader.loadClass')
+f(14,5,1,1,'java/net/URLClassLoader.findClass')
+f(15,5,1,1,'java/security/AccessController.doPrivileged')
+f(16,5,1,1,'java/net/URLClassLoader$1.run')
+f(17,5,1,1,'java/net/URLClassLoader$1.run')
+f(18,5,1,1,'java/net/URLClassLoader.access$100')
+f(19,5,1,1,'java/net/URLClassLoader.defineClass')
+f(20,5,1,1,'sun/misc/URLClassPath$JarLoader$2.getBytes')
+f(21,5,1,1,'sun/misc/Resource.getBytes')
+f(22,5,1,1,'java/util/zip/InflaterInputStream.read')
+f(23,5,1,1,'java/util/zip/ZipFile$ZipFileInflaterInputStream.fill')
+f(24,5,1,1,'java/util/zip/ZipFile$ZipFileInputStream.read')
+f(25,5,1,1,'java/util/zip/ZipFile.access$1400')
+f(26,5,1,1,'java/util/zip/ZipFile.read')
+f(27,5,1,3,'Java_java_util_zip_ZipFile_read')
+f(28,5,1,3,'jni_SetByteArrayRegion')
+f(29,5,1,3,'_platform_memmove$VARIANT$Haswell')
+f(2,6,3,1,'com/alibaba/arthas/deps/io/netty/handler/codec/http/HttpObjectAggregator.<clinit>')
+f(3,6,2,1,'com/alibaba/arthas/deps/io/netty/handler/codec/http/DefaultFullHttpResponse.<init>')
+f(4,6,2,1,'com/alibaba/arthas/deps/io/netty/handler/codec/http/DefaultFullHttpResponse.<init>')
+f(5,6,2,1,'com/alibaba/arthas/deps/io/netty/handler/codec/http/DefaultFullHttpResponse.<init>')
+f(6,6,2,1,'com/alibaba/arthas/deps/io/netty/handler/codec/http/DefaultHttpResponse.<init>')
+f(7,6,2,1,'com/alibaba/arthas/deps/io/netty/handler/codec/http/DefaultHttpMessage.<init>')
+f(8,6,1,1,'com/alibaba/arthas/deps/io/netty/handler/codec/http/DefaultHttpHeaders.<init>')
+f(9,6,1,1,'com/alibaba/arthas/deps/io/netty/handler/codec/http/DefaultHttpHeaders.<init>')
+f(10,6,1,1,'com/alibaba/arthas/deps/io/netty/handler/codec/http/DefaultHttpHeaders.valueValidator')
+f(11,6,1,1,'java/lang/ClassLoader.loadClass')
+f(12,6,1,1,'com/taobao/arthas/agent/ArthasClassloader.loadClass')
+f(13,6,1,1,'java/net/URLClassLoader.findClass')
+f(14,6,1,1,'java/security/AccessController.doPrivileged')
+f(15,6,1,1,'java/net/URLClassLoader$1.run')
+f(16,6,1,1,'java/net/URLClassLoader$1.run')
+f(17,6,1,1,'java/net/URLClassLoader.access$100')
+f(18,6,1,1,'java/net/URLClassLoader.defineClass')
+f(19,6,1,1,'java/security/SecureClassLoader.defineClass')
+f(20,6,1,1,'java/lang/ClassLoader.defineClass')
+f(21,6,1,1,'java/lang/ClassLoader.defineClass1')
+f(22,6,1,3,'Java_java_lang_ClassLoader_defineClass1')
+f(23,6,1,3,'JVM_DefineClassWithSource')
+f(24,6,1,3,'jvm_define_class_common(JNIEnv_*, char const*, _jobject*, signed char const*, int, _jobject*, char const*, unsigned char, Thread*)')
+f(25,6,1,4,'SystemDictionary::resolve_from_stream(Symbol*, Handle, Handle, ClassFileStream*, bool, Thread*)')
+f(26,6,1,4,'ClassFileParser::parseClassFile(Symbol*, ClassLoaderData*, Handle, KlassHandle, GrowableArray<Handle>*, TempNewSymbol&, bool, Thread*)')
+f(27,6,1,4,'JvmtiExport::post_class_file_load_hook(Symbol*, Handle, Handle, unsigned char**, unsigned char**, JvmtiCachedClassFileData**)')
+f(28,6,1,4,'JvmtiClassFileLoadHookPoster::post_all_envs()')
+f(29,6,1,4,'JvmtiClassFileLoadHookPoster::post_to_env(JvmtiEnv*, bool)')
+f(30,6,1,3,'eventHandlerClassFileLoadHook')
+f(31,6,1,3,'transformClassFile')
+f(32,6,1,3,'jni_CallObjectMethod')
+f(33,6,1,3,'jni_invoke_nonstatic(JNIEnv_*, JavaValue*, _jobject*, JNICallType, _jmethodID*, JNI_ArgumentPusher*, Thread*)')
+f(8,7,1,1,'java/lang/ClassLoader.loadClass')
+f(9,7,1,1,'com/taobao/arthas/agent/ArthasClassloader.loadClass')
+f(10,7,1,1,'java/net/URLClassLoader.findClass')
+f(11,7,1,1,'java/security/AccessController.doPrivileged')
+f(12,7,1,1,'java/net/URLClassLoader$1.run')
+f(13,7,1,1,'java/net/URLClassLoader$1.run')
+f(14,7,1,1,'java/net/URLClassLoader.access$100')
+f(15,7,1,1,'java/net/URLClassLoader.defineClass')
+f(16,7,1,1,'java/security/SecureClassLoader.defineClass')
+f(17,7,1,1,'java/lang/ClassLoader.defineClass')
+f(18,7,1,1,'java/lang/ClassLoader.defineClass1')
+f(19,7,1,1,'java/lang/ClassLoader.loadClass')
+f(20,7,1,1,'com/taobao/arthas/agent/ArthasClassloader.loadClass')
+f(21,7,1,1,'java/net/URLClassLoader.findClass')
+f(22,7,1,1,'java/security/AccessController.doPrivileged')
+f(23,7,1,1,'java/net/URLClassLoader$1.run')
+f(24,7,1,1,'java/net/URLClassLoader$1.run')
+f(25,7,1,1,'java/net/URLClassLoader.access$100')
+f(26,7,1,1,'java/net/URLClassLoader.defineClass')
+f(27,7,1,1,'sun/misc/URLClassPath$JarLoader$2.getBytes')
+f(28,7,1,1,'sun/misc/Resource.getBytes')
+f(29,7,1,1,'java/util/zip/ZipFile$ZipFileInflaterInputStream.close')
+f(30,7,1,1,'java/util/zip/ZipFile.access$100')
+f(31,7,1,6,'java/util/zip/ZipFile.releaseInflater',0,1,0)
+f(3,8,1,1,'java/lang/ClassLoader.loadClass')
+f(4,8,1,1,'com/taobao/arthas/agent/ArthasClassloader.loadClass')
+f(5,8,1,1,'java/net/URLClassLoader.findClass')
+f(6,8,1,1,'java/security/AccessController.doPrivileged')
+f(7,8,1,1,'java/net/URLClassLoader$1.run')
+f(8,8,1,1,'java/net/URLClassLoader$1.run')
+f(9,8,1,1,'java/net/URLClassLoader.access$100')
+f(10,8,1,1,'java/net/URLClassLoader.defineClass')
+f(11,8,1,1,'java/security/SecureClassLoader.defineClass')
+f(12,8,1,1,'java/lang/ClassLoader.defineClass')
+f(13,8,1,1,'java/lang/ClassLoader.defineClass1')
+f(14,8,1,1,'java/lang/ClassLoader.loadClass')
+f(15,8,1,1,'com/taobao/arthas/agent/ArthasClassloader.loadClass')
+f(16,8,1,1,'java/net/URLClassLoader.findClass')
+f(17,8,1,1,'java/security/AccessController.doPrivileged')
+f(18,8,1,1,'java/net/URLClassLoader$1.run')
+f(19,8,1,1,'java/net/URLClassLoader$1.run')
+f(20,8,1,1,'java/net/URLClassLoader.access$100')
+f(21,8,1,1,'java/net/URLClassLoader.defineClass')
+f(22,8,1,1,'java/security/SecureClassLoader.defineClass')
+f(23,8,1,1,'java/lang/ClassLoader.defineClass')
+f(24,8,1,1,'java/lang/ClassLoader.defineClass1')
+f(25,8,1,3,'Java_java_lang_ClassLoader_defineClass1')
+f(26,8,1,3,'JVM_DefineClassWithSource')
+f(27,8,1,3,'jvm_define_class_common(JNIEnv_*, char const*, _jobject*, signed char const*, int, _jobject*, char const*, unsigned char, Thread*)')
+f(28,8,1,4,'SystemDictionary::resolve_from_stream(Symbol*, Handle, Handle, ClassFileStream*, bool, Thread*)')
+f(29,8,1,4,'ClassFileParser::parseClassFile(Symbol*, ClassLoaderData*, Handle, KlassHandle, GrowableArray<Handle>*, TempNewSymbol&, bool, Thread*)')
+f(30,8,1,4,'JvmtiExport::post_class_file_load_hook(Symbol*, Handle, Handle, unsigned char**, unsigned char**, JvmtiCachedClassFileData**)')
+f(31,8,1,4,'JvmtiClassFileLoadHookPoster::post_all_envs()')
+f(32,8,1,4,'JvmtiClassFileLoadHookPoster::post_to_env(JvmtiEnv*, bool)')
+f(33,8,1,3,'eventHandlerClassFileLoadHook')
+f(34,8,1,3,'preserveThrowable')
+f(35,8,1,3,'jni_ExceptionOccurred')
+f(36,8,1,4,'ThreadInVMfromNative::ThreadInVMfromNative(JavaThread*)')
+f(37,8,1,4,'ThreadInVMfromNative::ThreadInVMfromNative(JavaThread*)')
+f(38,8,1,4,'ThreadStateTransition::trans_from_native(JavaThreadState)')
+f(39,8,1,4,'OrderAccess::fence()')
+f(2,9,1,1,'com/taobao/arthas/core/shell/term/impl/http/TtyWebSocketFrameHandler.<init>')
+f(3,9,1,1,'com/alibaba/arthas/deps/io/netty/channel/SimpleChannelInboundHandler.<init>')
+f(4,9,1,1,'com/alibaba/arthas/deps/io/netty/channel/SimpleChannelInboundHandler.<init>')
+f(5,9,1,1,'com/alibaba/arthas/deps/io/netty/util/internal/TypeParameterMatcher.find')
+f(6,9,1,1,'com/alibaba/arthas/deps/io/netty/util/internal/TypeParameterMatcher.find0')
+f(7,9,1,1,'java/lang/Class.getGenericSuperclass')
+f(8,9,1,1,'sun/reflect/generics/repository/ClassRepository.getSuperclass')
+f(9,9,1,1,'sun/reflect/generics/tree/ClassTypeSignature.accept')
+f(10,9,1,1,'sun/reflect/generics/visitor/Reifier.visitClassTypeSignature')
+f(11,9,1,1,'sun/reflect/generics/visitor/Reifier.reifyTypeArguments')
+f(12,9,1,1,'sun/reflect/generics/tree/ClassTypeSignature.accept')
+f(13,9,1,1,'sun/reflect/generics/visitor/Reifier.visitClassTypeSignature')
+f(14,9,1,1,'sun/reflect/generics/factory/CoreReflectionFactory.makeNamedType')
+f(15,9,1,1,'java/lang/Class.forName')
+f(16,9,1,1,'java/lang/Class.forName0')
+f(17,9,1,1,'java/lang/ClassLoader.loadClass')
+f(18,9,1,1,'com/taobao/arthas/agent/ArthasClassloader.loadClass')
+f(19,9,1,1,'java/net/URLClassLoader.findClass')
+f(20,9,1,1,'java/security/AccessController.doPrivileged')
+f(21,9,1,1,'java/net/URLClassLoader$1.run')
+f(22,9,1,1,'java/net/URLClassLoader$1.run')
+f(23,9,1,1,'java/net/URLClassLoader.access$100')
+f(24,9,1,1,'java/net/URLClassLoader.defineClass')
+f(25,9,1,1,'java/security/SecureClassLoader.defineClass')
+f(26,9,1,1,'java/lang/ClassLoader.defineClass')
+f(27,9,1,1,'java/lang/ClassLoader.defineClass1')
+f(28,9,1,3,'Java_java_lang_ClassLoader_defineClass1')
+f(29,9,1,3,'JVM_DefineClassWithSource')
+f(30,9,1,3,'jvm_define_class_common(JNIEnv_*, char const*, _jobject*, signed char const*, int, _jobject*, char const*, unsigned char, Thread*)')
+f(31,9,1,4,'SystemDictionary::resolve_from_stream(Symbol*, Handle, Handle, ClassFileStream*, bool, Thread*)')
+f(32,9,1,4,'ClassFileParser::parseClassFile(Symbol*, ClassLoaderData*, Handle, KlassHandle, GrowableArray<Handle>*, TempNewSymbol&, bool, Thread*)')
+f(33,9,1,4,'ClassFileParser::parse_constant_pool(Thread*)')
+f(34,9,1,4,'ClassFileParser::parse_constant_pool_entries(int, Thread*)')
+f(35,9,1,4,'SymbolTable::lookup(int, char const*, int, unsigned int)')
+f(36,9,1,4,'Symbol::equals(char const*, int) const')
+f(1,10,84,1,'java/lang/Thread.run')
+f(2,10,71,1,'com/alibaba/arthas/deps/io/netty/util/concurrent/FastThreadLocalRunnable.run')
+f(3,10,71,1,'com/alibaba/arthas/deps/io/netty/util/internal/ThreadExecutorMap$2.run')
+f(4,10,71,1,'com/alibaba/arthas/deps/io/netty/util/concurrent/SingleThreadEventExecutor$4.run')
+f(5,10,71,1,'com/alibaba/arthas/deps/io/netty/channel/nio/NioEventLoop.run')
+f(6,10,58,1,'com/alibaba/arthas/deps/io/netty/channel/nio/NioEventLoop.processSelectedKeys')
+f(7,10,58,1,'com/alibaba/arthas/deps/io/netty/channel/nio/NioEventLoop.processSelectedKeysOptimized')
+f(8,10,58,1,'com/alibaba/arthas/deps/io/netty/channel/nio/NioEventLoop.processSelectedKey')
+f(9,10,57,1,'com/alibaba/arthas/deps/io/netty/channel/nio/AbstractNioByteChannel$NioByteUnsafe.read')
+f(10,10,56,1,'com/alibaba/arthas/deps/io/netty/channel/DefaultChannelPipeline.fireChannelRead')
+f(11,10,56,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.invokeChannelRead')
+f(12,10,56,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.invokeChannelRead')
+f(13,10,56,1,'com/alibaba/arthas/deps/io/netty/channel/DefaultChannelPipeline$HeadContext.channelRead')
+f(14,10,56,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.fireChannelRead')
+f(15,10,56,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.invokeChannelRead')
+f(16,10,56,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.invokeChannelRead')
+f(17,10,1,1,'com/taobao/arthas/core/shell/term/impl/httptelnet/ProtocolDetectHandler.channelRead')
+f(18,10,1,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.fireChannelRead')
+f(19,10,1,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.invokeChannelRead')
+f(20,10,1,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.invokeChannelRead')
+f(21,10,1,1,'com/alibaba/arthas/deps/io/netty/channel/CombinedChannelDuplexHandler.channelRead')
+f(22,10,1,1,'com/alibaba/arthas/deps/io/netty/handler/codec/ByteToMessageDecoder.channelRead')
+f(23,10,1,1,'com/alibaba/arthas/deps/io/netty/handler/codec/ByteToMessageDecoder.callDecode')
+f(24,10,1,1,'com/alibaba/arthas/deps/io/netty/handler/codec/ByteToMessageDecoder.decodeRemovalReentryProtection')
+f(25,10,1,1,'com/alibaba/arthas/deps/io/netty/handler/codec/http/HttpServerCodec$HttpServerRequestDecoder.decode')
+f(26,10,1,1,'com/alibaba/arthas/deps/io/netty/handler/codec/http/HttpObjectDecoder.decode')
+f(27,10,1,1,'com/alibaba/arthas/deps/io/netty/handler/codec/http/HttpRequestDecoder.createMessage')
+f(28,10,1,1,'com/alibaba/arthas/deps/io/netty/handler/codec/http/DefaultHttpRequest.<init>')
+f(29,10,1,1,'com/alibaba/arthas/deps/io/netty/handler/codec/http/DefaultHttpMessage.<init>')
+f(30,10,1,0,'com/alibaba/arthas/deps/io/netty/handler/codec/http/DefaultHttpHeaders.<init>',0,0,1)
+f(17,11,55,1,'io/termd/core/telnet/netty/TelnetChannelHandler.channelRead')
+f(18,11,55,1,'io/termd/core/telnet/TelnetConnection.receive')
+f(19,11,46,1,'io/termd/core/telnet/TelnetConnection$Status$1.handle')
+f(20,11,46,1,'io/termd/core/telnet/TelnetConnection.access$200')
+f(21,11,46,1,'io/termd/core/telnet/TelnetConnection.appendData')
+f(22,11,46,1,'io/termd/core/telnet/TelnetConnection.flushData')
+f(23,11,46,1,'io/termd/core/telnet/TelnetTtyConnection.onData')
+f(24,11,46,1,'io/termd/core/io/BinaryDecoder.write')
+f(25,11,46,1,'io/termd/core/io/BinaryDecoder.write')
+f(26,11,46,1,'io/termd/core/tty/ReadBuffer.accept')
+f(27,11,46,1,'io/termd/core/tty/ReadBuffer.accept')
+f(28,11,46,1,'io/termd/core/tty/TtyEventDecoder.accept')
+f(29,11,46,1,'io/termd/core/tty/TtyEventDecoder.accept')
+f(30,11,46,1,'io/termd/core/readline/Readline$Interaction$2.accept')
+f(31,11,46,1,'io/termd/core/readline/Readline$Interaction$2.accept')
+f(32,11,46,1,'io/termd/core/readline/Readline.access$500')
+f(33,11,46,1,'io/termd/core/readline/Readline.deliver')
+f(34,11,1,1,'io/termd/core/readline/EventQueue.hasNext')
+f(35,11,1,1,'io/termd/core/readline/EventQueue.peek')
+f(36,11,1,1,'io/termd/core/readline/EventQueue.match')
+f(37,11,1,6,'io/termd/core/readline/FunctionEvent.length',0,1,0)
+f(34,12,2,1,'io/termd/core/readline/EventQueue.next')
+f(35,12,1,6,'io/termd/core/readline/EventQueue.match',0,1,0)
+f(35,13,1,1,'java/util/LinkedList.add')
+f(36,13,1,6,'java/util/LinkedList.linkLast',0,1,0)
+f(34,14,43,1,'io/termd/core/readline/Readline$Interaction.access$200')
+f(35,14,43,1,'io/termd/core/readline/Readline$Interaction.handle')
+f(36,14,3,1,'io/termd/core/readline/LineBuffer.copy')
+f(37,14,3,1,'io/termd/core/readline/LineBuffer.<init>')
+f(38,14,3,1,'java/lang/Object.clone')
+f(39,14,3,3,'JVM_Clone')
+f(40,14,3,3,'_platform_bzero$VARIANT$Haswell')
+f(36,17,22,1,'io/termd/core/readline/Readline$2.apply')
+f(37,17,22,1,'io/termd/core/readline/Readline$Interaction.access$000')
+f(38,17,22,1,'io/termd/core/readline/Readline$Interaction.end')
+f(39,17,22,1,'com/taobao/arthas/core/shell/handlers/term/RequestHandler.accept')
+f(40,17,22,1,'com/taobao/arthas/core/shell/handlers/term/RequestHandler.accept')
+f(41,17,22,1,'com/taobao/arthas/core/shell/handlers/shell/ShellLineHandler.handle')
+f(42,17,22,1,'com/taobao/arthas/core/shell/handlers/shell/ShellLineHandler.handle')
+f(43,17,22,1,'com/taobao/arthas/core/shell/handlers/shell/ShellLineHandler.createJob')
+f(44,17,19,1,'com/taobao/arthas/core/shell/impl/ShellImpl.createJob')
+f(45,17,19,1,'com/taobao/arthas/core/shell/system/impl/GlobalJobControllerImpl.createJob')
+f(46,17,19,1,'com/taobao/arthas/core/shell/system/impl/JobControllerImpl.createJob')
+f(47,17,19,1,'com/taobao/arthas/core/shell/system/impl/JobControllerImpl.createProcess')
+f(48,17,19,1,'com/taobao/arthas/core/shell/system/impl/InternalCommandManager.getCommand')
+f(49,17,19,1,'com/taobao/arthas/core/shell/system/impl/InternalCommandManager.getCommand',0,0,1)
+f(50,18,18,1,'com/taobao/arthas/core/shell/command/impl/AnnotatedCommandImpl.name')
+f(51,18,1,4,'Runtime1::exception_handler_for_pc(JavaThread*)')
+f(52,18,1,4,'CodeCache::find_blob(void*)')
+f(53,18,1,4,'CodeCache::find_blob_unsafe(void*)')
+f(51,19,17,1,'com/taobao/arthas/core/shell/command/impl/AnnotatedCommandImpl.shouldOverridesName')
+f(52,19,17,0,'java/lang/Class.getDeclaredMethod',0,0,12)
+f(53,19,12,4,'InterpreterRuntime::exception_handler_for_exception(JavaThread*, oopDesc*)')
+f(54,19,12,4,'JvmtiExport::post_exception_throw(JavaThread*, Method*, unsigned char*, oopDesc*)')
+f(55,19,11,3,'cbException')
+f(56,19,11,3,'getMethodClass')
+f(57,19,11,3,'jvmti_GetMethodDeclaringClass(_jvmtiEnv*, _jmethodID*, _jclass**)')
+f(58,19,11,4,'Method::checked_resolve_jmethod_id(_jmethodID*)')
+f(59,19,11,4,'Method::is_method_id(_jmethodID*)')
+f(55,30,1,4,'vframeStream::vframeStream(JavaThread*, bool)')
+f(53,31,1,4,'Runtime1::exception_handler_for_pc(JavaThread*)')
+f(54,31,1,4,'Deoptimization::deoptimize_frame_internal(JavaThread*, long*)')
+f(55,31,1,4,'frame::sender(RegisterMap*) const')
+f(56,31,1,4,'frame::sender_for_compiled_frame(RegisterMap*) const')
+f(57,31,1,4,'OopMapSet::update_register_map(frame const*, RegisterMap*)')
+f(58,31,1,4,'OopMapStream::find_next()')
+f(59,31,1,4,'OopMapValue::read_from(CompressedReadStream*)')
+f(60,31,1,4,'CompressedReadStream::read_int_mb(int)')
+f(53,32,1,1,'java/lang/Class.searchMethods')
+f(54,32,1,1,'java/lang/String.intern')
+f(55,32,1,3,'JVM_InternString')
+f(56,32,1,4,'StringTable::intern(oopDesc*, Thread*)')
+f(57,32,1,4,'StringTable::intern(Handle, unsigned short*, int, Thread*)')
+f(58,32,1,4,'StringTable::lookup(int, unsigned short*, int, unsigned int)')
+f(53,33,2,1,'java/lang/NoSuchMethodException.<init>')
+f(54,33,2,1,'java/lang/ReflectiveOperationException.<init>')
+f(55,33,2,1,'java/lang/Exception.<init>')
+f(56,33,2,1,'java/lang/Throwable.<init>')
+f(57,33,2,1,'java/lang/Throwable.fillInStackTrace')
+f(58,33,2,1,'java/lang/Throwable.fillInStackTrace')
+f(59,33,2,3,'Java_java_lang_Throwable_fillInStackTrace')
+f(60,33,2,3,'JVM_FillInStackTrace')
+f(61,33,2,4,'java_lang_Throwable::fill_in_stack_trace(Handle, methodHandle)')
+f(62,33,2,4,'java_lang_Throwable::fill_in_stack_trace(Handle, methodHandle, Thread*)')
+f(63,33,1,4,'BacktraceBuilder::BacktraceBuilder(Thread*)')
+f(64,33,1,4,'BacktraceBuilder::expand(Thread*)')
+f(65,33,1,4,'ObjArrayKlass::allocate(int, Thread*)')
+f(66,33,1,3,'_platform_bzero$VARIANT$Haswell')
+f(63,34,1,4,'BacktraceBuilder::push(Method*, int, Thread*)')
+f(64,34,1,4,'BacktraceBuilder::expand(Thread*)')
+f(65,34,1,4,'ObjArrayKlass::allocate(int, Thread*)')
+f(66,34,1,3,'pthread_getspecific')
+f(53,35,1,1,'java/lang/StringBuilder.toString')
+f(54,35,1,1,'java/lang/String.<init>')
+f(55,35,1,6,'java/util/Arrays.copyOfRange',0,1,0)
+f(56,35,1,2,'java/lang/StringBuilder.append',1,0,0)
+f(44,36,1,1,'com/taobao/arthas/core/shell/impl/ShellImpl.readline')
+f(45,36,1,1,'com/taobao/arthas/core/shell/term/impl/TermImpl.readline')
+f(46,36,1,1,'io/termd/core/readline/Readline.readline')
+f(47,36,1,1,'io/termd/core/readline/Readline.schedulePendingEvent')
+f(48,36,1,1,'java/lang/ClassLoader.loadClass')
+f(49,36,1,1,'com/taobao/arthas/agent/ArthasClassloader.loadClass')
+f(50,36,1,1,'java/net/URLClassLoader.findClass')
+f(51,36,1,1,'java/security/AccessController.doPrivileged')
+f(52,36,1,1,'java/net/URLClassLoader$1.run')
+f(53,36,1,1,'java/net/URLClassLoader$1.run')
+f(54,36,1,1,'java/net/URLClassLoader.access$100')
+f(55,36,1,1,'java/net/URLClassLoader.defineClass')
+f(56,36,1,1,'java/security/SecureClassLoader.defineClass')
+f(57,36,1,1,'java/lang/ClassLoader.defineClass')
+f(58,36,1,1,'java/lang/ClassLoader.defineClass1')
+f(59,36,1,3,'Java_java_lang_ClassLoader_defineClass1')
+f(60,36,1,3,'JVM_DefineClassWithSource')
+f(61,36,1,3,'jvm_define_class_common(JNIEnv_*, char const*, _jobject*, signed char const*, int, _jobject*, char const*, unsigned char, Thread*)')
+f(62,36,1,4,'SystemDictionary::resolve_from_stream(Symbol*, Handle, Handle, ClassFileStream*, bool, Thread*)')
+f(63,36,1,4,'ClassFileParser::parseClassFile(Symbol*, ClassLoaderData*, Handle, KlassHandle, GrowableArray<Handle>*, TempNewSymbol&, bool, Thread*)')
+f(64,36,1,4,'ClassFileParser::parse_constant_pool(Thread*)')
+f(65,36,1,4,'ClassFileParser::parse_constant_pool_entries(int, Thread*)')
+f(66,36,1,4,'SymbolTable::lookup(int, char const*, int, unsigned int)')
+f(44,37,2,1,'com/taobao/arthas/core/shell/term/impl/TermImpl.echo')
+f(45,37,2,1,'com/taobao/arthas/core/shell/term/impl/TermImpl.echo')
+f(46,37,2,1,'com/taobao/arthas/core/shell/term/impl/TermImpl.echo')
+f(47,37,2,1,'io/termd/core/tty/TtyOutputMode.accept')
+f(48,37,2,1,'io/termd/core/tty/TtyOutputMode.accept')
+f(49,37,2,1,'io/termd/core/tty/TtyOutputMode.sendChunk')
+f(50,37,2,1,'io/termd/core/io/BinaryEncoder.accept')
+f(51,37,2,1,'io/termd/core/io/BinaryEncoder.accept')
+f(52,37,2,1,'io/termd/core/telnet/TelnetTtyConnection$2.accept')
+f(53,37,2,1,'io/termd/core/telnet/TelnetTtyConnection$2.accept')
+f(54,37,2,1,'io/termd/core/telnet/TelnetConnection.write')
+f(55,37,2,1,'io/termd/core/telnet/netty/NettyTelnetConnection.send')
+f(56,37,2,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.writeAndFlush')
+f(57,37,2,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.writeAndFlush')
+f(58,37,2,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.write')
+f(59,37,2,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.invokeWriteAndFlush')
+f(60,37,2,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.invokeWrite0')
+f(61,37,2,1,'com/alibaba/arthas/deps/io/netty/channel/DefaultChannelPipeline$HeadContext.write')
+f(62,37,2,6,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannel$AbstractUnsafe.write',0,2,0)
+f(63,37,2,2,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannel$AbstractUnsafe.newClosedChannelException',2,0,0)
+f(64,37,2,2,'com/alibaba/arthas/deps/io/netty/channel/StacklessClosedChannelException.newInstance',2,0,0)
+f(65,37,2,2,'com/alibaba/arthas/deps/io/netty/util/internal/ThrowableUtil.unknownStackTrace',2,0,0)
+f(66,37,2,2,'java/lang/Class.getName',2,0,0)
+f(36,39,18,1,'io/termd/core/readline/Readline$Interaction.refresh')
+f(37,39,18,6,'io/termd/core/readline/Readline$Interaction.refresh',0,9,0)
+f(38,48,7,1,'io/termd/core/readline/LineBuffer.update')
+f(39,48,7,1,'io/termd/core/readline/LineBuffer$Update.perform',0,1,0)
+f(40,49,6,1,'java/lang/Object.clone')
+f(41,49,6,3,'JVM_Clone')
+f(42,49,6,3,'_platform_bzero$VARIANT$Haswell')
+f(38,55,2,1,'io/termd/core/util/Helper.toCodePoints')
+f(39,55,2,1,'java/util/ArrayList.add')
+f(40,55,2,1,'java/util/ArrayList.ensureCapacityInternal')
+f(41,55,2,1,'java/util/ArrayList.ensureExplicitCapacity')
+f(42,55,2,1,'java/util/ArrayList.grow')
+f(43,55,2,1,'java/util/Arrays.copyOf')
+f(44,55,2,6,'java/util/Arrays.copyOf',0,2,0)
+f(19,57,9,1,'io/termd/core/telnet/TelnetConnection.flushDataIfNecessary')
+f(20,57,9,1,'io/termd/core/telnet/TelnetConnection.flushData')
+f(21,57,9,1,'io/termd/core/telnet/TelnetTtyConnection.onData')
+f(22,57,9,1,'io/termd/core/io/BinaryDecoder.write')
+f(23,57,9,1,'io/termd/core/io/BinaryDecoder.write')
+f(24,57,8,1,'io/termd/core/tty/ReadBuffer.accept')
+f(25,57,8,1,'io/termd/core/tty/ReadBuffer.accept')
+f(26,57,8,1,'io/termd/core/tty/TtyEventDecoder.accept')
+f(27,57,8,1,'io/termd/core/tty/TtyEventDecoder.accept')
+f(28,57,8,1,'io/termd/core/readline/Readline$Interaction$2.accept')
+f(29,57,8,1,'io/termd/core/readline/Readline$Interaction$2.accept')
+f(30,57,8,1,'io/termd/core/readline/Readline.access$500',0,0,1)
+f(31,58,7,1,'io/termd/core/readline/Readline.deliver')
+f(32,58,7,1,'io/termd/core/readline/Readline$Interaction.access$200')
+f(33,58,7,1,'io/termd/core/readline/Readline$Interaction.handle')
+f(34,58,1,1,'io/termd/core/readline/LineBuffer.copy')
+f(35,58,1,1,'io/termd/core/readline/LineBuffer.<init>')
+f(36,58,1,1,'java/lang/Object.clone')
+f(37,58,1,3,'JVM_Clone')
+f(38,58,1,3,'_platform_bzero$VARIANT$Haswell')
+f(34,59,4,1,'io/termd/core/readline/Readline$2.apply')
+f(35,59,4,1,'io/termd/core/readline/Readline$Interaction.access$000')
+f(36,59,4,1,'io/termd/core/readline/Readline$Interaction.end')
+f(37,59,4,1,'com/taobao/arthas/core/shell/handlers/term/RequestHandler.accept')
+f(38,59,4,1,'com/taobao/arthas/core/shell/handlers/term/RequestHandler.accept')
+f(39,59,4,1,'com/taobao/arthas/core/shell/handlers/shell/ShellLineHandler.handle')
+f(40,59,4,1,'com/taobao/arthas/core/shell/handlers/shell/ShellLineHandler.handle')
+f(41,59,4,1,'com/taobao/arthas/core/shell/handlers/shell/ShellLineHandler.createJob')
+f(42,59,4,1,'com/taobao/arthas/core/shell/impl/ShellImpl.createJob')
+f(43,59,4,1,'com/taobao/arthas/core/shell/system/impl/GlobalJobControllerImpl.createJob')
+f(44,59,4,1,'com/taobao/arthas/core/shell/system/impl/JobControllerImpl.createJob')
+f(45,59,4,1,'com/taobao/arthas/core/shell/system/impl/JobControllerImpl.createProcess')
+f(46,59,4,1,'com/taobao/arthas/core/shell/system/impl/InternalCommandManager.getCommand')
+f(47,59,4,1,'com/taobao/arthas/core/shell/system/impl/InternalCommandManager.getCommand')
+f(48,59,4,1,'com/taobao/arthas/core/shell/command/impl/AnnotatedCommandImpl.name')
+f(49,59,4,1,'com/taobao/arthas/core/shell/command/impl/AnnotatedCommandImpl.shouldOverridesName')
+f(50,59,4,0,'java/lang/Class.getDeclaredMethod',0,0,2)
+f(51,59,2,4,'InterpreterRuntime::exception_handler_for_exception(JavaThread*, oopDesc*)')
+f(52,59,2,4,'JvmtiExport::post_exception_throw(JavaThread*, Method*, unsigned char*, oopDesc*)')
+f(53,59,2,3,'cbException')
+f(54,59,2,3,'getMethodClass')
+f(55,59,2,3,'jvmti_GetMethodDeclaringClass(_jvmtiEnv*, _jmethodID*, _jclass**)')
+f(56,59,2,4,'Method::checked_resolve_jmethod_id(_jmethodID*)')
+f(57,59,2,4,'Method::is_method_id(_jmethodID*)')
+f(51,61,1,1,'java/lang/NoSuchMethodException.<init>')
+f(52,61,1,1,'java/lang/ReflectiveOperationException.<init>')
+f(53,61,1,1,'java/lang/Exception.<init>')
+f(54,61,1,6,'java/lang/Throwable.<init>',0,1,0)
+f(51,62,1,1,'sun/reflect/Reflection.getCallerClass')
+f(52,62,1,3,'JVM_GetCallerClass')
+f(53,62,1,4,'vframeStreamCommon::next()')
+f(54,62,1,4,'frame::sender(RegisterMap*) const')
+f(55,62,1,4,'frame::sender_for_compiled_frame(RegisterMap*) const')
+f(56,62,1,4,'CodeCache::find_blob(void*)')
+f(57,62,1,4,'CodeCache::find_blob_unsafe(void*)')
+f(58,62,1,4,'CodeHeap::find_start(void*) const')
+f(34,63,2,1,'io/termd/core/readline/Readline$Interaction.refresh')
+f(35,63,2,6,'io/termd/core/readline/Readline$Interaction.refresh',0,1,0)
+f(36,64,1,1,'io/termd/core/readline/LineBuffer.update')
+f(37,64,1,1,'io/termd/core/readline/LineBuffer$Update.perform')
+f(38,64,1,1,'io/termd/core/readline/LineBuffer.getCursorPosition')
+f(39,64,1,1,'io/termd/core/readline/LineBuffer.getPosition')
+f(40,64,1,6,'io/termd/core/util/Helper.computePosition',0,1,0)
+f(24,65,1,1,'java/nio/IntBuffer.allocate')
+f(25,65,1,0,'java/nio/HeapIntBuffer.<init>',0,0,1)
+f(26,65,1,4,'InterpreterRuntime::newarray(JavaThread*, BasicType, int)')
+f(27,65,1,4,'TypeArrayKlass::allocate_common(int, bool, Thread*)')
+f(10,66,1,1,'com/alibaba/arthas/deps/io/netty/channel/DefaultMaxMessagesRecvByteBufAllocator$MaxMessageHandle.continueReading')
+f(11,66,1,1,'com/alibaba/arthas/deps/io/netty/channel/DefaultMaxMessagesRecvByteBufAllocator$MaxMessageHandle.continueReading')
+f(12,66,1,0,'com/alibaba/arthas/deps/io/netty/channel/DefaultMaxMessagesRecvByteBufAllocator$MaxMessageHandle$1.get',0,0,1)
+f(9,67,1,1,'com/alibaba/arthas/deps/io/netty/channel/nio/AbstractNioMessageChannel$NioMessageUnsafe.read')
+f(10,67,1,1,'com/alibaba/arthas/deps/io/netty/channel/DefaultChannelPipeline.fireChannelRead')
+f(11,67,1,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.invokeChannelRead')
+f(12,67,1,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.invokeChannelRead')
+f(13,67,1,1,'com/alibaba/arthas/deps/io/netty/channel/DefaultChannelPipeline$HeadContext.channelRead')
+f(14,67,1,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.fireChannelRead')
+f(15,67,1,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.invokeChannelRead')
+f(16,67,1,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.invokeChannelRead')
+f(17,67,1,1,'com/alibaba/arthas/deps/io/netty/handler/logging/LoggingHandler.channelRead')
+f(18,67,1,1,'com/alibaba/arthas/deps/io/netty/handler/logging/LoggingHandler.format')
+f(19,67,1,1,'com/alibaba/arthas/deps/io/netty/handler/logging/LoggingHandler.formatSimple')
+f(20,67,1,1,'java/lang/String.valueOf')
+f(21,67,1,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannel.toString')
+f(22,67,1,1,'com/alibaba/arthas/deps/io/netty/channel/socket/nio/NioSocketChannel.remoteAddress')
+f(23,67,1,1,'com/alibaba/arthas/deps/io/netty/channel/socket/nio/NioSocketChannel.remoteAddress')
+f(24,67,1,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannel.remoteAddress')
+f(25,67,1,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannel$AbstractUnsafe.remoteAddress')
+f(26,67,1,1,'com/alibaba/arthas/deps/io/netty/channel/socket/nio/NioSocketChannel.remoteAddress0')
+f(27,67,1,0,'java/net/Socket.getRemoteSocketAddress',0,0,1)
+f(6,68,1,1,'com/alibaba/arthas/deps/io/netty/channel/nio/NioEventLoop.select')
+f(7,68,1,1,'com/alibaba/arthas/deps/io/netty/channel/nio/SelectedSelectionKeySetSelector.select')
+f(8,68,1,1,'sun/nio/ch/SelectorImpl.select')
+f(9,68,1,1,'sun/nio/ch/SelectorImpl.select')
+f(10,68,1,1,'sun/nio/ch/SelectorImpl.lockAndDoSelect')
+f(11,68,1,1,'sun/nio/ch/KQueueSelectorImpl.doSelect')
+f(12,68,1,1,'sun/nio/ch/KQueueArrayWrapper.poll')
+f(13,68,1,1,'sun/nio/ch/KQueueArrayWrapper.kevent0')
+f(14,68,1,3,'kevent')
+f(6,69,12,1,'com/alibaba/arthas/deps/io/netty/util/concurrent/SingleThreadEventExecutor.runAllTasks')
+f(7,69,11,1,'com/alibaba/arthas/deps/io/netty/util/concurrent/AbstractEventExecutor.safeExecute')
+f(8,69,11,1,'com/alibaba/arthas/deps/io/netty/util/concurrent/AbstractEventExecutor.runTask')
+f(9,69,1,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannel$AbstractUnsafe$7.run')
+f(10,69,1,1,'com/alibaba/arthas/deps/io/netty/channel/DefaultChannelPipeline.fireChannelInactive')
+f(11,69,1,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.invokeChannelInactive')
+f(12,69,1,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.invokeChannelInactive')
+f(13,69,1,1,'com/alibaba/arthas/deps/io/netty/channel/DefaultChannelPipeline$HeadContext.channelInactive')
+f(14,69,1,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.fireChannelInactive')
+f(15,69,1,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.invokeChannelInactive')
+f(16,69,1,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.invokeChannelInactive')
+f(17,69,1,1,'com/alibaba/arthas/deps/io/netty/channel/CombinedChannelDuplexHandler.channelInactive')
+f(18,69,1,1,'com/alibaba/arthas/deps/io/netty/handler/codec/ByteToMessageDecoder.channelInactive')
+f(19,69,1,1,'com/alibaba/arthas/deps/io/netty/handler/codec/ByteToMessageDecoder.channelInputClosed')
+f(20,69,1,1,'com/alibaba/arthas/deps/io/netty/channel/CombinedChannelDuplexHandler$DelegatingChannelHandlerContext.fireChannelInactive')
+f(21,69,1,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.fireChannelInactive')
+f(22,69,1,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.invokeChannelInactive')
+f(23,69,1,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.invokeChannelInactive')
+f(24,69,1,1,'com/alibaba/arthas/deps/io/netty/handler/stream/ChunkedWriteHandler.channelInactive')
+f(25,69,1,1,'com/alibaba/arthas/deps/io/netty/handler/stream/ChunkedWriteHandler.doFlush')
+f(26,69,1,0,'com/alibaba/arthas/deps/io/netty/handler/stream/ChunkedWriteHandler.discard',0,0,1)
+f(27,69,1,1,'I2C/C2I adapters')
+f(9,70,2,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext$11.run')
+f(10,70,2,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.access$1200')
+f(11,70,2,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.invokeClose')
+f(12,70,2,1,'com/alibaba/arthas/deps/io/netty/handler/codec/http/websocketx/WebSocketServerProtocolHandler.close')
+f(13,70,2,1,'com/alibaba/arthas/deps/io/netty/handler/codec/http/websocketx/WebSocketProtocolHandler.close')
+f(14,70,1,1,'com/alibaba/arthas/deps/io/netty/handler/codec/http/websocketx/WebSocketServerProtocolHandler.flush')
+f(15,70,1,1,'com/alibaba/arthas/deps/io/netty/handler/codec/http/websocketx/WebSocketProtocolHandler.flush')
+f(16,70,1,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.flush')
+f(17,70,1,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.invokeFlush')
+f(18,70,1,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.invokeFlush0')
+f(19,70,1,1,'com/alibaba/arthas/deps/io/netty/handler/stream/ChunkedWriteHandler.flush')
+f(20,70,1,1,'com/alibaba/arthas/deps/io/netty/handler/stream/ChunkedWriteHandler.doFlush')
+f(21,70,1,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.write')
+f(22,70,1,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.write')
+f(23,70,1,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.invokeWrite')
+f(24,70,1,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.invokeWrite0')
+f(25,70,1,1,'com/alibaba/arthas/deps/io/netty/channel/CombinedChannelDuplexHandler.write')
+f(26,70,1,1,'com/alibaba/arthas/deps/io/netty/handler/codec/http/HttpObjectEncoder.write')
+f(27,70,1,1,'com/alibaba/arthas/deps/io/netty/channel/CombinedChannelDuplexHandler$DelegatingChannelHandlerContext.write')
+f(28,70,1,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.write')
+f(29,70,1,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.write')
+f(30,70,1,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.invokeWrite')
+f(31,70,1,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.invokeWrite0')
+f(32,70,1,1,'com/alibaba/arthas/deps/io/netty/channel/DefaultChannelPipeline$HeadContext.write')
+f(33,70,1,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannel$AbstractUnsafe.write')
+f(34,70,1,1,'com/alibaba/arthas/deps/io/netty/util/ReferenceCountUtil.release')
+f(35,70,1,1,'com/alibaba/arthas/deps/io/netty/buffer/DefaultByteBufHolder.release')
+f(36,70,1,1,'com/alibaba/arthas/deps/io/netty/buffer/AbstractReferenceCountedByteBuf.release')
+f(37,70,1,1,'com/alibaba/arthas/deps/io/netty/buffer/AbstractReferenceCountedByteBuf.handleRelease')
+f(38,70,1,1,'com/alibaba/arthas/deps/io/netty/buffer/UnpooledHeapByteBuf.deallocate')
+f(39,70,1,6,'com/alibaba/arthas/deps/io/netty/buffer/UnpooledByteBufAllocator$InstrumentedUnpooledUnsafeHeapByteBuf.freeArray',0,1,0)
+f(14,71,1,1,'com/alibaba/arthas/deps/io/netty/handler/codec/http/websocketx/WebSocketServerProtocolHandler.write')
+f(15,71,1,1,'com/alibaba/arthas/deps/io/netty/handler/codec/http/websocketx/WebSocketProtocolHandler.write')
+f(16,71,1,1,'java/lang/ClassLoader.loadClass')
+f(17,71,1,1,'com/taobao/arthas/agent/ArthasClassloader.loadClass')
+f(18,71,1,1,'java/net/URLClassLoader.findClass')
+f(19,71,1,1,'java/security/AccessController.doPrivileged')
+f(20,71,1,1,'java/net/URLClassLoader$1.run')
+f(21,71,1,1,'java/net/URLClassLoader$1.run')
+f(22,71,1,1,'java/net/URLClassLoader.access$100')
+f(23,71,1,1,'java/net/URLClassLoader.defineClass')
+f(24,71,1,1,'java/security/SecureClassLoader.defineClass')
+f(25,71,1,1,'java/lang/ClassLoader.defineClass')
+f(26,71,1,1,'java/lang/ClassLoader.defineClass1')
+f(27,71,1,3,'Java_java_lang_ClassLoader_defineClass1')
+f(28,71,1,3,'JVM_DefineClassWithSource')
+f(29,71,1,3,'jvm_define_class_common(JNIEnv_*, char const*, _jobject*, signed char const*, int, _jobject*, char const*, unsigned char, Thread*)')
+f(30,71,1,4,'SystemDictionary::resolve_from_stream(Symbol*, Handle, Handle, ClassFileStream*, bool, Thread*)')
+f(31,71,1,4,'ClassFileParser::parseClassFile(Symbol*, ClassLoaderData*, Handle, KlassHandle, GrowableArray<Handle>*, TempNewSymbol&, bool, Thread*)')
+f(32,71,1,4,'JvmtiExport::post_class_file_load_hook(Symbol*, Handle, Handle, unsigned char**, unsigned char**, JvmtiCachedClassFileData**)')
+f(33,71,1,4,'JvmtiClassFileLoadHookPoster::post_all_envs()')
+f(34,71,1,4,'JvmtiClassFileLoadHookPoster::post_to_env(JvmtiEnv*, bool)')
+f(35,71,1,3,'eventHandlerClassFileLoadHook')
+f(36,71,1,3,'transformClassFile')
+f(37,71,1,3,'jni_NewByteArray')
+f(38,71,1,4,'TypeArrayKlass::allocate_common(int, bool, Thread*)')
+f(39,71,1,3,'_platform_bzero$VARIANT$Haswell')
+f(9,72,1,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext$4.run')
+f(10,72,1,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.access$300')
+f(11,72,1,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.invokeChannelInactive')
+f(12,72,1,1,'com/alibaba/arthas/deps/io/netty/channel/ChannelInboundHandlerAdapter.channelInactive')
+f(13,72,1,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.fireChannelInactive')
+f(14,72,1,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.invokeChannelInactive')
+f(15,72,1,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.invokeChannelInactive')
+f(16,72,1,1,'com/alibaba/arthas/deps/io/netty/handler/timeout/IdleStateHandler.channelInactive')
+f(17,72,1,0,'com/alibaba/arthas/deps/io/netty/handler/timeout/IdleStateHandler.destroy',0,0,1)
+f(18,72,1,4,'InterpreterRuntime::resolve_invoke(JavaThread*, Bytecodes::Code)')
+f(19,72,1,4,'LinkResolver::resolve_invoke(CallInfo&, Handle, constantPoolHandle, int, Bytecodes::Code, Thread*)')
+f(20,72,1,4,'LinkResolver::resolve_invokeinterface(CallInfo&, Handle, constantPoolHandle, int, Thread*)')
+f(9,73,2,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext$7.run')
+f(10,73,2,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.access$600')
+f(11,73,2,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.invokeChannelRead')
+f(12,73,2,1,'com/alibaba/arthas/deps/io/netty/channel/SimpleChannelInboundHandler.channelRead')
+f(13,73,2,1,'com/taobao/arthas/core/shell/term/impl/http/HttpRequestHandler.channelRead0')
+f(14,73,2,1,'com/taobao/arthas/core/shell/term/impl/http/HttpRequestHandler.channelRead0')
+f(15,73,1,1,'com/taobao/arthas/core/shell/term/impl/http/DirectoryBrowser.directView')
+f(16,73,1,1,'com/taobao/arthas/core/shell/term/impl/http/DirectoryBrowser.renderDir')
+f(17,73,1,1,'java/io/File.listFiles')
+f(18,73,1,1,'java/io/File.normalizedList')
+f(19,73,1,0,'java/io/UnixFileSystem.list',0,0,1)
+f(20,73,1,3,'Java_java_io_UnixFileSystem_list')
+f(21,73,1,3,'__opendir2$INODE64')
+f(22,73,1,3,'__open_nocancel')
+f(15,74,1,1,'com/taobao/arthas/core/shell/term/impl/http/HttpRequestHandler.readFileFromResource')
+f(16,74,1,1,'java/net/URL.openStream')
+f(17,74,1,1,'sun/net/www/protocol/jar/JarURLConnection.getInputStream')
+f(18,74,1,1,'sun/net/www/protocol/jar/JarURLConnection.connect')
+f(19,74,1,1,'sun/net/www/protocol/jar/JarFileFactory.get')
+f(20,74,1,1,'sun/net/www/protocol/jar/JarFileFactory.getCachedJarFile')
+f(21,74,1,1,'java/util/HashMap.get')
+f(22,74,1,6,'java/util/HashMap.getNode',0,1,0)
+f(9,75,1,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext$WriteTask.run')
+f(10,75,1,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.invokeWriteAndFlush')
+f(11,75,1,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.invokeFlush0')
+f(12,75,1,1,'com/alibaba/arthas/deps/io/netty/channel/ChannelDuplexHandler.flush')
+f(13,75,1,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.flush')
+f(14,75,1,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.invokeFlush')
+f(15,75,1,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.invokeFlush0')
+f(16,75,1,1,'com/alibaba/arthas/deps/io/netty/handler/stream/ChunkedWriteHandler.flush')
+f(17,75,1,1,'com/alibaba/arthas/deps/io/netty/handler/stream/ChunkedWriteHandler.doFlush')
+f(18,75,1,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.write')
+f(19,75,1,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.write')
+f(20,75,1,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.invokeWrite')
+f(21,75,1,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.invokeWrite0')
+f(22,75,1,1,'com/alibaba/arthas/deps/io/netty/channel/CombinedChannelDuplexHandler.write')
+f(23,75,1,1,'com/alibaba/arthas/deps/io/netty/handler/codec/http/HttpObjectEncoder.write')
+f(24,75,1,1,'com/alibaba/arthas/deps/io/netty/handler/codec/http/HttpObjectEncoder.encode')
+f(25,75,1,1,'com/alibaba/arthas/deps/io/netty/handler/codec/http/HttpObjectEncoder.encodeNotHttpMessageContentTypes')
+f(26,75,1,0,'com/alibaba/arthas/deps/io/netty/handler/codec/http/HttpObjectEncoder.throwUnexpectedMessageTypeEx',0,0,1)
+f(27,75,1,4,'InterpreterRuntime::exception_handler_for_exception(JavaThread*, oopDesc*)')
+f(28,75,1,4,'JvmtiExport::post_exception_throw(JavaThread*, Method*, unsigned char*, oopDesc*)')
+f(29,75,1,3,'cbException')
+f(30,75,1,3,'getMethodClass')
+f(31,75,1,3,'jvmti_GetMethodDeclaringClass(_jvmtiEnv*, _jmethodID*, _jclass**)')
+f(32,75,1,4,'Method::checked_resolve_jmethod_id(_jmethodID*)')
+f(33,75,1,4,'Method::is_method_id(_jmethodID*)')
+f(9,76,4,1,'com/alibaba/arthas/deps/io/netty/util/concurrent/ScheduledFutureTask.run')
+f(10,76,4,1,'com/alibaba/arthas/deps/io/netty/util/concurrent/PromiseTask.runTask')
+f(11,76,4,1,'com/taobao/arthas/core/shell/term/impl/httptelnet/ProtocolDetectHandler$1.run')
+f(12,76,3,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.fireChannelActive')
+f(13,76,3,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.invokeChannelActive')
+f(14,76,3,1,'com/alibaba/arthas/deps/io/netty/channel/AbstractChannelHandlerContext.invokeChannelActive')
+f(15,76,3,1,'io/termd/core/telnet/netty/TelnetChannelHandler.channelActive')
+f(16,76,3,1,'io/termd/core/telnet/TelnetConnection.onInit')
+f(17,76,3,1,'io/termd/core/telnet/TelnetTtyConnection.onOpen')
+f(18,76,3,1,'io/termd/core/telnet/TelnetTtyConnection.checkAccept')
+f(19,76,3,1,'com/taobao/arthas/core/shell/term/impl/httptelnet/HttpTelnetTermServer$1.accept')
+f(20,76,3,1,'com/taobao/arthas/core/shell/term/impl/httptelnet/HttpTelnetTermServer$1.accept')
+f(21,76,1,1,'com/taobao/arthas/core/shell/handlers/server/TermServerTermHandler.handle')
+f(22,76,1,1,'com/taobao/arthas/core/shell/handlers/server/TermServerTermHandler.handle')
+f(23,76,1,1,'com/taobao/arthas/core/shell/impl/ShellServerImpl.handleTerm')
+f(24,76,1,1,'com/taobao/arthas/core/shell/impl/ShellServerImpl.createShell')
+f(25,76,1,1,'com/taobao/arthas/core/shell/impl/ShellImpl.<init>')
+f(26,76,1,0,'com/taobao/arthas/core/security/AuthUtils.localPrincipal',0,0,1)
+f(21,77,2,1,'com/taobao/arthas/core/shell/term/impl/Helper.loadKeymap')
+f(22,77,1,1,'com/taobao/arthas/core/shell/term/impl/Helper.loadInputRcFile')
+f(23,77,1,1,'java/io/FileInputStream.<init>')
+f(24,77,1,1,'java/io/FileInputStream.<init>')
+f(25,77,1,1,'java/io/FileInputStream.open')
+f(26,77,1,1,'java/io/FileInputStream.open0')
+f(27,77,1,3,'fileOpen')
+f(28,77,1,3,'throwFileNotFoundException')
+f(29,77,1,3,'JNU_NewObjectByName')
+f(30,77,1,3,'jni_FindClass')
+f(31,77,1,3,'find_class_from_class_loader(JNIEnv_*, Symbol*, unsigned char, Handle, Handle, unsigned char, Thread*)')
+f(32,77,1,4,'SystemDictionary::resolve_or_fail(Symbol*, Handle, Handle, bool, Thread*)')
+f(33,77,1,4,'SystemDictionary::resolve_instance_class_or_null(Symbol*, Handle, Handle, Thread*)')
+f(34,77,1,4,'Dictionary::find(int, unsigned int, Symbol*, ClassLoaderData*, Handle, Thread*)')
+f(22,78,1,1,'io/termd/core/readline/Keymap.<init>')
+f(23,78,1,1,'io/termd/core/readline/InputrcParser.parse')
+f(24,78,1,1,'java/util/Scanner.useDelimiter')
+f(25,78,1,1,'sun/misc/LRUCache.forName')
+f(26,78,1,1,'java/util/Scanner$1.create')
+f(27,78,1,1,'java/util/Scanner$1.create')
+f(28,78,1,0,'java/util/regex/Pattern.compile',0,0,1)
+f(12,79,1,1,'com/alibaba/arthas/deps/io/netty/channel/DefaultChannelPipeline.addLast')
+f(13,79,1,1,'com/alibaba/arthas/deps/io/netty/channel/DefaultChannelPipeline.addLast')
+f(14,79,1,1,'com/alibaba/arthas/deps/io/netty/channel/DefaultChannelPipeline.addLast')
+f(15,79,1,1,'com/alibaba/arthas/deps/io/netty/channel/DefaultChannelPipeline.checkMultiplicity')
+f(16,79,1,1,'com/alibaba/arthas/deps/io/netty/channel/ChannelHandlerAdapter.isSharable')
+f(17,79,1,1,'com/alibaba/arthas/deps/io/netty/util/internal/InternalThreadLocalMap.get')
+f(18,79,1,1,'com/alibaba/arthas/deps/io/netty/util/internal/InternalThreadLocalMap.fastGet')
+f(19,79,1,6,'com/alibaba/arthas/deps/io/netty/util/concurrent/FastThreadLocalThread.threadLocalMap',0,1,0)
+f(7,80,1,0,'com/alibaba/arthas/deps/io/netty/util/concurrent/SingleThreadEventExecutor.fetchFromScheduledTaskQueue',0,0,1)
+f(2,81,4,1,'java/util/concurrent/ThreadPoolExecutor$Worker.run')
+f(3,81,4,1,'java/util/concurrent/ThreadPoolExecutor.runWorker')
+f(4,81,3,1,'com/mysql/cj/jdbc/AbandonedConnectionCleanupThread.run')
+f(5,81,2,1,'com/mysql/cj/jdbc/AbandonedConnectionCleanupThread.checkThreadContextClassLoader')
+f(6,81,2,6,'java/lang/ClassLoader.getResource',0,1,0)
+f(7,81,1,1,'java/lang/ClassLoader.getResource')
+f(8,81,1,1,'java/lang/ClassLoader.getBootstrapResource')
+f(9,81,1,1,'sun/misc/URLClassPath.getResource')
+f(10,81,1,1,'sun/misc/URLClassPath.getResource')
+f(11,81,1,6,'sun/misc/URLClassPath.getLookupCache',0,1,0)
+f(7,82,1,3,'vtable stub')
+f(5,83,1,1,'java/lang/ref/ReferenceQueue.remove')
+f(6,83,1,1,'java/lang/Object.wait')
+f(7,83,1,3,'JVM_MonitorWait')
+f(8,83,1,4,'ObjectSynchronizer::wait(Handle, long, Thread*)')
+f(9,83,1,4,'ObjectMonitor::wait(long, bool, Thread*)')
+f(10,83,1,4,'os::PlatformEvent::park(long)')
+f(11,83,1,3,'__psynch_cvwait')
+f(4,84,1,1,'java/util/concurrent/ScheduledThreadPoolExecutor$ScheduledFutureTask.run')
+f(5,84,1,1,'java/util/concurrent/ScheduledThreadPoolExecutor$ScheduledFutureTask.access$201')
+f(6,84,1,1,'java/util/concurrent/FutureTask.run')
+f(7,84,1,1,'java/util/concurrent/FutureTask.run$$$capture')
+f(8,84,1,1,'java/util/concurrent/Executors$RunnableAdapter.call')
+f(9,84,1,1,'com/taobao/arthas/core/shell/system/impl/ProcessImpl$CommandProcessTask.run')
+f(10,84,1,1,'com/taobao/arthas/core/shell/command/impl/AnnotatedCommandImpl$ProcessHandler.handle')
+f(11,84,1,1,'com/taobao/arthas/core/shell/command/impl/AnnotatedCommandImpl$ProcessHandler.handle')
+f(12,84,1,1,'com/taobao/arthas/core/shell/command/impl/AnnotatedCommandImpl.access$100')
+f(13,84,1,1,'com/taobao/arthas/core/shell/command/impl/AnnotatedCommandImpl.process')
+f(14,84,1,1,'com/taobao/arthas/core/command/monitor200/ProfilerCommand.process')
+f(15,84,1,1,'com/taobao/arthas/core/command/monitor200/ProfilerCommand.processStop')
+f(16,84,1,1,'com/taobao/arthas/core/command/monitor200/ProfilerCommand.outputFile')
+f(17,84,1,1,'java/text/SimpleDateFormat.<init>')
+f(18,84,1,1,'java/text/SimpleDateFormat.<init>')
+f(19,84,1,1,'java/text/SimpleDateFormat.initializeCalendar')
+f(20,84,1,1,'java/util/Calendar.getInstance')
+f(21,84,1,1,'java/util/Calendar.createCalendar')
+f(22,84,1,1,'sun/util/locale/provider/CalendarProviderImpl.getInstance')
+f(23,84,1,1,'java/util/Calendar$Builder.build')
+f(24,84,1,1,'java/util/Calendar.setTimeInMillis')
+f(25,84,1,1,'java/util/GregorianCalendar.computeFields')
+f(26,84,1,1,'java/util/GregorianCalendar.computeFields')
+f(27,84,1,0,'sun/util/calendar/BaseCalendar.getCalendarDateFromFixedDate',0,0,1)
+f(2,85,2,1,'org/apache/tomcat/util/net/NioEndpoint$Poller.run')
+f(3,85,1,1,'org/apache/tomcat/util/net/NioEndpoint$Poller.timeout')
+f(4,85,1,1,'java/util/Collections$UnmodifiableCollection.iterator')
+f(5,85,1,1,'java/util/Collections$UnmodifiableCollection$1.<init>')
+f(6,85,1,1,'java/util/HashSet.iterator')
+f(7,85,1,6,'java/util/HashMap$KeySet.iterator',0,1,0)
+f(3,86,1,1,'sun/nio/ch/SelectorImpl.select')
+f(4,86,1,1,'sun/nio/ch/SelectorImpl.lockAndDoSelect')
+f(5,86,1,1,'sun/nio/ch/KQueueSelectorImpl.doSelect')
+f(6,86,1,1,'sun/nio/ch/KQueueArrayWrapper.poll')
+f(7,86,1,1,'sun/nio/ch/KQueueArrayWrapper.kevent0')
+f(8,86,1,3,'kevent')
+f(2,87,7,1,'org/apache/tomcat/util/threads/TaskThread$WrappingRunnable.run')
+f(3,87,7,1,'java/util/concurrent/ThreadPoolExecutor$Worker.run')
+f(4,87,7,1,'java/util/concurrent/ThreadPoolExecutor.runWorker')
+f(5,87,5,1,'java/util/concurrent/ScheduledThreadPoolExecutor$ScheduledFutureTask.run')
+f(6,87,5,1,'java/util/concurrent/ScheduledThreadPoolExecutor$ScheduledFutureTask.access$301')
+f(7,87,5,1,'java/util/concurrent/FutureTask.runAndReset')
+f(8,87,1,6,'com/intellij/rt/debugger/agent/CaptureStorage.insertEnter',0,1,0)
+f(9,87,1,2,'com/intellij/rt/debugger/agent/CaptureStorage$HardKey.<init>',1,0,0)
+f(8,88,4,1,'java/util/concurrent/FutureTask.runAndReset$$$capture')
+f(9,88,4,1,'java/util/concurrent/Executors$RunnableAdapter.call')
+f(10,88,2,1,'org/apache/catalina/core/ContainerBase$ContainerBackgroundProcessor.run')
+f(11,88,2,6,'org/apache/catalina/core/ContainerBase$ContainerBackgroundProcessor.processChildren',0,1,0)
+f(12,89,1,1,'org/apache/catalina/core/ContainerBase$ContainerBackgroundProcessor.processChildren')
+f(13,89,1,1,'org/apache/catalina/core/ContainerBase$ContainerBackgroundProcessor.processChildren')
+f(14,89,1,1,'org/apache/catalina/core/StandardContext.backgroundProcess')
+f(15,89,1,1,'org/apache/catalina/webresources/StandardRoot.backgroundProcess')
+f(16,89,1,1,'org/apache/catalina/webresources/Cache.backgroundProcess')
+f(17,89,1,0,'java/util/TreeSet.addAll',0,0,1)
+f(10,90,1,1,'org/apache/catalina/core/ContainerBase$ContainerBackgroundProcessorMonitor.run')
+f(11,90,1,0,'org/apache/catalina/core/ContainerBase.threadStart',0,0,1)
+f(10,91,1,1,'org/apache/catalina/core/StandardServer$$Lambda$528/523794808.run')
+f(11,91,1,0,'org/apache/catalina/core/StandardServer.lambda$startInternal$0',0,0,1)
+f(5,92,2,1,'java/util/concurrent/ThreadPoolExecutor.getTask')
+f(6,92,2,1,'java/util/concurrent/ScheduledThreadPoolExecutor$DelayedWorkQueue.take')
+f(7,92,2,1,'java/util/concurrent/ScheduledThreadPoolExecutor$DelayedWorkQueue.take')
+f(8,92,2,1,'java/util/concurrent/locks/AbstractQueuedSynchronizer$ConditionObject.awaitNanos')
+f(9,92,2,1,'java/util/concurrent/locks/LockSupport.parkNanos')
+f(10,92,2,1,'sun/misc/Unsafe.park')
+f(11,92,2,3,'Unsafe_Park')
+f(12,92,1,4,'HandleMarkCleaner::~HandleMarkCleaner()')
+f(13,92,1,4,'HandleMarkCleaner::~HandleMarkCleaner()')
+f(14,92,1,4,'HandleMark::pop_and_restore()')
+f(15,92,1,4,'Chunk::next() const')
+f(12,93,1,4,'Parker::park(bool, long)')
+f(13,93,1,3,'__psynch_cvwait')
+f(1,94,1,1,'org/springframework/boot/web/embedded/tomcat/TomcatWebServer$1.run')
+f(2,94,1,0,'org/apache/catalina/core/StandardServer.await',0,0,1)
+f(1,95,59,3,'thread_start')
+f(2,95,59,3,'_pthread_start')
+f(3,95,59,3,'java_start(Thread*)')
+f(4,95,44,4,'JavaThread::run()')
+f(5,95,44,4,'JavaThread::thread_main_inner()')
+f(6,95,11,4,'CompileBroker::compiler_thread_loop()')
+f(7,95,6,4,'CompileBroker::invoke_compiler_on_method(CompileTask*)')
+f(8,95,6,4,'Compiler::compile_method(ciEnv*, ciMethod*, int)')
+f(9,95,6,4,'Compilation::Compilation(AbstractCompiler*, ciEnv*, ciMethod*, int, BufferBlob*)')
+f(10,95,6,4,'Compilation::compile_method()')
+f(11,95,6,4,'Compilation::compile_java_method()')
+f(12,95,4,4,'Compilation::build_hir()')
+f(13,95,4,4,'IR::IR(Compilation*, ciMethod*, int)')
+f(14,95,4,4,'IRScope::IRScope(Compilation*, IRScope*, int, ciMethod*, int, bool)')
+f(15,95,4,4,'GraphBuilder::GraphBuilder(Compilation*, IRScope*)')
+f(16,95,4,4,'GraphBuilder::iterate_all_blocks(bool)')
+f(17,95,4,4,'GraphBuilder::iterate_bytecodes_for_block(int)')
+f(18,95,1,4,'GraphBuilder::access_field(Bytecodes::Code)')
+f(19,95,1,4,'ciBytecodeStream::get_field(bool&)')
+f(20,95,1,4,'ciField::will_link(ciInstanceKlass*, Bytecodes::Code)')
+f(21,95,1,4,'LinkResolver::resolve_field(fieldDescriptor&, KlassHandle, Symbol*, Symbol*, KlassHandle, Bytecodes::Code, bool, bool, Thread*)')
+f(22,95,1,4,'InstanceKlass::find_field(Symbol*, Symbol*, fieldDescriptor*) const')
+f(23,95,1,4,'InstanceKlass::find_local_field(Symbol*, Symbol*, fieldDescriptor*) const')
+f(24,95,1,4,'FieldStreamBase::signature() const')
+f(18,96,3,4,'GraphBuilder::invoke(Bytecodes::Code)')
+f(19,96,2,4,'GraphBuilder::try_inline(ciMethod*, bool, Bytecodes::Code, Instruction*)')
+f(20,96,2,4,'GraphBuilder::try_inline_full(ciMethod*, bool, Bytecodes::Code, Instruction*)')
+f(21,96,2,4,'GraphBuilder::iterate_all_blocks(bool)')
+f(22,96,2,4,'GraphBuilder::iterate_bytecodes_for_block(int)')
+f(23,96,1,4,'GraphBuilder::access_field(Bytecodes::Code)')
+f(23,97,1,4,'GraphBuilder::method_return(Instruction*)')
+f(24,97,1,4,'GraphBuilder::call_register_finalizer()')
+f(25,97,1,4,'ciInstanceKlass::has_finalizable_subclass()')
+f(26,97,1,4,'Dependencies::find_finalizable_subclass(Klass*)')
+f(27,97,1,4,'Dependencies::find_finalizable_subclass(Klass*)')
+f(28,97,1,4,'Dependencies::find_finalizable_subclass(Klass*)')
+f(29,97,1,4,'Dependencies::find_finalizable_subclass(Klass*)')
+f(19,98,1,4,'ciBytecodeStream::get_method(bool&, ciSignature**)')
+f(20,98,1,4,'ciEnv::get_method_by_index(constantPoolHandle, int, Bytecodes::Code, ciInstanceKlass*)')
+f(21,98,1,4,'ciEnv::get_method_by_index_impl(constantPoolHandle, int, Bytecodes::Code, ciInstanceKlass*)')
+f(22,98,1,4,'ciObjectFactory::get_metadata(Metadata*)')
+f(23,98,1,4,'ciObjectFactory::create_new_metadata(Metadata*)')
+f(24,98,1,4,'ciMethod::ciMethod(methodHandle, ciInstanceKlass*)')
+f(25,98,1,4,'ciSignature::ciSignature(ciKlass*, constantPoolHandle, ciSymbol*)')
+f(26,98,1,4,'SignatureStream::as_symbol(Thread*)')
+f(27,98,1,4,'SymbolTable::lookup(Symbol const*, int, int, Thread*)')
+f(28,98,1,4,'SymbolTable::lookup(int, char const*, int, unsigned int)')
+f(29,98,1,4,'Symbol::equals(char const*, int) const')
+f(12,99,2,4,'Compilation::emit_lir()')
+f(13,99,1,4,'LinearScan::build_intervals()')
+f(13,100,1,4,'LinearScan::do_linear_scan()')
+f(14,100,1,4,'LinearScan::build_intervals()')
+f(15,100,1,4,'IntervalList::grow(int, Interval*)')
+f(7,101,5,4,'CompileQueue::get()')
+f(8,101,5,4,'NMethodSweeper::possibly_sweep()')
+f(9,101,5,4,'NMethodSweeper::sweep_code_cache()')
+f(10,101,5,4,'NMethodSweeper::process_nmethod(nmethod*)')
+f(11,102,4,4,'nmethod::cleanup_inline_caches()')
+f(12,103,2,4,'CodeCache::find_blob_unsafe(void*)')
+f(13,103,2,4,'CodeHeap::find_start(void*) const')
+f(12,105,1,4,'RelocIterator::next()')
+f(13,105,1,4,'RelocIterator::advance_over_prefix()')
+f(6,106,33,4,'JvmtiAgentThread::call_start_function()')
+f(7,106,28,3,'attachThread')
+f(8,106,28,3,'debugLoop_run')
+f(9,106,1,3,'clearCommand')
+f(10,106,1,3,'eventHandler_freeByID')
+f(11,106,1,3,'freeHandler')
+f(12,106,1,3,'eventFilterRestricted_deinstall')
+f(13,106,1,3,'jvmti_ClearBreakpoint(_jvmtiEnv*, _jmethodID*, long)')
+f(14,106,1,4,'JvmtiEnv::ClearBreakpoint(Method*, long)')
+f(15,106,1,4,'JvmtiBreakpoints::clear(JvmtiBreakpoint&)')
+f(16,106,1,4,'VMThread::execute(VM_Operation*)')
+f(17,106,1,4,'JavaFrameAnchor::make_walkable(JavaThread*)')
+f(9,107,1,3,'frames')
+f(10,107,1,3,'jvmti_GetMethodDeclaringClass(_jvmtiEnv*, _jmethodID*, _jclass**)')
+f(11,107,1,4,'Method::checked_resolve_jmethod_id(_jmethodID*)')
+f(12,107,1,4,'Method::is_method_id(_jmethodID*)')
+f(9,108,21,3,'methodsWithGeneric')
+f(10,108,21,3,'methods1')
+f(11,108,5,3,'isMethodSynthetic')
+f(12,108,5,3,'jvmti_IsMethodSynthetic(_jvmtiEnv*, _jmethodID*, unsigned char*)')
+f(13,108,5,4,'Method::checked_resolve_jmethod_id(_jmethodID*)')
+f(14,108,5,4,'Method::is_method_id(_jmethodID*)')
+f(11,113,6,3,'jvmti_GetMethodModifiers(_jvmtiEnv*, _jmethodID*, int*)')
+f(12,113,6,4,'Method::checked_resolve_jmethod_id(_jmethodID*)')
+f(13,113,6,4,'Method::is_method_id(_jmethodID*)')
+f(11,119,10,3,'methodSignature')
+f(12,119,10,3,'jvmti_GetMethodName(_jvmtiEnv*, _jmethodID*, char**, char**, char**)')
+f(13,119,3,4,'JvmtiEnv::GetMethodName(Method*, char**, char**, char**)')
+f(14,119,1,3,'_platform_strcpy')
+f(14,120,2,4,'os::malloc(unsigned long, MemoryType)')
+f(15,120,2,4,'os::malloc(unsigned long, MemoryType, NativeCallStack const&)')
+f(16,120,2,3,'nanov2_malloc')
+f(13,122,6,4,'Method::checked_resolve_jmethod_id(_jmethodID*)')
+f(14,122,6,4,'Method::is_method_id(_jmethodID*)')
+f(13,128,1,3,'_platform_strcpy')
+f(9,129,1,3,'outStream_initReply')
+f(10,129,1,3,'commonInit')
+f(11,129,1,3,'bagCreateBag')
+f(12,129,1,3,'jvmtiAllocate')
+f(13,129,1,3,'jvmti_Allocate(_jvmtiEnv*, long, unsigned char**)')
+f(14,129,1,4,'JvmtiEnv::Allocate(long, unsigned char**)')
+f(15,129,1,4,'os::malloc(unsigned long, MemoryType)')
+f(16,129,1,4,'os::malloc(unsigned long, MemoryType, NativeCallStack const&)')
+f(17,129,1,3,'szone_malloc_should_clear')
+f(18,129,1,3,'tiny_malloc_should_clear')
+f(19,129,1,3,'tiny_malloc_from_free_list')
+f(9,130,3,3,'outStream_sendReply')
+f(10,130,2,3,'outStream_send')
+f(11,130,2,3,'transport_sendPacket')
+f(12,130,2,3,'socketTransport_writePacket')
+f(13,130,2,3,'send_fully')
+f(14,130,2,3,'__sendto')
+f(10,132,1,3,'transport_sendPacket')
+f(11,132,1,3,'socketTransport_writePacket')
+f(12,132,1,3,'send_fully')
+f(13,132,1,3,'__sendto')
+f(9,133,1,3,'resume')
+f(10,133,1,3,'threadControl_resumeAll')
+f(11,133,1,3,'jvmti_ResumeThreadList(_jvmtiEnv*, int, _jobject* const*, jvmtiError*)')
+f(12,133,1,4,'JvmtiEnv::ResumeThreadList(int, _jobject* const*, jvmtiError*)')
+f(7,134,1,3,'commandLoop')
+f(8,134,1,3,'outStream_sendCommand')
+f(9,134,1,3,'transport_sendPacket')
+f(10,134,1,3,'socketTransport_writePacket')
+f(11,134,1,3,'send_fully')
+f(12,134,1,3,'__sendto')
+f(7,135,4,3,'reader')
+f(8,135,1,3,'jvmtiAllocate')
+f(9,135,1,3,'jvmti_Allocate(_jvmtiEnv*, long, unsigned char**)')
+f(10,135,1,4,'JvmtiEnv::Allocate(long, unsigned char**)')
+f(11,135,1,4,'os::malloc(unsigned long, MemoryType)')
+f(12,135,1,4,'os::malloc(unsigned long, MemoryType, NativeCallStack const&)')
+f(13,135,1,3,'nanov2_malloc')
+f(8,136,3,3,'transport_receivePacket')
+f(9,136,3,3,'socketTransport_readPacket')
+f(10,136,3,3,'recv_fully')
+f(11,136,3,3,'__recvfrom')
+f(4,139,3,4,'VMThread::run()')
+f(5,139,3,4,'VMThread::loop()')
+f(6,139,1,4,'Monitor::wait(bool, long, bool)')
+f(7,139,1,4,'Monitor::IWait(Thread*, long)')
+f(8,139,1,4,'os::PlatformEvent::park(long)')
+f(9,139,1,3,'__psynch_cvwait')
+f(6,140,2,4,'SafepointSynchronize::begin()')
+f(7,140,2,4,'SafepointSynchronize::do_cleanup_tasks()')
+f(8,140,2,4,'NMethodSweeper::mark_active_nmethods()')
+f(9,140,2,4,'Threads::nmethods_do(CodeBlobClosure*)')
+f(10,140,2,4,'JavaThread::nmethods_do(CodeBlobClosure*)')
+f(11,140,2,4,'frame::sender(RegisterMap*) const')
+f(12,140,2,4,'frame::sender_for_compiled_frame(RegisterMap*) const')
+f(13,140,2,4,'OopMapSet::update_register_map(frame const*, RegisterMap*)')
+f(14,140,2,4,'OopMapSet::find_map_at_offset(int) const')
+f(4,142,12,4,'WatcherThread::run()')
+f(5,142,1,4,'PeriodicTask::real_time_tick(int)')
+f(6,142,1,4,'ChunkPool::free_all_but(unsigned long)')
+f(5,143,11,4,'WatcherThread::sleep() const')
+f(6,143,11,4,'Monitor::wait(bool, long, bool)')
+f(7,143,11,4,'Monitor::IWait(Thread*, long)')
+f(8,143,10,4,'os::PlatformEvent::park(long)')
+f(9,143,10,3,'__psynch_cvwait')
+f(8,153,1,3,'pthread_cond_init')
+
+search();
+</script></body></html>
