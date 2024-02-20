@@ -20,7 +20,7 @@ public interface GameItemService {
 
 	void importData(BaseRequest query, MultipartFile file);
 
-	int save(GameItemSaveQuery query);
+	Boolean save(GameItemSaveQuery query);
 
 	int update(GameItemUpdateQuery query);
 

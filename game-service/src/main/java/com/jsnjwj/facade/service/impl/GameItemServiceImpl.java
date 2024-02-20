@@ -66,13 +66,22 @@ public class GameItemServiceImpl implements GameItemService {
 	}
 
 	@Override
-	public int save(GameItemSaveQuery query) {
-		GameItemEntity tcGameGroup = new GameItemEntity();
-		tcGameGroup.setGameId(query.getGameId());
-		tcGameGroup.setGroupId(query.getGroupId());
-		tcGameGroup.setItemName(query.getItemName());
-		tcGameGroup.setSort(query.getSort());
-		return gameItemManager.save(tcGameGroup);
+	public Boolean save(GameItemSaveQuery query) {
+
+		if (CollUtil.isNotEmpty(query.getGroupId())) {
+			for (Long groupId : query.getGroupId()) {
+				GameItemEntity tcGameGroup = new GameItemEntity();
+				tcGameGroup.setGameId(query.getGameId());
+				tcGameGroup.setGroupId(groupId);
+				tcGameGroup.setItemName(query.getItemName());
+				tcGameGroup.setItemType(query.getItemType());
+				tcGameGroup.setSort(query.getSort());
+				gameItemManager.save(tcGameGroup);
+			}
+			return true;
+		}
+		return false;
+
 	}
 
 	@Override

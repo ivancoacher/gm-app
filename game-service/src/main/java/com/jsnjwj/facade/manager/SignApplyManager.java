@@ -458,11 +458,14 @@ public class SignApplyManager {
 	}
 
 	public int updateSingle(SignSingleEntity signSingleEntity) {
+		SignSingleEntity signSingle = signSingleMapper.selectById(signSingleEntity.getId());
+
 		LambdaUpdateWrapper<SignSingleEntity> queryWrapper = new LambdaUpdateWrapper<>();
 		queryWrapper.set(SignSingleEntity::getName, signSingleEntity.getName());
 		queryWrapper.set(SignSingleEntity::getAge, signSingleEntity.getAge());
 		queryWrapper.set(SignSingleEntity::getSex, signSingleEntity.getSex());
-		queryWrapper.eq(SignSingleEntity::getId, signSingleEntity.getId());
+		queryWrapper.eq(SignSingleEntity::getName, signSingle.getName());
+		queryWrapper.eq(SignSingleEntity::getOrgName, signSingleEntity.getOrgName());
 		return signSingleMapper.update(null, queryWrapper);
 	}
 

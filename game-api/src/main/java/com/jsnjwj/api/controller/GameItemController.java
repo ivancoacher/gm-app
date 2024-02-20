@@ -46,7 +46,8 @@ public class GameItemController {
 	}
 
 	@RequestMapping("/save")
-	public ApiResponse<List<GroupLabelVo>> save(@RequestBody GameItemSaveQuery query) {
+	public ApiResponse<Boolean> save(@RequestBody GameItemSaveQuery query) {
+		query.setGameId(ThreadLocalUtil.getCurrentGameId());
 		return ApiResponse.success(gameItemService.save(query));
 	}
 

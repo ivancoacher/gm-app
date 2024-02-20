@@ -16,4 +16,6 @@ public class SignSingleUpdateQuery extends BaseRequest {
 
 	private int sex;
 
+	private String orgName;
+
 }

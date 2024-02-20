@@ -208,6 +208,7 @@ public class SignApplyServiceImpl implements SignApplyService {
 		signSingleEntity.setName(request.getName());
 		signSingleEntity.setAge(request.getAge());
 		signSingleEntity.setSex(request.getSex());
+		signSingleEntity.setOrgName(request.getOrgName());
 		int result = signApplyManager.updateSingle(signSingleEntity);
 		return ApiResponse.success(result > 0);
 	}

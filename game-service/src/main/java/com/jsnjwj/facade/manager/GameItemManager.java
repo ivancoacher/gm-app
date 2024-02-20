@@ -27,7 +27,7 @@ public class GameItemManager {
 
 	public ApiResponse<Page<ItemLabelVo>> fetchItemsPage(GameItemListQuery query) {
 		Long gameId = query.getGameId();
-		Page<GameItemEntity> page = new Page<>();
+		Page<GameItemEntity> page = new Page<>(query.getPage(), query.getLimit());
 		LambdaQueryWrapper<GameItemEntity> lambdaQuery = new LambdaQueryWrapper<>();
 		lambdaQuery.eq(GameItemEntity::getGameId, gameId);
 
