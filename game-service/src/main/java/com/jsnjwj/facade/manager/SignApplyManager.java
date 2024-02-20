@@ -12,7 +12,6 @@ import com.jsnjwj.facade.easyexcel.upload.ImportTeamUploadDto;
 import com.jsnjwj.facade.entity.*;
 import com.jsnjwj.facade.mapper.*;
 import com.jsnjwj.facade.query.SignSingleListQuery;
-import com.jsnjwj.facade.query.SignSingleUpdateQuery;
 import com.jsnjwj.facade.query.SignTeamListQuery;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -61,6 +61,7 @@ public class SignApplyManager {
 		wrapper.eq(null != query.getGroupId(), SignSingleEntity::getGroupId, query.getGroupId());
 		wrapper.eq(null != query.getItemId(), SignSingleEntity::getItemId, query.getItemId());
 		wrapper.eq(null != query.getTeamId(), SignSingleEntity::getTeamId, query.getTeamId());
+		wrapper.eq(null != query.getOrgId(), SignSingleEntity::getOrgId, query.getOrgId());
 		wrapper.like(StringUtils.isNotBlank(query.getKey()), SignSingleEntity::getName, query.getKey());
 		return signSingleMapper.selectByPage((query.getPage() - 1) * query.getPageSize(), query.getPageSize(), wrapper);
 	}
@@ -71,6 +72,7 @@ public class SignApplyManager {
 		wrapper.eq(null != query.getGroupId(), SignSingleEntity::getGroupId, query.getGroupId());
 		wrapper.eq(null != query.getItemId(), SignSingleEntity::getItemId, query.getItemId());
 		wrapper.eq(null != query.getTeamId(), SignSingleEntity::getTeamId, query.getTeamId());
+		wrapper.eq(null != query.getOrgId(), SignSingleEntity::getOrgId, query.getOrgId());
 		wrapper.like(StringUtils.isNotBlank(query.getKey()), SignSingleEntity::getName, query.getKey());
 		return signSingleMapper.selectCount(wrapper);
 	}
@@ -78,7 +80,24 @@ public class SignApplyManager {
 	public Page<SignTeamEntity> fetchSignTeamPage(SignTeamListQuery query) {
 		LambdaQueryWrapper<SignTeamEntity> wrapper = new LambdaQueryWrapper<>();
 		wrapper.eq(null != query.getGameId(), SignTeamEntity::getGameId, query.getGameId());
-		wrapper.like(null != query.getKey(), SignTeamEntity::getTeamName, query.getKey());
+		wrapper.like(null != query.getTeamId(), SignTeamEntity::getId, query.getTeamId());
+		wrapper.like(null != query.getOrgId(), SignTeamEntity::getOrgId, query.getOrgId());
+
+		if (StringUtils.isNotBlank(query.getTitle())) {
+			wrapper.and(t -> {
+				t.like(SignTeamEntity::getCoachName, query.getTitle())
+					.or()
+					.like(SignTeamEntity::getCoachTel, query.getTitle())
+					.or()
+					.like(SignTeamEntity::getLeaderName, query.getTitle())
+					.or()
+					.like(SignTeamEntity::getLeaderTel, query.getTitle())
+					.or()
+					.like(SignTeamEntity::getTeamName, query.getTitle());
+
+			});
+
+		}
 
 		Page<SignTeamEntity> page = new Page<>(query.getPage(), query.getLimit());
 		page.setCurrent(query.getPage());
@@ -97,7 +116,7 @@ public class SignApplyManager {
 	public List<SignTeamEntity> fetchSignTeamData(SignTeamListQuery query) {
 		LambdaQueryWrapper<SignTeamEntity> wrapper = new LambdaQueryWrapper<>();
 		wrapper.eq(null != query.getGameId(), SignTeamEntity::getGameId, query.getGameId());
-		wrapper.like(null != query.getKey(), SignTeamEntity::getTeamName, query.getKey());
+		wrapper.like(null != query.getTitle(), SignTeamEntity::getTeamName, query.getTitle());
 
 		return signTeamMapper.selectList(wrapper);
 
@@ -123,20 +142,22 @@ public class SignApplyManager {
 		List<SignSingleEntity> datas = new ArrayList<>();
 		if (!data.isEmpty()) {
 			data.forEach(d -> {
-				SignSingleEntity team = new SignSingleEntity();
-				team.setGameId(gameId);
-				team.setTeamId(d.getTeamId());
-				team.setName(d.getName());
-				team.setAge(0);
-				team.setSex("男".equals(d.getSex()) ? 1 : 0);
-				team.setGroupId(d.getGroupId());
-				team.setItemId(d.getItemId());
-				team.setCountry(d.getCountry());
-				team.setNation(d.getNation());
-				team.setStudentNum(d.getStudentNum());
-				team.setCardNum(d.getCardNum());
-				team.setOrgName(d.getOrgName());
-				datas.add(team);
+				SignSingleEntity signSingle = new SignSingleEntity();
+				signSingle.setGameId(gameId);
+				signSingle.setTeamId(d.getTeamId());
+				signSingle.setName(d.getName());
+				signSingle.setAge(0);
+				signSingle.setSex("男".equals(d.getSex()) ? 1 : 0);
+				signSingle.setGroupId(d.getGroupId());
+				signSingle.setItemId(d.getItemId());
+				signSingle.setCountry(d.getCountry());
+				signSingle.setNation(d.getNation());
+				signSingle.setStudentNum(d.getStudentNum());
+				signSingle.setCardNum(d.getCardNum());
+				signSingle.setOrgName(d.getOrgName());
+				signSingle.setOrgId(d.getOrgId());
+
+				datas.add(signSingle);
 			});
 		}
 		log.info("insert sign data : {}", JSON.toJSONString(datas));
@@ -302,6 +323,12 @@ public class SignApplyManager {
 		wrapper.eq(SignSingleEntity::getGameId, gameId);
 		wrapper.groupBy(SignSingleEntity::getOrgName);
 		return signSingleMapper.selectList(wrapper);
+	}
+
+	public List<SignOrgEntity> getOrgList(Long gameId) {
+		LambdaQueryWrapper<SignOrgEntity> wrapper = new LambdaQueryWrapper<>();
+		wrapper.eq(SignOrgEntity::getGameId, gameId);
+		return signOrgMapper.selectList(wrapper);
 	}
 
 	/**

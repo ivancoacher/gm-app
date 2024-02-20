@@ -31,10 +31,10 @@
 
 
     <insert id="saveBatch">
-        insert into tc_sign_single (`game_id`,`group_id`,`item_id`,`team_id`,`name`,`sex`,`age`,`org_name`) values
+        insert into tc_sign_single (`game_id`,`group_id`,`item_id`,`team_id`,`name`,`sex`,`age`,`org_name`,`org_id`) values
         <foreach collection="list" item="entity" separator=",">
             (#{entity.gameId},#{entity.groupId},#{entity.itemId}, #{entity.teamId}, #{entity.name}, #{entity.sex},
-            #{entity.age},#{entity.orgName})
+            #{entity.age},#{entity.orgName},#{entity.orgId})
         </foreach>
     </insert>
 

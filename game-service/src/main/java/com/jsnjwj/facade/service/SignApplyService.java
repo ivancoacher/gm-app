@@ -36,4 +36,6 @@ public interface SignApplyService {
 
 	ApiResponse<?> signUpdate(SignSingleUpdateQuery request);
 
+	ApiResponse<?> getOrgList(Long gameId);
+
 }

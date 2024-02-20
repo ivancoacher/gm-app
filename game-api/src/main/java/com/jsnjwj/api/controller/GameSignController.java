@@ -123,4 +123,10 @@ public class GameSignController {
 		return signApplyService.signUpdate(request);
 	}
 
+	@GetMapping("/org/list")
+	public ApiResponse<?> getOrgList() {
+		Long gameId = ThreadLocalUtil.getCurrentGameId();
+		return signApplyService.getOrgList(gameId);
+	}
+
 }

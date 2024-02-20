@@ -12,6 +12,8 @@ public class SignSingleListQuery extends BaseRequest {
 
 	private Long teamId;
 
+	private Long orgId;
+
 	private String key;
 
 	private Integer page = 1;

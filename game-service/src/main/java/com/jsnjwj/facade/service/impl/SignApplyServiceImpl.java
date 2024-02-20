@@ -3,6 +3,7 @@ package com.jsnjwj.facade.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.EasyExcelFactory;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsnjwj.common.request.BaseRequest;
 import com.jsnjwj.common.response.ApiResponse;
@@ -209,6 +210,11 @@ public class SignApplyServiceImpl implements SignApplyService {
 		signSingleEntity.setSex(request.getSex());
 		int result = signApplyManager.updateSingle(signSingleEntity);
 		return ApiResponse.success(result > 0);
+	}
+
+	@Override
+	public ApiResponse<?> getOrgList(Long gameId) {
+		return ApiResponse.success(signApplyManager.getOrgList(gameId));
 	}
 
 }

@@ -10,10 +10,14 @@ public class SignTeamListQuery extends BaseRequest {
 
 	private Long groupId;
 
-	private String key;
+	private String title;
 
 	private Integer page = 1;
 
 	private Integer limit = 10;
+
+	private Long teamId;
+
+	private Long orgId;
 
 }
