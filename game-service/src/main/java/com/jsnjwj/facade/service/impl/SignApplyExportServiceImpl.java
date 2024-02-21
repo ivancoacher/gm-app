@@ -65,6 +65,12 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 
 	}
 
+	@Override
+	public ApiResponse<?> exportSignProjectProgram(SignSingleProgramExportQuery request) {
+		return exportByItemAndOrg(request.getGameId());
+
+	}
+
 	/**
 	 * 根据组别导出
 	 * @param gameId 比赛编号

@@ -14,4 +14,6 @@ public interface SignApplyExportService {
 
 	ApiResponse<?> exportSignProgram(SignSingleProgramExportQuery request);
 
+	ApiResponse<?> exportSignProjectProgram(SignSingleProgramExportQuery request);
+
 }

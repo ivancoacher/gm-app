@@ -52,6 +52,12 @@ public class GameSignController {
 		return signApplyExportService.exportSignProgram(request);
 	}
 
+	@RequestMapping("/project/program/export")
+	public ApiResponse<?> projectImport(@RequestBody SignSingleProgramExportQuery request) {
+		request.setGameId(ThreadLocalUtil.getCurrentGameId());
+		return signApplyExportService.exportSignProjectProgram(request);
+	}
+
 	@RequestMapping("/single/demo/import")
 	public ApiResponse<?> singleDemoImport(BaseRequest query, MultipartFile sourceFile) throws Exception {
 		query.setUserId(ThreadLocalUtil.getCurrentUserId());
