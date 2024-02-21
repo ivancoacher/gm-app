@@ -91,9 +91,9 @@ public class GameGroupServiceImpl implements GameGroupService {
 		return ApiResponse.success(result);
 	}
 
-    @Override
-    public ApiResponse<?> updateBatch(GameGroupBatchUpdateQuery request) {
-		for (GroupLabelVo query : request.getData()){
+	@Override
+	public ApiResponse<?> updateBatch(GameGroupBatchUpdateQuery request) {
+		for (GroupLabelVo query : request.getData()) {
 			GameGroupEntity tcGameGroup = new GameGroupEntity();
 			tcGameGroup.setId(query.getGroupId());
 			tcGameGroup.setSort(query.getSort());
@@ -101,9 +101,9 @@ public class GameGroupServiceImpl implements GameGroupService {
 			groupManager.update(tcGameGroup);
 		}
 		return ApiResponse.success(true);
-    }
+	}
 
-    @Override
+	@Override
 	public ApiResponse<?> delete(Long groupId) {
 		Long gameId = ThreadLocalUtil.getCurrentGameId();
 		// 判断该组别下是否还有报名信息

@@ -97,19 +97,18 @@ public class GameItemServiceImpl implements GameItemService {
 
 	@Override
 	public boolean updateBatch(GameItemBatchUpdateQuery request) {
-		for (ItemLabelVo query : request.getData()){
+		for (ItemLabelVo query : request.getData()) {
 			GameItemEntity tcGameGroup = new GameItemEntity();
 			tcGameGroup.setGroupId(query.getGroupId());
 			tcGameGroup.setSort(query.getSort());
 			tcGameGroup.setId(query.getItemId());
 			tcGameGroup.setItemName(query.getItemName());
 			tcGameGroup.setItemType(query.getItemType());
-			 gameItemManager.update(tcGameGroup);
+			gameItemManager.update(tcGameGroup);
 
 		}
 		return true;
 	}
-
 
 	@Override
 	public GameItemEntity fetchOne(Long itemId) {

@@ -26,6 +26,7 @@ public interface GameGroupService {
 	ApiResponse<?> importData(BaseRequest request, MultipartFile file);
 
 	ApiResponse<?> update(GameGroupUpdateQuery query);
+
 	ApiResponse<?> updateBatch(GameGroupBatchUpdateQuery query);
 
 	ApiResponse<?> delete(Long groupId);
