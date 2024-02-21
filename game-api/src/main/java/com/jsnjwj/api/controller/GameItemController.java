@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsnjwj.common.request.BaseRequest;
 import com.jsnjwj.common.response.ApiResponse;
 import com.jsnjwj.common.utils.ThreadLocalUtil;
+import com.jsnjwj.facade.query.GameItemBatchUpdateQuery;
 import com.jsnjwj.facade.query.GameItemListQuery;
 import com.jsnjwj.facade.query.GameItemSaveQuery;
 import com.jsnjwj.facade.query.GameItemUpdateQuery;
@@ -55,6 +56,11 @@ public class GameItemController {
 	public ApiResponse update(@RequestBody GameItemUpdateQuery query) {
 		return ApiResponse.success(gameItemService.update(query));
 	}
+	@RequestMapping("/update/batch")
+	public ApiResponse update(@RequestBody GameItemBatchUpdateQuery query) {
+		return ApiResponse.success(gameItemService.updateBatch(query));
+	}
+
 
 	@DeleteMapping("/{itemId}")
 	public ApiResponse<?> delete(@PathVariable Long itemId) {

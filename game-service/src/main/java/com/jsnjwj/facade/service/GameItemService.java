@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsnjwj.common.request.BaseRequest;
 import com.jsnjwj.common.response.ApiResponse;
 import com.jsnjwj.facade.entity.GameItemEntity;
+import com.jsnjwj.facade.query.GameItemBatchUpdateQuery;
 import com.jsnjwj.facade.query.GameItemListQuery;
 import com.jsnjwj.facade.query.GameItemSaveQuery;
 import com.jsnjwj.facade.query.GameItemUpdateQuery;
@@ -23,6 +24,8 @@ public interface GameItemService {
 	Boolean save(GameItemSaveQuery query);
 
 	int update(GameItemUpdateQuery query);
+
+	boolean updateBatch(GameItemBatchUpdateQuery request);
 
 	GameItemEntity fetchOne(Long itemId);
 

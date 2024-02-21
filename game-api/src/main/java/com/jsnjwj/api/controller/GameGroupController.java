@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsnjwj.common.request.BaseRequest;
 import com.jsnjwj.common.response.ApiResponse;
 import com.jsnjwj.common.utils.ThreadLocalUtil;
+import com.jsnjwj.facade.query.GameGroupBatchUpdateQuery;
 import com.jsnjwj.facade.query.GameGroupListQuery;
 import com.jsnjwj.facade.query.GameGroupSaveQuery;
 import com.jsnjwj.facade.query.GameGroupUpdateQuery;
@@ -45,6 +46,11 @@ public class GameGroupController {
 	@RequestMapping("/update")
 	public ApiResponse<List<GroupLabelVo>> update(@RequestBody GameGroupUpdateQuery query) {
 		return ApiResponse.success(gameGroupService.update(query));
+	}
+
+	@RequestMapping("/update/batch")
+	public ApiResponse<List<GroupLabelVo>> updateBatch(@RequestBody GameGroupBatchUpdateQuery query) {
+		return ApiResponse.success(gameGroupService.updateBatch(query));
 	}
 
 	@DeleteMapping("/{groupId}")

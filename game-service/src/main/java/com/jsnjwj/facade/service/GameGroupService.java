@@ -3,6 +3,7 @@ package com.jsnjwj.facade.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsnjwj.common.request.BaseRequest;
 import com.jsnjwj.common.response.ApiResponse;
+import com.jsnjwj.facade.query.GameGroupBatchUpdateQuery;
 import com.jsnjwj.facade.query.GameGroupListQuery;
 import com.jsnjwj.facade.query.GameGroupSaveQuery;
 import com.jsnjwj.facade.query.GameGroupUpdateQuery;
@@ -25,6 +26,7 @@ public interface GameGroupService {
 	ApiResponse<?> importData(BaseRequest request, MultipartFile file);
 
 	ApiResponse<?> update(GameGroupUpdateQuery query);
+	ApiResponse<?> updateBatch(GameGroupBatchUpdateQuery query);
 
 	ApiResponse<?> delete(Long groupId);
 

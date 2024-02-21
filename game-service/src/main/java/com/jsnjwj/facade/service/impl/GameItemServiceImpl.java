@@ -9,6 +9,7 @@ import com.jsnjwj.facade.entity.GameItemEntity;
 import com.jsnjwj.facade.entity.SignSingleEntity;
 import com.jsnjwj.facade.manager.GameItemManager;
 import com.jsnjwj.facade.manager.SignApplyManager;
+import com.jsnjwj.facade.query.GameItemBatchUpdateQuery;
 import com.jsnjwj.facade.query.GameItemListQuery;
 import com.jsnjwj.facade.query.GameItemSaveQuery;
 import com.jsnjwj.facade.query.GameItemUpdateQuery;
@@ -18,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -94,6 +94,22 @@ public class GameItemServiceImpl implements GameItemService {
 		tcGameGroup.setItemType(query.getItemType());
 		return gameItemManager.update(tcGameGroup);
 	}
+
+	@Override
+	public boolean updateBatch(GameItemBatchUpdateQuery request) {
+		for (ItemLabelVo query : request.getData()){
+			GameItemEntity tcGameGroup = new GameItemEntity();
+			tcGameGroup.setGroupId(query.getGroupId());
+			tcGameGroup.setSort(query.getSort());
+			tcGameGroup.setId(query.getItemId());
+			tcGameGroup.setItemName(query.getItemName());
+			tcGameGroup.setItemType(query.getItemType());
+			 gameItemManager.update(tcGameGroup);
+
+		}
+		return true;
+	}
+
 
 	@Override
 	public GameItemEntity fetchOne(Long itemId) {

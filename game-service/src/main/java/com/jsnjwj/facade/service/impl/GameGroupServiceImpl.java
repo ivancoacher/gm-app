@@ -7,9 +7,11 @@ import com.jsnjwj.common.request.BaseRequest;
 import com.jsnjwj.common.response.ApiResponse;
 import com.jsnjwj.common.utils.ThreadLocalUtil;
 import com.jsnjwj.facade.entity.GameGroupEntity;
+import com.jsnjwj.facade.entity.GameItemEntity;
 import com.jsnjwj.facade.entity.SignSingleEntity;
 import com.jsnjwj.facade.manager.GameGroupManager;
 import com.jsnjwj.facade.manager.SignApplyManager;
+import com.jsnjwj.facade.query.GameGroupBatchUpdateQuery;
 import com.jsnjwj.facade.query.GameGroupListQuery;
 import com.jsnjwj.facade.query.GameGroupSaveQuery;
 import com.jsnjwj.facade.query.GameGroupUpdateQuery;
@@ -17,6 +19,7 @@ import com.jsnjwj.facade.service.GameGroupService;
 import com.jsnjwj.facade.service.SignApplyService;
 import com.jsnjwj.facade.vo.GameGroupAllVo;
 import com.jsnjwj.facade.vo.GroupLabelVo;
+import com.jsnjwj.facade.vo.ItemLabelVo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -88,7 +91,19 @@ public class GameGroupServiceImpl implements GameGroupService {
 		return ApiResponse.success(result);
 	}
 
-	@Override
+    @Override
+    public ApiResponse<?> updateBatch(GameGroupBatchUpdateQuery request) {
+		for (GroupLabelVo query : request.getData()){
+			GameGroupEntity tcGameGroup = new GameGroupEntity();
+			tcGameGroup.setId(query.getGroupId());
+			tcGameGroup.setSort(query.getSort());
+			tcGameGroup.setGroupName(query.getGroupName());
+			groupManager.update(tcGameGroup);
+		}
+		return ApiResponse.success(true);
+    }
+
+    @Override
 	public ApiResponse<?> delete(Long groupId) {
 		Long gameId = ThreadLocalUtil.getCurrentGameId();
 		// 判断该组别下是否还有报名信息
