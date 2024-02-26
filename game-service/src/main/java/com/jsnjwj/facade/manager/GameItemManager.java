@@ -32,6 +32,7 @@ public class GameItemManager {
 		lambdaQuery.eq(GameItemEntity::getGameId, gameId);
 
 		lambdaQuery.eq(!StringUtils.isEmpty(query.getGroupId()), GameItemEntity::getGroupId, query.getGroupId());
+		lambdaQuery.orderByAsc(GameItemEntity::getSort);
 		Page<ItemLabelVo> result = gameItemMapper.selectByPage(page, lambdaQuery);
 
 		return ApiResponse.success(result);

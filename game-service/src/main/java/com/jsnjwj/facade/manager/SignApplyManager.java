@@ -305,6 +305,7 @@ public class SignApplyManager {
 		LambdaQueryWrapper<SignSingleEntity> wrapper = new LambdaQueryWrapper<>();
 		wrapper.eq(SignSingleEntity::getGameId, gameId);
 		wrapper.groupBy(SignSingleEntity::getGroupId, SignSingleEntity::getItemId);
+		wrapper.orderByAsc(SignSingleEntity::getItemId, SignSingleEntity::getGroupId);
 		return signSingleMapper.selectList(wrapper);
 	}
 
@@ -467,6 +468,27 @@ public class SignApplyManager {
 		queryWrapper.eq(SignSingleEntity::getName, signSingle.getName());
 		queryWrapper.eq(SignSingleEntity::getOrgName, signSingleEntity.getOrgName());
 		return signSingleMapper.update(null, queryWrapper);
+	}
+
+	public long countOrgByItemId(Long itemId) {
+		LambdaQueryWrapper<SignSingleEntity> queryWrapper = new LambdaQueryWrapper<>();
+		queryWrapper.eq(SignSingleEntity::getItemId, itemId);
+		queryWrapper.groupBy(SignSingleEntity::getOrgId);
+		return signSingleMapper.selectList(queryWrapper).size();
+	}
+
+	public long countTeamByItemId(Long itemId) {
+		LambdaQueryWrapper<SignSingleEntity> queryWrapper = new LambdaQueryWrapper<>();
+		queryWrapper.eq(SignSingleEntity::getItemId, itemId);
+		queryWrapper.groupBy(SignSingleEntity::getTeamId);
+
+		return signSingleMapper.selectList(queryWrapper).size();
+	}
+
+	public long countPlayerTimesByItemId(Long itemId) {
+		LambdaQueryWrapper<SignSingleEntity> queryWrapper = new LambdaQueryWrapper<>();
+		queryWrapper.eq(SignSingleEntity::getItemId, itemId);
+		return signSingleMapper.selectList(queryWrapper).size();
 	}
 
 }
