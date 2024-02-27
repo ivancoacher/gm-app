@@ -26,9 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -42,6 +40,10 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 	private final SignApplyManager signApplyManager;
 
 	private final static String SHEET_NAME = "sheet1";
+
+	private Map<String, Long> groupCountMap = new HashMap<>();
+
+	private Map<String, Integer> groupCountKeyMap = new HashMap<>();
 
 	@Override
 	public ApiResponse<?> exportSignProgram(SignSingleProgramExportQuery request) {
@@ -355,7 +357,7 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 			try (FileOutputStream fileOut = new FileOutputStream(filePath)) {
 				workbook.write(fileOut);
 			}
-			String fileName = "秩序表-组别（队伍）.xlsx";
+			String fileName = "秩序表-组别（队伍）-" + gameId + ".xlsx";
 			String fileUrl = updateToOss(filePath, fileName);
 			log.info("Excel文件已生成！");
 
@@ -570,7 +572,7 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 			try (FileOutputStream fileOut = new FileOutputStream(filePath)) {
 				workbook.write(fileOut);
 			}
-			String fileName = "秩序表-组别.xlsx";
+			String fileName = "秩序表-组别-" + gameId + ".xlsx";
 			String fileUrl = updateToOss(filePath, fileName);
 			log.info("Excel文件已生成！");
 
@@ -799,7 +801,7 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 			sheet.autoSizeColumn(4);
 
 			int i = 1;
-			List<SignSingleEntity> itemEntities = signApplyManager.getSignItems(gameId);
+			List<SignSingleEntity> itemEntities = signApplyManager.getSignTeams(gameId);
 			if (CollUtil.isNotEmpty(itemEntities)) {
 				int orgCode = 1;
 
@@ -849,9 +851,7 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 					sheet.autoSizeColumn(3);
 
 					// 单位
-					List<SignSingleEntity> teamEntities = signApplyManager.getTeamByGroupIdAndItemId(gameId,
-							groupEntity.getId(), itemId);
-					Long teamId = teamEntities.get(0).getTeamId();
+					Long teamId = signSingleEntity.getTeamId();
 					SignTeamEntity teamEntity = signApplyManager.getTeamById(teamId);
 					Cell teamCell = itemRow.createCell(4);
 					teamCell.setCellValue(teamEntity.getTeamName());
@@ -873,6 +873,7 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 							Cell playerCell = itemRow.createCell(playerCode + 4);
 							playerCell.setCellValue(singleEntity.getName());
 							playerCell.setCellStyle(itemCellStyle);
+							sheet.autoSizeColumn(playerCode + 4);
 
 							playerCode++;
 						}
@@ -890,7 +891,7 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 			try (FileOutputStream fileOut = new FileOutputStream(filePath)) {
 				workbook.write(fileOut);
 			}
-			String fileName = "秩序表-项目（队伍）.xlsx";
+			String fileName = "秩序表-项目人员统计-" + gameId + ".xlsx";
 			String fileUrl = updateToOss(filePath, fileName);
 			log.info("Excel文件已生成！");
 
@@ -915,60 +916,82 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 			Workbook workbook = new XSSFWorkbook();
 			Sheet sheet = workbook.createSheet(SHEET_NAME);
 
-			// 创建行
-			Row row = sheet.createRow(0);
+			Row titleRow1 = sheet.createRow(0);
+			Font titleFont = workbook.createFont();
+			titleFont.setFontName("Arial");
+			titleFont.setFontHeightInPoints((short) 14);
 
-			// 设置字体样式
-			Font font = workbook.createFont();
-			font.setFontName("Arial");
-			font.setFontHeightInPoints((short) 20);
+			CellStyle titleCellStyle = workbook.createCellStyle();
+			titleCellStyle.setAlignment(HorizontalAlignment.CENTER);
+			titleCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+			titleCellStyle.setWrapText(true); // 设置自动换行
+			titleCellStyle.setFont(titleFont);
 
-			// 设置单元格样式
-			CellStyle cellStyle = workbook.createCellStyle();
-			cellStyle.setAlignment(HorizontalAlignment.CENTER);
-			cellStyle.setFont(font);
+			Cell itemCell1 = titleRow1.createCell(0);
+			itemCell1.setCellValue("序号");
+			itemCell1.setCellStyle(titleCellStyle);
+			sheet.autoSizeColumn(0);
 
-			// 设置行间距为1倍
-			row.setHeightInPoints(37);
+			Cell itemCell2 = titleRow1.createCell(1);
+			itemCell2.setCellValue("单位");
+			itemCell2.setCellStyle(titleCellStyle);
+			sheet.autoSizeColumn(0);
+			sheet.autoSizeColumn(1);
 
-			// 设置垂直对齐方式为垂直居中
-			cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
-			cellStyle.setWrapText(true); // 设置自动换行
+			Row titleRow2 = sheet.createRow(1);
 
-			// 创建单元格
-			Cell cell = row.createCell(0);
-			cell.setCellValue("秩序册-项目");
-			cell.setCellStyle(cellStyle);
+			// 获取所有组别
+			addMergedRegion(sheet, 0, 1, 0, 0);
+			addMergedRegion(sheet, 0, 1, 1, 1);
 
-			// 设置单元格宽度
-			sheet.setColumnWidth(0, 12 * 256); // 设置列宽度
+			// 填充group信息
+			List<SignSingleEntity> groupEntities = signApplyManager.getSignGroups(gameId);
+			int groupCount = 2;
+			for (SignSingleEntity signSingle : groupEntities) {
+				GameGroupEntity groupEntity = signApplyManager.getGroupById(signSingle.getGroupId());
 
-			// 设置整个表格的宽度适配 A4 纸张的宽度
-			sheet.setFitToPage(true);
-			PrintSetup printSetup = sheet.getPrintSetup();
-			printSetup.setFitWidth((short) 1); // 将 Fit Width 设置为 1
+				Cell groupCell1 = titleRow1.createCell(groupCount);
+				groupCell1.setCellValue(groupEntity.getGroupName());
+				groupCell1.setCellStyle(titleCellStyle);
+				sheet.autoSizeColumn(groupCount);
 
-			// 新增空白行
-			addBlankRow(sheet, 1);
+				Cell maleCell = titleRow2.createCell(groupCount);
+				maleCell.setCellValue("男");
+				maleCell.setCellStyle(titleCellStyle);
+
+				groupCountKeyMap.put(signSingle.getGroupId() + "-" + signSingle.getSex(), groupCount);
+
+				Cell femaleCell = titleRow2.createCell(groupCount + 1);
+				femaleCell.setCellValue("女");
+				femaleCell.setCellStyle(titleCellStyle);
+				groupCountKeyMap.put(signSingle.getGroupId() + "-" + signSingle.getSex(), groupCount + 1);
+
+				groupCount = groupCount + 2;
+				addMergedRegion(sheet, 0, 0, groupCount - 2, groupCount - 1);
+
+			}
+
+			Cell itemTotalCell = titleRow1.createCell(groupCount);
+			itemTotalCell.setCellValue("运动员小计");
+			itemTotalCell.setCellStyle(titleCellStyle);
+			sheet.autoSizeColumn(groupCount);
+
+			addMergedRegion(sheet, 0, 1, groupCount, groupCount);
 
 			int i = 2;
-			List<SignSingleEntity> itemEntities = signApplyManager.getSignItems(gameId);
+			List<SignSingleEntity> itemEntities = signApplyManager.getSignOrgs(gameId);
+
 			if (CollUtil.isNotEmpty(itemEntities)) {
 				int orgCode = 1;
 
 				for (SignSingleEntity signSingleEntity : itemEntities) {
-					// 填充group信息
-					GameGroupEntity groupEntity = signApplyManager.getGroupById(signSingleEntity.getGroupId());
-					GameItemEntity itemEntity = signApplyManager.getItemById(signSingleEntity.getItemId());
 
 					Row itemRow = sheet.createRow(i);
 					itemRow.setHeightInPoints(24);
 
 					Font groupFont = workbook.createFont();
 					groupFont.setFontName("Arial");
-					groupFont.setFontHeightInPoints((short) 15);
-
-					itemRow.setHeightInPoints(24);
+					groupFont.setFontHeightInPoints((short) 12);
 
 					CellStyle itemCellStyle = workbook.createCellStyle();
 					itemCellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -976,206 +999,53 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 					itemCellStyle.setWrapText(true); // 设置自动换行
 					itemCellStyle.setFont(groupFont);
 
-					Cell itemCell = itemRow.createCell(0);
-					itemCell.setCellValue(groupEntity.getGroupName() + " - " + itemEntity.getItemName());
-					itemCell.setCellStyle(itemCellStyle);
+					// 序号
+					Cell srotNumCell = itemRow.createCell(0);
+					srotNumCell.setCellValue(orgCode);
+					srotNumCell.setCellStyle(itemCellStyle);
+					orgCode++;
 
-					addMergedRegion(sheet, i, i, 0, 9);
+					// 单位
+					Cell orgNumsCell = itemRow.createCell(1);
+					orgNumsCell.setCellValue(signSingleEntity.getOrgName());
+					orgNumsCell.setCellStyle(itemCellStyle);
+					sheet.autoSizeColumn(1);
 
-					i++;
+					for (int j = 2; j <= groupCount; j++) {
+						Cell countCell = itemRow.createCell(j);
+						countCell.setCellValue(0);
+						countCell.setCellStyle(itemCellStyle);
+					}
 
-					Long groupId = signSingleEntity.getGroupId();
-					Long itemId = signSingleEntity.getItemId();
-					// 填充报名信息 查询该item下，所有队伍信息
-					List<SignSingleEntity> teamEnties = signApplyManager.getTeamByGroupIdAndItemId(gameId, groupId,
-							itemId);
-					if (CollUtil.isNotEmpty(teamEnties)) {
-						teamEnties = teamEnties.stream()
-							.sorted(Comparator.comparing(SignSingleEntity::getTeamId).reversed())
-							.collect(Collectors.toList());
+					Long orgId = signSingleEntity.getOrgId();
+					// 获取报名用户信息
+					List<SignSingleEntity> orgEntities = signApplyManager.countPlayerCountingByOrgId(orgId);
 
-						for (SignSingleEntity teamEntity : teamEnties) {
-							List<SignSingleEntity> teamSignEnties = signApplyManager.getApplyByItemIdAndTeamId(gameId,
-									groupId, itemId, teamEntity.getTeamId());
+					Map<String, Long> sumByGroupAndSex = orgEntities.stream()
+						.collect(Collectors.groupingBy(x -> x.getGroupId() + "-" + x.getSex(), Collectors.counting()));
 
-							if (teamEntity.getTeamId() > 0) {
-								SignTeamEntity signTeamEntity = signApplyManager.getTeamById(teamEntity.getTeamId());
+					if (CollUtil.isNotEmpty(orgEntities)) {
 
-								addBlankRow(sheet, i);
-								i++;
-								Row orgRow = sheet.createRow(i);
-								orgRow.setHeightInPoints(20);
+						for (SignSingleEntity singleEntity : orgEntities) {
+							String key = singleEntity.getGroupId() + "-" + singleEntity.getSex();
+							if (groupCountKeyMap.containsKey(key)) {
 
-								Font orgFont = workbook.createFont();
-								orgFont.setFontName("Arial");
-								orgFont.setFontHeightInPoints((short) 11);
-
-								CellStyle orgCellStyle = workbook.createCellStyle();
-								orgCellStyle.setAlignment(HorizontalAlignment.CENTER);
-								orgCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
-								orgCellStyle.setFont(orgFont);
-								orgCellStyle.setWrapText(true); // 设置自动换行
-
-								// 编号
-								Cell orgCellCode = orgRow.createCell(0);
-
-								String orgCodeStr = String.format("%03d", orgCode);
-								orgCellCode.setCellValue(orgCodeStr);
-								orgCellCode.setCellStyle(orgCellStyle);
-
-								// 队伍名
-								Cell orgCellName = orgRow.createCell(1);
-								orgCellName.setCellValue(signTeamEntity.getTeamName());
-								orgCellName.setCellStyle(orgCellStyle);
-								addMergedRegion(sheet, i, i, 1, 8);
-
-								orgCode++;
-								i++;
-
-								List<Long> teamIds = teamSignEnties.stream()
-									.map(SignSingleEntity::getTeamId)
-									.distinct()
-									.collect(Collectors.toList());
-								// 有队伍参赛的情况，生成领队和教练信息
-								if (CollUtil.isNotEmpty(teamIds)) {
-									List<SignTeamEntity> teamEntities = signApplyManager.getTeamsByIds(gameId, teamIds);
-
-									// 领队
-									List<String> leaderEntity = teamEntities.stream()
-										.map(SignTeamEntity::getLeaderName)
-										.collect(Collectors.toList());
-									String leaderEntityStr = String.join(",", leaderEntity);
-									addTeamRow(workbook, sheet, i, "领队", leaderEntityStr);
-									i++;
-									// 教练
-									List<String> coachEntity = teamEntities.stream()
-										.map(SignTeamEntity::getCoachName)
-										.collect(Collectors.toList());
-									String coachEntityStr = String.join(",", coachEntity);
-									addTeamRow(workbook, sheet, i, "教练", coachEntityStr);
-									i++;
-								}
-
-								// 男运动员
-								List<SignSingleEntity> maleEntities = teamSignEnties.stream()
-									.filter(item -> item.getSex() == 1)
-									.collect(Collectors.toList());
-								if (CollUtil.isNotEmpty(maleEntities)) {
-									addPlayerTitleRow(workbook, sheet, i, "男运动员");
-									i++;
-									int maleCellIndex = 0;
-									for (SignSingleEntity signSingle : maleEntities) {
-										addPlayerContentRow(workbook, sheet, i, maleCellIndex, signSingle.getName());
-										maleCellIndex++;
-										if (maleCellIndex >= 10) {
-											i++;
-											maleCellIndex = 0;
-										}
-									}
-									i++;
-								}
-								// 女运动员
-								List<SignSingleEntity> femaleEntities = teamSignEnties.stream()
-									.filter(item -> item.getSex() == 0)
-									.collect(Collectors.toList());
-								if (CollUtil.isNotEmpty(femaleEntities)) {
-									addPlayerTitleRow(workbook, sheet, i, "女运动员");
-									i++;
-									int femaleCellIndex = 0;
-									for (SignSingleEntity signSingle : femaleEntities) {
-										addPlayerContentRow(workbook, sheet, i, femaleCellIndex, signSingle.getName());
-										femaleCellIndex++;
-										if (femaleCellIndex >= 10) {
-											i++;
-											femaleCellIndex = 0;
-										}
-									}
-									i++;
-								}
-							}
-							else {
-								addBlankRow(sheet, i);
-								i++;
-								Row orgRow = sheet.createRow(i);
-								orgRow.setHeightInPoints(20);
-
-								Font orgFont = workbook.createFont();
-								orgFont.setFontName("Arial");
-								orgFont.setFontHeightInPoints((short) 11);
-
-								CellStyle orgCellStyle = workbook.createCellStyle();
-								orgCellStyle.setAlignment(HorizontalAlignment.CENTER);
-								orgCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
-								orgCellStyle.setFont(orgFont);
-								orgCellStyle.setWrapText(true); // 设置自动换行
-
-								// 编号
-								Cell orgCellCode = orgRow.createCell(0);
-
-								String orgCodeStr = String.format("%03d", orgCode);
-								orgCellCode.setCellValue(orgCodeStr);
-								orgCellCode.setCellStyle(orgCellStyle);
-
-								// 队伍名
-								Cell orgCellName = orgRow.createCell(1);
-								orgCellName.setCellValue("个人选手");
-								orgCellName.setCellStyle(orgCellStyle);
-								addMergedRegion(sheet, i, i, 1, 8);
-
-								orgCode++;
-								i++;
-
-								// 男运动员
-								List<SignSingleEntity> maleEntities = teamSignEnties.stream()
-									.filter(item -> item.getSex() == 1)
-									.collect(Collectors.toList());
-								if (CollUtil.isNotEmpty(maleEntities)) {
-									addPlayerTitleRow(workbook, sheet, i, "男运动员");
-									i++;
-									int maleCellIndex = 0;
-									for (SignSingleEntity signSingle : maleEntities) {
-										addPlayerContentRow(workbook, sheet, i, maleCellIndex, signSingle.getName());
-										maleCellIndex++;
-										if (maleCellIndex >= 10) {
-											i++;
-											maleCellIndex = 0;
-										}
-									}
-									i++;
-								}
-								// 女运动员
-								List<SignSingleEntity> femaleEntities = teamSignEnties.stream()
-									.filter(item -> item.getSex() == 0)
-									.collect(Collectors.toList());
-								if (CollUtil.isNotEmpty(femaleEntities)) {
-									addPlayerTitleRow(workbook, sheet, i, "女运动员");
-									i++;
-									int femaleCellIndex = 0;
-									for (SignSingleEntity signSingle : femaleEntities) {
-										addPlayerContentRow(workbook, sheet, i, femaleCellIndex, signSingle.getName());
-										femaleCellIndex++;
-										if (femaleCellIndex >= 10) {
-											i++;
-											femaleCellIndex = 0;
-										}
-									}
-									i++;
-								}
-								addBlankRow(sheet, i);
-								i++;
+								Cell playerTitleCell = itemRow.createCell(groupCountKeyMap.get(key));
+								playerTitleCell.setCellValue(sumByGroupAndSex.getOrDefault(key, 0L));
+								playerTitleCell.setCellStyle(titleCellStyle);
 							}
 
+							Cell totalCell = itemRow.createCell(groupCount);
+							totalCell.setCellValue(sumByGroupAndSex.values().stream().mapToLong(Long::longValue).sum());
+							totalCell.setCellStyle(titleCellStyle);
 						}
-						addBlankRow(sheet, i);
-						i++;
 
 					}
 
+					i++;
+
 				}
 			}
-
-			// 合并单元格
-			addMergedRegion(sheet, 0, 0, 0, 9);
 
 			// 保存文件
 			String filePath = "./file.xlsx";
@@ -1183,12 +1053,11 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 			try (FileOutputStream fileOut = new FileOutputStream(filePath)) {
 				workbook.write(fileOut);
 			}
-			String fileName = "秩序表-项目（队伍）.xlsx";
+			String fileName = "秩序表-人数信息统计-" + gameId + ".xlsx";
 			String fileUrl = updateToOss(filePath, fileName);
 			log.info("Excel文件已生成！");
 
 			return ApiResponse.success(fileUrl);
-
 		}
 		catch (Exception e) {
 			log.error("export error", e);
@@ -1208,60 +1077,82 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 			Workbook workbook = new XSSFWorkbook();
 			Sheet sheet = workbook.createSheet(SHEET_NAME);
 
-			// 创建行
-			Row row = sheet.createRow(0);
+			Row titleRow1 = sheet.createRow(0);
+			Font titleFont = workbook.createFont();
+			titleFont.setFontName("Arial");
+			titleFont.setFontHeightInPoints((short) 14);
 
-			// 设置字体样式
-			Font font = workbook.createFont();
-			font.setFontName("Arial");
-			font.setFontHeightInPoints((short) 20);
+			CellStyle titleCellStyle = workbook.createCellStyle();
+			titleCellStyle.setAlignment(HorizontalAlignment.CENTER);
+			titleCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+			titleCellStyle.setWrapText(true); // 设置自动换行
+			titleCellStyle.setFont(titleFont);
 
-			// 设置单元格样式
-			CellStyle cellStyle = workbook.createCellStyle();
-			cellStyle.setAlignment(HorizontalAlignment.CENTER);
-			cellStyle.setFont(font);
+			Cell itemCell1 = titleRow1.createCell(0);
+			itemCell1.setCellValue("序号");
+			itemCell1.setCellStyle(titleCellStyle);
+			sheet.autoSizeColumn(0);
 
-			// 设置行间距为1倍
-			row.setHeightInPoints(37);
+			Cell itemCell2 = titleRow1.createCell(1);
+			itemCell2.setCellValue("单位");
+			itemCell2.setCellStyle(titleCellStyle);
+			sheet.autoSizeColumn(0);
+			sheet.autoSizeColumn(1);
 
-			// 设置垂直对齐方式为垂直居中
-			cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
-			cellStyle.setWrapText(true); // 设置自动换行
+			Row titleRow2 = sheet.createRow(1);
 
-			// 创建单元格
-			Cell cell = row.createCell(0);
-			cell.setCellValue("秩序册-项目");
-			cell.setCellStyle(cellStyle);
+			// 获取所有组别
+			addMergedRegion(sheet, 0, 1, 0, 0);
+			addMergedRegion(sheet, 0, 1, 1, 1);
 
-			// 设置单元格宽度
-			sheet.setColumnWidth(0, 12 * 256); // 设置列宽度
+			// 填充group信息
+			List<SignSingleEntity> groupEntities = signApplyManager.getSignGroups(gameId);
+			int groupCount = 2;
+			for (SignSingleEntity signSingle : groupEntities) {
+				GameGroupEntity groupEntity = signApplyManager.getGroupById(signSingle.getGroupId());
 
-			// 设置整个表格的宽度适配 A4 纸张的宽度
-			sheet.setFitToPage(true);
-			PrintSetup printSetup = sheet.getPrintSetup();
-			printSetup.setFitWidth((short) 1); // 将 Fit Width 设置为 1
+				Cell groupCell1 = titleRow1.createCell(groupCount);
+				groupCell1.setCellValue(groupEntity.getGroupName());
+				groupCell1.setCellStyle(titleCellStyle);
+				sheet.autoSizeColumn(groupCount);
 
-			// 新增空白行
-			addBlankRow(sheet, 1);
+				Cell maleCell = titleRow2.createCell(groupCount);
+				maleCell.setCellValue("男");
+				maleCell.setCellStyle(titleCellStyle);
+
+				groupCountKeyMap.put(signSingle.getGroupId() + "-" + signSingle.getSex(), groupCount);
+
+				Cell femaleCell = titleRow2.createCell(groupCount + 1);
+				femaleCell.setCellValue("女");
+				femaleCell.setCellStyle(titleCellStyle);
+				groupCountKeyMap.put(signSingle.getGroupId() + "-" + signSingle.getSex(), groupCount + 1);
+
+				groupCount = groupCount + 2;
+				addMergedRegion(sheet, 0, 0, groupCount - 2, groupCount - 1);
+
+			}
+
+			Cell itemTotalCell = titleRow1.createCell(groupCount);
+			itemTotalCell.setCellValue("运动员小计");
+			itemTotalCell.setCellStyle(titleCellStyle);
+			sheet.autoSizeColumn(groupCount);
+
+			addMergedRegion(sheet, 0, 1, groupCount, groupCount);
 
 			int i = 2;
-			List<SignSingleEntity> itemEntities = signApplyManager.getSignItems(gameId);
+			List<SignSingleEntity> itemEntities = signApplyManager.getSignOrgs(gameId);
+
 			if (CollUtil.isNotEmpty(itemEntities)) {
 				int orgCode = 1;
 
 				for (SignSingleEntity signSingleEntity : itemEntities) {
-					// 填充group信息
-					GameGroupEntity groupEntity = signApplyManager.getGroupById(signSingleEntity.getGroupId());
-					GameItemEntity itemEntity = signApplyManager.getItemById(signSingleEntity.getItemId());
 
 					Row itemRow = sheet.createRow(i);
 					itemRow.setHeightInPoints(24);
 
 					Font groupFont = workbook.createFont();
 					groupFont.setFontName("Arial");
-					groupFont.setFontHeightInPoints((short) 15);
-
-					itemRow.setHeightInPoints(24);
+					groupFont.setFontHeightInPoints((short) 12);
 
 					CellStyle itemCellStyle = workbook.createCellStyle();
 					itemCellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -1269,206 +1160,53 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 					itemCellStyle.setWrapText(true); // 设置自动换行
 					itemCellStyle.setFont(groupFont);
 
-					Cell itemCell = itemRow.createCell(0);
-					itemCell.setCellValue(groupEntity.getGroupName() + " - " + itemEntity.getItemName());
-					itemCell.setCellStyle(itemCellStyle);
+					// 序号
+					Cell srotNumCell = itemRow.createCell(0);
+					srotNumCell.setCellValue(orgCode);
+					srotNumCell.setCellStyle(itemCellStyle);
+					orgCode++;
 
-					addMergedRegion(sheet, i, i, 0, 9);
+					// 单位
+					Cell orgNumsCell = itemRow.createCell(1);
+					orgNumsCell.setCellValue(signSingleEntity.getOrgName());
+					orgNumsCell.setCellStyle(itemCellStyle);
+					sheet.autoSizeColumn(1);
 
-					i++;
+					for (int j = 2; j <= groupCount; j++) {
+						Cell countCell = itemRow.createCell(j);
+						countCell.setCellValue(0);
+						countCell.setCellStyle(itemCellStyle);
+					}
 
-					Long groupId = signSingleEntity.getGroupId();
-					Long itemId = signSingleEntity.getItemId();
-					// 填充报名信息 查询该item下，所有队伍信息
-					List<SignSingleEntity> teamEnties = signApplyManager.getTeamByGroupIdAndItemId(gameId, groupId,
-							itemId);
-					if (CollUtil.isNotEmpty(teamEnties)) {
-						teamEnties = teamEnties.stream()
-							.sorted(Comparator.comparing(SignSingleEntity::getTeamId).reversed())
-							.collect(Collectors.toList());
+					Long orgId = signSingleEntity.getOrgId();
+					// 获取报名用户信息
+					List<SignSingleEntity> orgEntities = signApplyManager.countPlayerTimesByOrgId(orgId);
 
-						for (SignSingleEntity teamEntity : teamEnties) {
-							List<SignSingleEntity> teamSignEnties = signApplyManager.getApplyByItemIdAndTeamId(gameId,
-									groupId, itemId, teamEntity.getTeamId());
+					Map<String, Long> sumByGroupAndSex = orgEntities.stream()
+						.collect(Collectors.groupingBy(x -> x.getGroupId() + "-" + x.getSex(), Collectors.counting()));
 
-							if (teamEntity.getTeamId() > 0) {
-								SignTeamEntity signTeamEntity = signApplyManager.getTeamById(teamEntity.getTeamId());
+					if (CollUtil.isNotEmpty(orgEntities)) {
 
-								addBlankRow(sheet, i);
-								i++;
-								Row orgRow = sheet.createRow(i);
-								orgRow.setHeightInPoints(20);
+						for (SignSingleEntity singleEntity : orgEntities) {
+							String key = singleEntity.getGroupId() + "-" + singleEntity.getSex();
+							if (groupCountKeyMap.containsKey(key)) {
 
-								Font orgFont = workbook.createFont();
-								orgFont.setFontName("Arial");
-								orgFont.setFontHeightInPoints((short) 11);
-
-								CellStyle orgCellStyle = workbook.createCellStyle();
-								orgCellStyle.setAlignment(HorizontalAlignment.CENTER);
-								orgCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
-								orgCellStyle.setFont(orgFont);
-								orgCellStyle.setWrapText(true); // 设置自动换行
-
-								// 编号
-								Cell orgCellCode = orgRow.createCell(0);
-
-								String orgCodeStr = String.format("%03d", orgCode);
-								orgCellCode.setCellValue(orgCodeStr);
-								orgCellCode.setCellStyle(orgCellStyle);
-
-								// 队伍名
-								Cell orgCellName = orgRow.createCell(1);
-								orgCellName.setCellValue(signTeamEntity.getTeamName());
-								orgCellName.setCellStyle(orgCellStyle);
-								addMergedRegion(sheet, i, i, 1, 8);
-
-								orgCode++;
-								i++;
-
-								List<Long> teamIds = teamSignEnties.stream()
-									.map(SignSingleEntity::getTeamId)
-									.distinct()
-									.collect(Collectors.toList());
-								// 有队伍参赛的情况，生成领队和教练信息
-								if (CollUtil.isNotEmpty(teamIds)) {
-									List<SignTeamEntity> teamEntities = signApplyManager.getTeamsByIds(gameId, teamIds);
-
-									// 领队
-									List<String> leaderEntity = teamEntities.stream()
-										.map(SignTeamEntity::getLeaderName)
-										.collect(Collectors.toList());
-									String leaderEntityStr = String.join(",", leaderEntity);
-									addTeamRow(workbook, sheet, i, "领队", leaderEntityStr);
-									i++;
-									// 教练
-									List<String> coachEntity = teamEntities.stream()
-										.map(SignTeamEntity::getCoachName)
-										.collect(Collectors.toList());
-									String coachEntityStr = String.join(",", coachEntity);
-									addTeamRow(workbook, sheet, i, "教练", coachEntityStr);
-									i++;
-								}
-
-								// 男运动员
-								List<SignSingleEntity> maleEntities = teamSignEnties.stream()
-									.filter(item -> item.getSex() == 1)
-									.collect(Collectors.toList());
-								if (CollUtil.isNotEmpty(maleEntities)) {
-									addPlayerTitleRow(workbook, sheet, i, "男运动员");
-									i++;
-									int maleCellIndex = 0;
-									for (SignSingleEntity signSingle : maleEntities) {
-										addPlayerContentRow(workbook, sheet, i, maleCellIndex, signSingle.getName());
-										maleCellIndex++;
-										if (maleCellIndex >= 10) {
-											i++;
-											maleCellIndex = 0;
-										}
-									}
-									i++;
-								}
-								// 女运动员
-								List<SignSingleEntity> femaleEntities = teamSignEnties.stream()
-									.filter(item -> item.getSex() == 0)
-									.collect(Collectors.toList());
-								if (CollUtil.isNotEmpty(femaleEntities)) {
-									addPlayerTitleRow(workbook, sheet, i, "女运动员");
-									i++;
-									int femaleCellIndex = 0;
-									for (SignSingleEntity signSingle : femaleEntities) {
-										addPlayerContentRow(workbook, sheet, i, femaleCellIndex, signSingle.getName());
-										femaleCellIndex++;
-										if (femaleCellIndex >= 10) {
-											i++;
-											femaleCellIndex = 0;
-										}
-									}
-									i++;
-								}
-							}
-							else {
-								addBlankRow(sheet, i);
-								i++;
-								Row orgRow = sheet.createRow(i);
-								orgRow.setHeightInPoints(20);
-
-								Font orgFont = workbook.createFont();
-								orgFont.setFontName("Arial");
-								orgFont.setFontHeightInPoints((short) 11);
-
-								CellStyle orgCellStyle = workbook.createCellStyle();
-								orgCellStyle.setAlignment(HorizontalAlignment.CENTER);
-								orgCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
-								orgCellStyle.setFont(orgFont);
-								orgCellStyle.setWrapText(true); // 设置自动换行
-
-								// 编号
-								Cell orgCellCode = orgRow.createCell(0);
-
-								String orgCodeStr = String.format("%03d", orgCode);
-								orgCellCode.setCellValue(orgCodeStr);
-								orgCellCode.setCellStyle(orgCellStyle);
-
-								// 队伍名
-								Cell orgCellName = orgRow.createCell(1);
-								orgCellName.setCellValue("个人选手");
-								orgCellName.setCellStyle(orgCellStyle);
-								addMergedRegion(sheet, i, i, 1, 8);
-
-								orgCode++;
-								i++;
-
-								// 男运动员
-								List<SignSingleEntity> maleEntities = teamSignEnties.stream()
-									.filter(item -> item.getSex() == 1)
-									.collect(Collectors.toList());
-								if (CollUtil.isNotEmpty(maleEntities)) {
-									addPlayerTitleRow(workbook, sheet, i, "男运动员");
-									i++;
-									int maleCellIndex = 0;
-									for (SignSingleEntity signSingle : maleEntities) {
-										addPlayerContentRow(workbook, sheet, i, maleCellIndex, signSingle.getName());
-										maleCellIndex++;
-										if (maleCellIndex >= 10) {
-											i++;
-											maleCellIndex = 0;
-										}
-									}
-									i++;
-								}
-								// 女运动员
-								List<SignSingleEntity> femaleEntities = teamSignEnties.stream()
-									.filter(item -> item.getSex() == 0)
-									.collect(Collectors.toList());
-								if (CollUtil.isNotEmpty(femaleEntities)) {
-									addPlayerTitleRow(workbook, sheet, i, "女运动员");
-									i++;
-									int femaleCellIndex = 0;
-									for (SignSingleEntity signSingle : femaleEntities) {
-										addPlayerContentRow(workbook, sheet, i, femaleCellIndex, signSingle.getName());
-										femaleCellIndex++;
-										if (femaleCellIndex >= 10) {
-											i++;
-											femaleCellIndex = 0;
-										}
-									}
-									i++;
-								}
-								addBlankRow(sheet, i);
-								i++;
+								Cell playerTitleCell = itemRow.createCell(groupCountKeyMap.get(key));
+								playerTitleCell.setCellValue(sumByGroupAndSex.getOrDefault(key, 0L));
+								playerTitleCell.setCellStyle(titleCellStyle);
 							}
 
+							Cell totalCell = itemRow.createCell(groupCount);
+							totalCell.setCellValue(sumByGroupAndSex.values().stream().mapToLong(Long::longValue).sum());
+							totalCell.setCellStyle(titleCellStyle);
 						}
-						addBlankRow(sheet, i);
-						i++;
 
 					}
 
+					i++;
+
 				}
 			}
-
-			// 合并单元格
-			addMergedRegion(sheet, 0, 0, 0, 9);
 
 			// 保存文件
 			String filePath = "./file.xlsx";
@@ -1476,7 +1214,7 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 			try (FileOutputStream fileOut = new FileOutputStream(filePath)) {
 				workbook.write(fileOut);
 			}
-			String fileName = "秩序表-项目（队伍）.xlsx";
+			String fileName = "秩序表-人次信息统计-" + gameId + ".xlsx";
 			String fileUrl = updateToOss(filePath, fileName);
 			log.info("Excel文件已生成！");
 
@@ -1642,7 +1380,7 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 			try (FileOutputStream fileOut = new FileOutputStream(filePath)) {
 				workbook.write(fileOut);
 			}
-			String fileName = "秩序表-项目（队伍）.xlsx";
+			String fileName = "秩序表-项目（队伍）-" + gameId + ".xlsx";
 			String fileUrl = updateToOss(filePath, fileName);
 			log.info("Excel文件已生成！");
 
@@ -1935,7 +1673,7 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 			try (FileOutputStream fileOut = new FileOutputStream(filePath)) {
 				workbook.write(fileOut);
 			}
-			String fileName = "秩序表-项目（队伍）.xlsx";
+			String fileName = "秩序表-项目（队伍）-" + gameId + ".xlsx";
 			String fileUrl = updateToOss(filePath, fileName);
 			log.info("Excel文件已生成！");
 
@@ -2153,7 +1891,7 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 			try (FileOutputStream fileOut = new FileOutputStream(filePath)) {
 				workbook.write(fileOut);
 			}
-			String fileName = "秩序表-项目.xlsx";
+			String fileName = "秩序表-项目-" + gameId + ".xlsx";
 			String fileUrl = updateToOss(filePath, fileName);
 			log.info("Excel文件已生成！");
 
@@ -2340,7 +2078,7 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 			try (FileOutputStream fileOut = new FileOutputStream(filePath)) {
 				workbook.write(fileOut);
 			}
-			String fileName = "秩序表-名单.xlsx";
+			String fileName = "秩序表-名单-" + gameId + ".xlsx";
 			String fileUrl = updateToOss(filePath, fileName);
 			log.info("Excel文件已生成！");
 
@@ -2518,7 +2256,7 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 			try (FileOutputStream fileOut = new FileOutputStream(filePath)) {
 				workbook.write(fileOut);
 			}
-			String fileName = "秩序表-名单（队伍）.xlsx";
+			String fileName = "秩序表-名单（队伍）-" + gameId + ".xlsx";
 			String fileUrl = updateToOss(filePath, fileName);
 			log.info("Excel文件已生成！");
 
