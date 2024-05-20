@@ -7,4 +7,4 @@ spring:
       max-file-size: 50MB # 文件上传大小的限制，设置最大值
       max-request-size: 50MB #  文件最大请求限制，用于批量
   profiles:
-    active: prod
+    active: dev

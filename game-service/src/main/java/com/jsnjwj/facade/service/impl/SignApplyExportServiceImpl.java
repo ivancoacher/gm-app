@@ -959,12 +959,12 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 				maleCell.setCellValue("男");
 				maleCell.setCellStyle(titleCellStyle);
 
-				groupCountKeyMap.put(signSingle.getGroupId() + "-" + signSingle.getSex(), groupCount);
+				groupCountKeyMap.put(signSingle.getGroupId() + "-1", groupCount);
 
 				Cell femaleCell = titleRow2.createCell(groupCount + 1);
 				femaleCell.setCellValue("女");
 				femaleCell.setCellStyle(titleCellStyle);
-				groupCountKeyMap.put(signSingle.getGroupId() + "-" + signSingle.getSex(), groupCount + 1);
+				groupCountKeyMap.put(signSingle.getGroupId() + "-0", groupCount + 1);
 
 				groupCount = groupCount + 2;
 				addMergedRegion(sheet, 0, 0, groupCount - 2, groupCount - 1);
@@ -1023,13 +1023,15 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 
 					Map<String, Long> sumByGroupAndSex = orgEntities.stream()
 						.collect(Collectors.groupingBy(x -> x.getGroupId() + "-" + x.getSex(), Collectors.counting()));
+					log.info("sumByGroupAndSex-value:{}",JSON.toJSONString(sumByGroupAndSex));
+					log.info("groupCountKeyMap-value:{}",JSON.toJSONString(groupCountKeyMap));
 
 					if (CollUtil.isNotEmpty(orgEntities)) {
 
 						for (SignSingleEntity singleEntity : orgEntities) {
 							String key = singleEntity.getGroupId() + "-" + singleEntity.getSex();
 							if (groupCountKeyMap.containsKey(key)) {
-
+								log.info("export-key:{}-value:{}",key,groupCountKeyMap.get(key));
 								Cell playerTitleCell = itemRow.createCell(groupCountKeyMap.get(key));
 								playerTitleCell.setCellValue(sumByGroupAndSex.getOrDefault(key, 0L));
 								playerTitleCell.setCellStyle(titleCellStyle);
@@ -1120,12 +1122,12 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 				maleCell.setCellValue("男");
 				maleCell.setCellStyle(titleCellStyle);
 
-				groupCountKeyMap.put(signSingle.getGroupId() + "-" + signSingle.getSex(), groupCount);
+				groupCountKeyMap.put(signSingle.getGroupId() + "-1", groupCount);
 
 				Cell femaleCell = titleRow2.createCell(groupCount + 1);
 				femaleCell.setCellValue("女");
 				femaleCell.setCellStyle(titleCellStyle);
-				groupCountKeyMap.put(signSingle.getGroupId() + "-" + signSingle.getSex(), groupCount + 1);
+				groupCountKeyMap.put(signSingle.getGroupId() + "-0", groupCount + 1);
 
 				groupCount = groupCount + 2;
 				addMergedRegion(sheet, 0, 0, groupCount - 2, groupCount - 1);
@@ -2030,7 +2032,8 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 						// 男运动员
 						List<SignSingleEntity> maleEntities = singleEntities.stream()
 							.filter(item -> item.getSex() == 1)
-							.collect(Collectors.toList());
+								.collect(Collectors.collectingAndThen(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(SignSingleEntity::getName))),ArrayList::new));
+
 						if (CollUtil.isNotEmpty(maleEntities)) {
 							addPlayerTitleRow(workbook, sheet, i, "男运动员");
 							i++;
@@ -2048,7 +2051,8 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 						// 女运动员
 						List<SignSingleEntity> femaleEntities = singleEntities.stream()
 							.filter(item -> item.getSex() == 0)
-							.collect(Collectors.toList());
+								.collect(Collectors.collectingAndThen(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(SignSingleEntity::getName))),ArrayList::new));
+
 						if (CollUtil.isNotEmpty(femaleEntities)) {
 							addPlayerTitleRow(workbook, sheet, i, "女运动员");
 							i++;

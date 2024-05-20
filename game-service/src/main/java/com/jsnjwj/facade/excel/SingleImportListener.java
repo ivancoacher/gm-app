@@ -3,6 +3,7 @@ package com.jsnjwj.facade.excel;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.excel.util.ListUtils;
+import com.alibaba.excel.util.StringUtils;
 import com.alibaba.fastjson2.JSON;
 import com.jsnjwj.facade.easyexcel.upload.*;
 import com.jsnjwj.facade.entity.GameGroupEntity;
@@ -14,10 +15,8 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Data
@@ -181,6 +180,21 @@ public class SingleImportListener extends AnalysisEventListener<ImportSingleUplo
 			}
 			else {
 				SignTeamEntity teamEntity = signApplyManager.getTeamEntity(gameId, teamName);
+				if (StringUtils.isNotBlank(singleUploadDto.getCoachPhone())){
+
+					Set<String> coachSet = new HashSet<>(Arrays.asList(teamEntity.getCoachName().split(" ")));
+					coachSet.add(singleUploadDto.getCoachName().replace(","," "));
+					teamEntity.setCoachName(String.join(" ", new ArrayList<>(coachSet)));
+				}
+				if (StringUtils.isNotBlank(singleUploadDto.getLeaderName())){
+
+					Set<String> leaderSet = new HashSet<>(Arrays.asList(teamEntity.getLeaderName().split(" ")));
+					leaderSet.add(singleUploadDto.getLeaderName().replace(","," "));
+					teamEntity.setTeamName(String.join(" ", new ArrayList<>(leaderSet)));
+				}
+
+
+				signApplyManager.updateTeam(teamEntity);
 				teamId = teamEntity.getId();
 			}
 			teamDto = new ImportTeamDto();
