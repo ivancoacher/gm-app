@@ -1023,15 +1023,15 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 
 					Map<String, Long> sumByGroupAndSex = orgEntities.stream()
 						.collect(Collectors.groupingBy(x -> x.getGroupId() + "-" + x.getSex(), Collectors.counting()));
-					log.info("sumByGroupAndSex-value:{}",JSON.toJSONString(sumByGroupAndSex));
-					log.info("groupCountKeyMap-value:{}",JSON.toJSONString(groupCountKeyMap));
+					log.info("sumByGroupAndSex-value:{}", JSON.toJSONString(sumByGroupAndSex));
+					log.info("groupCountKeyMap-value:{}", JSON.toJSONString(groupCountKeyMap));
 
 					if (CollUtil.isNotEmpty(orgEntities)) {
 
 						for (SignSingleEntity singleEntity : orgEntities) {
 							String key = singleEntity.getGroupId() + "-" + singleEntity.getSex();
 							if (groupCountKeyMap.containsKey(key)) {
-								log.info("export-key:{}-value:{}",key,groupCountKeyMap.get(key));
+								log.info("export-key:{}-value:{}", key, groupCountKeyMap.get(key));
 								Cell playerTitleCell = itemRow.createCell(groupCountKeyMap.get(key));
 								playerTitleCell.setCellValue(sumByGroupAndSex.getOrDefault(key, 0L));
 								playerTitleCell.setCellStyle(titleCellStyle);
@@ -2032,7 +2032,10 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 						// 男运动员
 						List<SignSingleEntity> maleEntities = singleEntities.stream()
 							.filter(item -> item.getSex() == 1)
-								.collect(Collectors.collectingAndThen(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(SignSingleEntity::getName))),ArrayList::new));
+							.collect(Collectors.collectingAndThen(
+									Collectors.toCollection(
+											() -> new TreeSet<>(Comparator.comparing(SignSingleEntity::getName))),
+									ArrayList::new));
 
 						if (CollUtil.isNotEmpty(maleEntities)) {
 							addPlayerTitleRow(workbook, sheet, i, "男运动员");
@@ -2051,7 +2054,10 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 						// 女运动员
 						List<SignSingleEntity> femaleEntities = singleEntities.stream()
 							.filter(item -> item.getSex() == 0)
-								.collect(Collectors.collectingAndThen(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(SignSingleEntity::getName))),ArrayList::new));
+							.collect(Collectors.collectingAndThen(
+									Collectors.toCollection(
+											() -> new TreeSet<>(Comparator.comparing(SignSingleEntity::getName))),
+									ArrayList::new));
 
 						if (CollUtil.isNotEmpty(femaleEntities)) {
 							addPlayerTitleRow(workbook, sheet, i, "女运动员");

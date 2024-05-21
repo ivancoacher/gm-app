@@ -180,19 +180,18 @@ public class SingleImportListener extends AnalysisEventListener<ImportSingleUplo
 			}
 			else {
 				SignTeamEntity teamEntity = signApplyManager.getTeamEntity(gameId, teamName);
-				if (StringUtils.isNotBlank(singleUploadDto.getCoachPhone())){
+				if (StringUtils.isNotBlank(singleUploadDto.getCoachPhone())) {
 
 					Set<String> coachSet = new HashSet<>(Arrays.asList(teamEntity.getCoachName().split(" ")));
-					coachSet.add(singleUploadDto.getCoachName().replace(","," "));
+					coachSet.add(singleUploadDto.getCoachName().replace(",", " "));
 					teamEntity.setCoachName(String.join(" ", new ArrayList<>(coachSet)));
 				}
-				if (StringUtils.isNotBlank(singleUploadDto.getLeaderName())){
+				if (StringUtils.isNotBlank(singleUploadDto.getLeaderName())) {
 
 					Set<String> leaderSet = new HashSet<>(Arrays.asList(teamEntity.getLeaderName().split(" ")));
-					leaderSet.add(singleUploadDto.getLeaderName().replace(","," "));
+					leaderSet.add(singleUploadDto.getLeaderName().replace(",", " "));
 					teamEntity.setTeamName(String.join(" ", new ArrayList<>(leaderSet)));
 				}
-
 
 				signApplyManager.updateTeam(teamEntity);
 				teamId = teamEntity.getId();
