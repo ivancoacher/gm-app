@@ -180,30 +180,49 @@ public class SingleImportListener extends AnalysisEventListener<ImportSingleUplo
 			}
 			else {
 				SignTeamEntity teamEntity = signApplyManager.getTeamEntity(gameId, teamName);
-				if (StringUtils.isNotBlank(singleUploadDto.getCoachPhone())) {
 
-					Set<String> coachSet = new HashSet<>(Arrays.asList(teamEntity.getCoachName().split(" ")));
-					coachSet.add(singleUploadDto.getCoachName().replace(",", " "));
-					teamEntity.setCoachName(String.join(" ", new ArrayList<>(coachSet)));
-				}
-				if (StringUtils.isNotBlank(singleUploadDto.getLeaderName())) {
-
-					Set<String> leaderSet = new HashSet<>(Arrays.asList(teamEntity.getLeaderName().split(" ")));
-					leaderSet.add(singleUploadDto.getLeaderName().replace(",", " "));
-					teamEntity.setTeamName(String.join(" ", new ArrayList<>(leaderSet)));
-				}
-
-				signApplyManager.updateTeam(teamEntity);
 				teamId = teamEntity.getId();
 			}
 			teamDto = new ImportTeamDto();
 			teamDto.setTeamId(teamId);
 			teamDto.setTeamName(teamName);
+			teamDto.setCoachName(singleUploadDto.getCoachName());
+			teamDto.setLeaderName(singleUploadDto.getLeaderName());
 			// 将组别保存到缓存中
 			teamMap.put(teamName, teamDto);
 		}
 		else {
 			teamId = teamDto.getTeamId();
+			boolean isUpdate = false;
+			if (StringUtils.isNotBlank(singleUploadDto.getCoachPhone())) {
+
+				Set<String> coachSet = new HashSet<>(Arrays.asList(teamDto.getCoachName().split(" ")));
+				if (!coachSet.contains(singleUploadDto.getCoachName().trim())) {
+					isUpdate = true;
+					String coach = singleUploadDto.getCoachName().replace(",", " ");
+
+					coachSet.addAll(Arrays.asList(coach.split(" ")));
+					teamDto.setCoachName(String.join(" ", new ArrayList<>(coachSet)));
+				}
+			}
+			if (StringUtils.isNotBlank(singleUploadDto.getLeaderName())) {
+
+				Set<String> leaderSet = new HashSet<>(Arrays.asList(teamDto.getLeaderName().split(" ")));
+				if (!leaderSet.contains(singleUploadDto.getLeaderName().trim())) {
+					isUpdate = true;
+					String team = singleUploadDto.getLeaderName().replace(",", " ");
+					leaderSet.addAll(Arrays.asList(team.split(" ")));
+					teamDto.setLeaderName(String.join(" ", new ArrayList<>(leaderSet)));
+				}
+			}
+			if (isUpdate) {
+				SignTeamEntity teamEntity = signApplyManager.getTeamEntity(gameId, teamName);
+				teamEntity.setLeaderName(teamDto.getLeaderName());
+				teamEntity.setCoachName(teamDto.getCoachName());
+
+				signApplyManager.updateTeam(teamEntity);
+			}
+
 		}
 		singleUploadDto.setTeamId(String.valueOf(teamId));
 
