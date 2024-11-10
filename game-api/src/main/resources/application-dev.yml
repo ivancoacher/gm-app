@@ -4,6 +4,6 @@ mybatis-plus:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://rm-bp18p2a901101o044fo.mysql.rds.aliyuncs.com:3306/pearadminflask-test?characterEncoding=utf-8
+    url: jdbc:mysql://rm-bp18p2a901101o044fo.mysql.rds.aliyuncs.com:3306/pearadminflask?characterEncoding=utf-8
     username: root
     password: zyf227623!
