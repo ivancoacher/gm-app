@@ -27,6 +27,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -524,6 +525,10 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 									addPlayerTitleRow(workbook, sheet, i, "男运动员");
 									i++;
 									int maleCellIndex = 0;
+									maleEntities = new ArrayList<>(maleEntities.stream()
+										.collect(Collectors.toMap(SignSingleEntity::getName, Function.identity(),
+												(existing, replacement) -> existing))
+										.values());
 									for (SignSingleEntity signSingle : maleEntities) {
 										addPlayerContentRow(workbook, sheet, i, maleCellIndex, signSingle.getName());
 										maleCellIndex++;
@@ -539,6 +544,10 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 									.filter(item -> item.getSex() == 0)
 									.collect(Collectors.toList());
 								if (CollUtil.isNotEmpty(femaleEntities)) {
+									femaleEntities = new ArrayList<>(femaleEntities.stream()
+										.collect(Collectors.toMap(SignSingleEntity::getName, Function.identity(),
+												(existing, replacement) -> existing))
+										.values());
 									addPlayerTitleRow(workbook, sheet, i, "女运动员");
 									i++;
 									int femaleCellIndex = 0;
@@ -863,7 +872,10 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 
 					int playerCode = 1;
 					if (CollUtil.isNotEmpty(singleEntities)) {
-
+						singleEntities = new ArrayList<>(singleEntities.stream()
+							.collect(Collectors.toMap(SignSingleEntity::getName, Function.identity(),
+									(existing, replacement) -> existing))
+							.values());
 						for (SignSingleEntity singleEntity : singleEntities) {
 							Cell playerTitleCell = titleRow.createCell(playerCode + 4);
 							playerTitleCell.setCellValue("选手" + playerCode);
