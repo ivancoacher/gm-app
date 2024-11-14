@@ -281,6 +281,14 @@ public class SignApplyManager {
 
 	}
 
+	public List<GameGroupEntity> getGroupList(Long gameId) {
+		LambdaQueryWrapper<GameGroupEntity> queryWrapper = new LambdaQueryWrapper<>();
+		queryWrapper.eq(GameGroupEntity::getGameId, gameId);
+		queryWrapper.orderByAsc(GameGroupEntity::getSort);
+		return gameGroupMapper.selectList(queryWrapper);
+
+	}
+
 	/**
 	 * 获取报名数据中所有group
 	 */
@@ -305,7 +313,6 @@ public class SignApplyManager {
 		LambdaQueryWrapper<SignSingleEntity> wrapper = new LambdaQueryWrapper<>();
 		wrapper.eq(SignSingleEntity::getGameId, gameId);
 		wrapper.groupBy(SignSingleEntity::getGroupId, SignSingleEntity::getItemId);
-		wrapper.orderByAsc(SignSingleEntity::getItemId, SignSingleEntity::getGroupId);
 		return signSingleMapper.selectList(wrapper);
 	}
 
