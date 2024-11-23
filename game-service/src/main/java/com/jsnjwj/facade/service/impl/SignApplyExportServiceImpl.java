@@ -129,13 +129,16 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 			addBlankRow(sheet, 1);
 
 			int i = 2;
-			List<SignSingleEntity> groupEntities = signApplyManager.getSignGroups(gameId);
+			// List<SignSingleEntity> groupEntities =
+			// signApplyManager.getSignGroups(gameId);
+			List<GameGroupEntity> groupEntities = signApplyManager.getGroupList(gameId);
 			if (CollUtil.isNotEmpty(groupEntities)) {
 				int orgCode = 1;
 
-				for (SignSingleEntity signSingleEntity : groupEntities) {
+				for (GameGroupEntity signSingleEntity : groupEntities) {
+					Long groupId = signSingleEntity.getId();
 					// 填充group信息
-					GameGroupEntity groupEntity = signApplyManager.getGroupById(signSingleEntity.getGroupId());
+					GameGroupEntity groupEntity = signApplyManager.getGroupById(groupId);
 					Row groupRow = sheet.createRow(i);
 					groupRow.setHeightInPoints(24);
 
@@ -161,7 +164,6 @@ public class SignApplyExportServiceImpl implements SignApplyExportService {
 
 					i++;
 
-					Long groupId = signSingleEntity.getGroupId();
 					// 填充报名信息 查询该group下，所有单位信息
 					List<SignSingleEntity> teamEnties = signApplyManager.getTeamByGroupId(gameId, groupId);
 					if (CollUtil.isNotEmpty(teamEnties)) {
