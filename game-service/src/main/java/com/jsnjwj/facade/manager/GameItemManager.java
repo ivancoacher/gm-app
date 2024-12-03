@@ -13,6 +13,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -38,11 +39,15 @@ public class GameItemManager {
 		return ApiResponse.success(result);
 	}
 
+	/**
+	 * 获取项目列表
+	 * @param query
+	 * @return
+	 */
 	public List<GameItemEntity> fetchList(GameItemListQuery query) {
 		LambdaQueryWrapper<GameItemEntity> lambdaQuery = new LambdaQueryWrapper<>();
-		lambdaQuery.eq(GameItemEntity::getGameId, query.getGameId());
-		lambdaQuery.eq(GameItemEntity::getGroupId, query.getGroupId());
-
+		lambdaQuery.eq(Objects.nonNull(query.getGameId()),GameItemEntity::getGameId, query.getGameId());
+		lambdaQuery.eq(Objects.nonNull(query.getGroupId()),GameItemEntity::getGroupId, query.getGroupId());
 		return gameItemMapper.selectList(lambdaQuery);
 	}
 

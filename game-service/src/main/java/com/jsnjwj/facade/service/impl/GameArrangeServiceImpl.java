@@ -226,6 +226,11 @@ public class GameArrangeServiceImpl implements GameArrangeService {
 
 	@Override
 	public ApiResponse<?> getItemRules(GameSettingSetRulesQuery query) {
+		Long gameId = query.getGameId();
+		GameItemListQuery query1 = new GameItemListQuery();
+		query1.setGameId(gameId);
+		List<GameItemEntity> itemEntities = itemManager.fetchList(query1);
+
 		return null;
 
 	}
