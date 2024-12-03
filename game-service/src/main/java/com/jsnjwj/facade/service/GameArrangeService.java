@@ -29,6 +29,12 @@ public interface GameArrangeService {
 
 	ApiResponse<?> getRules(Long gameId, Long itemId);
 
+	ApiResponse<?> getItemRules(GameSettingSetRulesQuery query);
+
+	ApiResponse<?> getItemRulesDetail(GameSettingSetRulesQuery query);
+
+	ApiResponse<?> setItemRules(GameSettingSetRulesQuery query);
+
 	/**
 	 * 获取全部场地分组
 	 * @param gameId

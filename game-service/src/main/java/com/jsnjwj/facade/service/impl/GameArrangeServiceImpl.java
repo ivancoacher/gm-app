@@ -225,6 +225,22 @@ public class GameArrangeServiceImpl implements GameArrangeService {
 	}
 
 	@Override
+	public ApiResponse<?> getItemRules(GameSettingSetRulesQuery query) {
+		return null;
+
+	}
+
+	@Override
+	public ApiResponse<?> getItemRulesDetail(GameSettingSetRulesQuery query) {
+		return null;
+	}
+
+	@Override
+	public ApiResponse<?> setItemRules(GameSettingSetRulesQuery query) {
+		return null;
+	}
+
+	@Override
 	public ApiResponse<?> fetchArrangeList(GameGroupingListQuery query) {
 		Long gameId = query.getGameId();
 		GameGroupAreaItemListVo response = new GameGroupAreaItemListVo();
