@@ -1,18 +1,46 @@
 package com.jsnjwj.facade.manager;
 
+import com.jsnjwj.facade.mapper.GameItemRuleMapper;
 import com.jsnjwj.facade.mapper.GameRuleSettingMapper;
 import com.jsnjwj.facade.vo.GameItemRuleVo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
+/**
+ * 项目规则设定
+ */
 @Service
 @RequiredArgsConstructor
 public class GameItemRuleManager {
 
     private final GameRuleSettingMapper gameRuleSettingMapper;
 
+    private final GameItemRuleMapper gameItemRuleMapper;
 
-    public GameItemRuleVo getGameItemRule(Long gameId) {
+    public List<GameItemRuleVo> getGameItemRuleList(Long gameId) {
+
+
         return null;
     }
+
+    public List<GameItemRuleVo> getGameItemRule(Long gameId, Long itemId) {
+
+
+
+        return null;
+    }
+
+    public int setItemRuleBatch(Long gameId, List<Long> itemId) {
+
+        gameRuleSettingMapper.insert();
+
+        return 1;
+    }
+
+    public int setItemRule(Long gameId, Long itemId, Long ruleId){
+        return 1;
+    }
+
 }
