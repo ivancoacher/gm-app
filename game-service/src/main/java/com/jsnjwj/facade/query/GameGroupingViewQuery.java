@@ -8,10 +8,10 @@ import lombok.EqualsAndHashCode;
 @Data
 public class GameGroupingViewQuery extends BaseRequest {
 
-	private Long groupId;
+    private Long groupId;
 
-	private Integer page = 1;
+    private Integer page = 1;
 
-	private Integer pageSize = 10;
+    private Integer pageSize = 10;
 
 }

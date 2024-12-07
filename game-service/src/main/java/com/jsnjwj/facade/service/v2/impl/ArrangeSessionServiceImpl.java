@@ -22,6 +22,7 @@ import java.util.List;
 public class ArrangeSessionServiceImpl implements ArrangeSessionService {
 
     private final GameGroupingManager gameGroupingManager;
+
     /**
      * 创建场地
      */
@@ -48,6 +49,7 @@ public class ArrangeSessionServiceImpl implements ArrangeSessionService {
 
     /**
      * 保存场地
+     *
      * @param query
      * @return
      */
@@ -64,6 +66,7 @@ public class ArrangeSessionServiceImpl implements ArrangeSessionService {
 
     /**
      * 获取所有场地对应场次信息
+     *
      * @param gameId
      * @return
      */
@@ -72,7 +75,6 @@ public class ArrangeSessionServiceImpl implements ArrangeSessionService {
         List<GameAreaEntity> response = gameGroupingManager.getCourts(gameId);
         return ApiResponse.success(response);
     }
-
 
 
 }

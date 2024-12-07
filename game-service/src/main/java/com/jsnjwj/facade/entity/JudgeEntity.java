@@ -14,20 +14,20 @@ import java.io.Serializable;
 @TableName(value = "tc_judge")
 public class JudgeEntity implements Serializable {
 
-	/**
-	 *
-	 */
-	@TableId(type = IdType.AUTO)
-	private Integer id;
+    /**
+     *
+     */
+    @TableId(type = IdType.AUTO)
+    private Integer id;
 
-	/**
-	 *
-	 */
-	private String judgeName;
+    /**
+     *
+     */
+    private String judgeName;
 
-	/**
-	 *
-	 */
-	private String phone;
+    /**
+     *
+     */
+    private String phone;
 
 }

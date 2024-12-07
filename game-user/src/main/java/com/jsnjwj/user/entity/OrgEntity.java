@@ -18,12 +18,12 @@ import java.util.Date;
 @TableName("c_organization")
 public class OrgEntity {
 
-	@TableId(type = IdType.AUTO)
-	private Long id;
+    @TableId(type = IdType.AUTO)
+    private Long id;
 
-	private String orgName;
+    private String orgName;
 
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-	private Date createTime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date createTime;
 
 }

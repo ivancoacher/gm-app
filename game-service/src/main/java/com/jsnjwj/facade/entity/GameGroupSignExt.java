@@ -14,30 +14,30 @@ import java.io.Serializable;
 @TableName(value = "tc_game_group_sign_ext")
 public class GameGroupSignExt implements Serializable {
 
-	/**
-	 *
-	 */
-	@TableId(type = IdType.AUTO)
-	private Integer id;
+    /**
+     *
+     */
+    @TableId(type = IdType.AUTO)
+    private Integer id;
 
-	/**
-	 *
-	 */
-	private Integer gameId;
+    /**
+     *
+     */
+    private Integer gameId;
 
-	/**
-	 *
-	 */
-	private String dictCode;
+    /**
+     *
+     */
+    private String dictCode;
 
-	/**
-	 *
-	 */
-	private String singValue;
+    /**
+     *
+     */
+    private String singValue;
 
-	/**
-	 *
-	 */
-	private Integer singForce;
+    /**
+     *
+     */
+    private Integer singForce;
 
 }

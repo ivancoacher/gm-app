@@ -14,64 +14,64 @@ import java.util.List;
 @Service
 public class GameGroupingManager {
 
-	@Resource
-	private GameAreaMapper gameAreaMapper;
+    @Resource
+    private GameAreaMapper gameAreaMapper;
 
-	@Resource
-	private GameAreaItemMapper gameAreaItemMapper;
+    @Resource
+    private GameAreaItemMapper gameAreaItemMapper;
 
-	public void saveCourts(List<GameAreaEntity> areaList) {
-		gameAreaMapper.saveBatch(areaList);
-	}
+    public void saveCourts(List<GameAreaEntity> areaList) {
+        gameAreaMapper.saveBatch(areaList);
+    }
 
-	public int deleteCourt(GameAreaEntity area) {
-		return gameAreaMapper.deleteById(area);
-	}
+    public int deleteCourt(GameAreaEntity area) {
+        return gameAreaMapper.deleteById(area);
+    }
 
-	public int resetCourt(Long gameId) {
-		LambdaQueryWrapper<GameAreaEntity> wrapper = new LambdaQueryWrapper<>();
-		wrapper.eq(GameAreaEntity::getGameId, gameId);
-		return gameAreaMapper.delete(wrapper);
-	}
+    public int resetCourt(Long gameId) {
+        LambdaQueryWrapper<GameAreaEntity> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(GameAreaEntity::getGameId, gameId);
+        return gameAreaMapper.delete(wrapper);
+    }
 
-	public int saveCourt(GameAreaEntity area) {
-		return gameAreaMapper.updateById(area);
-	}
+    public int saveCourt(GameAreaEntity area) {
+        return gameAreaMapper.updateById(area);
+    }
 
-	public List<GameAreaEntity> getCourts(Long gameId) {
-		LambdaQueryWrapper<GameAreaEntity> wrapper = new LambdaQueryWrapper<>();
-		wrapper.eq(GameAreaEntity::getGameId, gameId);
-		// wrapper.eq(TcGameArea::getStatus,1); //启用中
-		return gameAreaMapper.selectList(wrapper);
-	}
+    public List<GameAreaEntity> getCourts(Long gameId) {
+        LambdaQueryWrapper<GameAreaEntity> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(GameAreaEntity::getGameId, gameId);
+        // wrapper.eq(TcGameArea::getStatus,1); //启用中
+        return gameAreaMapper.selectList(wrapper);
+    }
 
-	public List<GameAreaEntity> getAvailableCourts(Long gameId) {
-		LambdaQueryWrapper<GameAreaEntity> wrapper = new LambdaQueryWrapper<>();
-		wrapper.eq(GameAreaEntity::getGameId, gameId);
-		wrapper.eq(GameAreaEntity::getStatus, 1); // 启用中
-		return gameAreaMapper.selectList(wrapper);
-	}
+    public List<GameAreaEntity> getAvailableCourts(Long gameId) {
+        LambdaQueryWrapper<GameAreaEntity> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(GameAreaEntity::getGameId, gameId);
+        wrapper.eq(GameAreaEntity::getStatus, 1); // 启用中
+        return gameAreaMapper.selectList(wrapper);
+    }
 
-	public void resetGrouping(GameGroupingSetQuery query) {
-		LambdaQueryWrapper<GameAreaItemEntity> wrapper = new LambdaQueryWrapper<>();
-		wrapper.eq(GameAreaItemEntity::getGameId, query.getGameId());
-		wrapper.eq(GameAreaItemEntity::getAreaId, query.getAreaId());
-		wrapper.eq(GameAreaItemEntity::getAreaNo, query.getAreaNo());
-		gameAreaItemMapper.delete(wrapper);
-	}
+    public void resetGrouping(GameGroupingSetQuery query) {
+        LambdaQueryWrapper<GameAreaItemEntity> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(GameAreaItemEntity::getGameId, query.getGameId());
+        wrapper.eq(GameAreaItemEntity::getAreaId, query.getAreaId());
+        wrapper.eq(GameAreaItemEntity::getAreaNo, query.getAreaNo());
+        gameAreaItemMapper.delete(wrapper);
+    }
 
-	public void saveGroupings(List<GameAreaItemEntity> areaList) {
-		gameAreaItemMapper.saveBatch(areaList);
-	}
+    public void saveGroupings(List<GameAreaItemEntity> areaList) {
+        gameAreaItemMapper.saveBatch(areaList);
+    }
 
-	public List<GameAreaItemEntity> fetchAreaItems(Long gameId, Long areaId) {
-		LambdaQueryWrapper<GameAreaItemEntity> wrapper = new LambdaQueryWrapper<>();
-		wrapper.eq(GameAreaItemEntity::getGameId, gameId);
-		wrapper.eq(GameAreaItemEntity::getAreaId, areaId);
-		wrapper.orderByAsc(GameAreaItemEntity::getSort);
+    public List<GameAreaItemEntity> fetchAreaItems(Long gameId, Long areaId) {
+        LambdaQueryWrapper<GameAreaItemEntity> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(GameAreaItemEntity::getGameId, gameId);
+        wrapper.eq(GameAreaItemEntity::getAreaId, areaId);
+        wrapper.orderByAsc(GameAreaItemEntity::getSort);
 
-		return gameAreaItemMapper.selectList(wrapper);
+        return gameAreaItemMapper.selectList(wrapper);
 
-	}
+    }
 
 }

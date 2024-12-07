@@ -14,36 +14,36 @@ import java.util.List;
 @Service
 public class GameSettingRuleManager {
 
-	@Resource
-	private GameRuleSettingMapper gameRuleSettingMapper;
+    @Resource
+    private GameRuleSettingMapper gameRuleSettingMapper;
 
-	@Resource
-	private GameRuleSettingDetailMapper gameRuleSettingDetailMapper;
+    @Resource
+    private GameRuleSettingDetailMapper gameRuleSettingDetailMapper;
 
-	public int saveRuleInfo(GameRuleSetting ruleSetting) {
-		return gameRuleSettingMapper.insert(ruleSetting);
-	}
+    public int saveRuleInfo(GameRuleSetting ruleSetting) {
+        return gameRuleSettingMapper.insert(ruleSetting);
+    }
 
-	public int updateRuleInfo(GameRuleSetting ruleSetting) {
-		return gameRuleSettingMapper.updateById(ruleSetting);
-	}
+    public int updateRuleInfo(GameRuleSetting ruleSetting) {
+        return gameRuleSettingMapper.updateById(ruleSetting);
+    }
 
-	public int saveRuleDetail(Long gameId, Long itemId, List<GameRuleSettingDetail> list) {
-		LambdaQueryWrapper<GameRuleSettingDetail> wrapper = new LambdaQueryWrapper<>();
-		wrapper.eq(GameRuleSettingDetail::getSettingId, itemId);
-		gameRuleSettingDetailMapper.delete(wrapper);
-		return gameRuleSettingDetailMapper.insertBatchSomeColumn(list);
-	}
+    public int saveRuleDetail(Long gameId, Long itemId, List<GameRuleSettingDetail> list) {
+        LambdaQueryWrapper<GameRuleSettingDetail> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(GameRuleSettingDetail::getSettingId, itemId);
+        gameRuleSettingDetailMapper.delete(wrapper);
+        return gameRuleSettingDetailMapper.insertBatchSomeColumn(list);
+    }
 
-	public GameRuleSetting fetchRule(Long gameId, Long itemId) {
-		LambdaQueryWrapper<GameRuleSetting> wrapper = new LambdaQueryWrapper<>();
-		wrapper.eq(GameRuleSetting::getGameId, gameId);
-		wrapper.eq(GameRuleSetting::getItemId, itemId);
-		return gameRuleSettingMapper.selectById(wrapper);
-	}
+    public GameRuleSetting fetchRule(Long gameId, Long itemId) {
+        LambdaQueryWrapper<GameRuleSetting> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(GameRuleSetting::getGameId, gameId);
+        wrapper.eq(GameRuleSetting::getItemId, itemId);
+        return gameRuleSettingMapper.selectById(wrapper);
+    }
 
-	public List<GameRuleSettingDetail> fetchRuleDetail(Long settingId) {
-		return new ArrayList<>();
-	}
+    public List<GameRuleSettingDetail> fetchRuleDetail(Long settingId) {
+        return new ArrayList<>();
+    }
 
 }

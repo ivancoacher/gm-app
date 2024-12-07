@@ -13,31 +13,34 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/game/sign/arrange/sequence")
 public class SignArrangeSequenceController {
 
-	/**
-	 * 场序列表
-	 * @return
-	 */
-	@GetMapping("/list")
-	public ApiResponse<?> getList() {
-		return null;
-	}
+    /**
+     * 场序列表
+     *
+     * @return
+     */
+    @GetMapping("/list")
+    public ApiResponse<?> getList() {
+        return null;
+    }
 
-	/**
-	 * 设置场序
-	 * @return
-	 */
-	@PostMapping("/set")
-	public ApiResponse<?> setSequence() {
-		return null;
-	}
+    /**
+     * 设置场序
+     *
+     * @return
+     */
+    @PostMapping("/set")
+    public ApiResponse<?> setSequence() {
+        return null;
+    }
 
-	/**
-	 * 查看场序详情
-	 * @return
-	 */
-	@GetMapping
-	public ApiResponse<?> fetchSequenceInfo() {
-		return null;
-	}
+    /**
+     * 查看场序详情
+     *
+     * @return
+     */
+    @GetMapping
+    public ApiResponse<?> fetchSequenceInfo() {
+        return null;
+    }
 
 }

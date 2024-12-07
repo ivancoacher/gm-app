@@ -8,6 +8,6 @@ import java.util.List;
 @Data
 public class GameItemBatchUpdateQuery {
 
-	List<ItemLabelVo> data;
+    List<ItemLabelVo> data;
 
 }

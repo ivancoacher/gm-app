@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class IndexController {
 
-	@ResponseBody
-	@RequestMapping("/")
-	public Integer index() {
-		return 11111;
-	}
+    @ResponseBody
+    @RequestMapping("/")
+    public Integer index() {
+        return 11111;
+    }
 
 }

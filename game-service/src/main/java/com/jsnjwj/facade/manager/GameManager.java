@@ -11,22 +11,22 @@ import java.util.Date;
 @Service
 public class GameManager {
 
-	@Resource
-	private GamesMapper gamesMapper;
+    @Resource
+    private GamesMapper gamesMapper;
 
-	public int save(GamesEntity games) {
-		games.setStatus(GameStatusEnum.GAME_PROJECTED.getCode());
-		games.setCreateTime(new Date());
-		games.setUpdateTime(new Date());
-		return gamesMapper.insert(games);
-	}
+    public int save(GamesEntity games) {
+        games.setStatus(GameStatusEnum.GAME_PROJECTED.getCode());
+        games.setCreateTime(new Date());
+        games.setUpdateTime(new Date());
+        return gamesMapper.insert(games);
+    }
 
-	public int update(GamesEntity games) {
-		return gamesMapper.updateById(games);
-	}
+    public int update(GamesEntity games) {
+        return gamesMapper.updateById(games);
+    }
 
-	public GamesEntity fetchInfo(Long gameId) {
-		return gamesMapper.selectById(gameId);
-	}
+    public GamesEntity fetchInfo(Long gameId) {
+        return gamesMapper.selectById(gameId);
+    }
 
 }

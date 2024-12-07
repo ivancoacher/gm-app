@@ -17,7 +17,7 @@ public class DrawServiceImpl implements DrawService {
      * 抽签分组
      */
     @Override
-    public boolean draw(Long gameId, String type){
+    public boolean draw(Long gameId, String type) {
         // 查询所有场次
 
         // 查询各个场次内对应的小项
@@ -30,7 +30,7 @@ public class DrawServiceImpl implements DrawService {
     /**
      * 查询所有排序内容
      */
-    public boolean getDraw(Long gameId, String type){
+    public boolean getDraw(Long gameId, String type) {
         // 查询所有场次
 
         // 查询各个场次内对应的小项
@@ -44,7 +44,7 @@ public class DrawServiceImpl implements DrawService {
     /**
      * 处理单个场次内的选手顺序
      */
-    public boolean setDrawSort(){
+    public boolean setDrawSort() {
         return true;
     }
 }

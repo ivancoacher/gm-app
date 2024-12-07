@@ -20,7 +20,7 @@ public class ProjectServiceImpl implements ProjectService {
      * 创建场次
      */
     @Override
-    public boolean createMatchNumber(Long gameId){
+    public boolean createMatchNumber(Long gameId) {
 
         return true;
     }
@@ -29,7 +29,7 @@ public class ProjectServiceImpl implements ProjectService {
      * 获取场次
      */
     @Override
-    public List<MatchNumberVo> getMatchNumbers(Long gameId){
+    public List<MatchNumberVo> getMatchNumbers(Long gameId) {
 
         return new ArrayList<>();
     }
@@ -37,12 +37,13 @@ public class ProjectServiceImpl implements ProjectService {
 
     /**
      * 场次内-小项排序
+     *
      * @param gameId
      * @param itemSortVoList
      * @return
      */
     @Override
-    public boolean sortMatch(Long gameId, List<MatchItemSortVo> itemSortVoList){
+    public boolean sortMatch(Long gameId, List<MatchItemSortVo> itemSortVoList) {
         return true;
     }
 

@@ -7,8 +7,8 @@ import com.jsnjwj.trade.request.QueryListRequest;
 
 public interface TradeService {
 
-	ApiResponse<Page<TradeLog>> fetchList(QueryListRequest query);
+    ApiResponse<Page<TradeLog>> fetchList(QueryListRequest query);
 
-	int saveLog(TradeLog tradeLog);
+    int saveLog(TradeLog tradeLog);
 
 }

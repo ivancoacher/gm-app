@@ -16,52 +16,52 @@ import java.util.Date;
 @TableName(value = "tc_game_item_grouping")
 public class GameItemGroupingEntity implements Serializable {
 
-	/**
-	 *
-	 */
-	@TableId(type = IdType.AUTO)
-	private Integer id;
+    /**
+     *
+     */
+    @TableId(type = IdType.AUTO)
+    private Integer id;
 
-	/**
-	 *
-	 */
-	private Integer gameId;
+    /**
+     *
+     */
+    private Integer gameId;
 
-	/**
-	 *
-	 */
-	private Integer itemId;
+    /**
+     *
+     */
+    private Integer itemId;
 
-	/**
-	 *
-	 */
-	private String signId;
+    /**
+     *
+     */
+    private String signId;
 
-	/**
-	 *
-	 */
-	private Integer sort;
+    /**
+     *
+     */
+    private Integer sort;
 
-	/**
-	 *
-	 */
-	private Integer creatorId;
+    /**
+     *
+     */
+    private Integer creatorId;
 
-	/**
-	 *
-	 */
-	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
-	private Date createTime;
+    /**
+     *
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
+    private Date createTime;
 
-	/**
-	 *
-	 */
-	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
-	private Date updateTime;
+    /**
+     *
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
+    private Date updateTime;
 
-	/**
-	 * 1：个人报名 2：团队报名
-	 */
-	private Integer signType;
+    /**
+     * 1：个人报名 2：团队报名
+     */
+    private Integer signType;
 
 }

@@ -5,8 +5,8 @@ import lombok.Data;
 @Data
 public class BaseRequest {
 
-	private Long userId;
+    private Long userId;
 
-	private Long gameId;
+    private Long gameId;
 
 }

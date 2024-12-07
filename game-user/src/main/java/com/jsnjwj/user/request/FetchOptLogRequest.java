@@ -8,12 +8,12 @@ import lombok.EqualsAndHashCode;
 @Data
 public class FetchOptLogRequest extends BaseRequest {
 
-	private Integer pageIndex = 1;
+    private Integer pageIndex = 1;
 
-	private Integer pageSize = 10;
+    private Integer pageSize = 10;
 
-	private String startTime;
+    private String startTime;
 
-	private String endTime;
+    private String endTime;
 
 }

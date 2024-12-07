@@ -8,12 +8,12 @@ import lombok.EqualsAndHashCode;
 @Data
 public class GameItemListQuery extends BaseRequest {
 
-	private Long groupId;
+    private Long groupId;
 
-	private String itemName;
+    private String itemName;
 
-	private Integer page;
+    private Integer page;
 
-	private Integer limit;
+    private Integer limit;
 
 }

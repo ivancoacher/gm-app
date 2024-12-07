@@ -6,9 +6,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsnjwj.facade.dto.GroupingDetailDto;
 import com.jsnjwj.facade.dto.GroupingItemDto;
 import com.jsnjwj.facade.entity.GameItemEntity;
+import com.jsnjwj.facade.entity.GameRuleSetting;
 import com.jsnjwj.facade.entity.SignArrangeRecordEntity;
 import com.jsnjwj.facade.entity.SignSingleEntity;
-import com.jsnjwj.facade.entity.GameRuleSetting;
 import com.jsnjwj.facade.mapper.GameItemMapper;
 import com.jsnjwj.facade.mapper.GameRuleSettingMapper;
 import com.jsnjwj.facade.mapper.SignSingleMapper;
@@ -34,145 +34,146 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class GameGroupingServiceImpl implements GameGroupingService {
 
-	private final GameItemMapper gameItemMapper;
+    private final GameItemMapper gameItemMapper;
 
-	private final GameRuleSettingMapper gameRuleSettingMapper;
+    private final GameRuleSettingMapper gameRuleSettingMapper;
 
-	private final SignSingleMapper signSingleMapper;
+    private final SignSingleMapper signSingleMapper;
 
-	/**
-	 * 查询 分组列表
-	 * @param query
-	 * @return
-	 */
-	@Override
-	public Page<GroupingItemDto> fetchGroupingItem(GameGroupingViewQuery query) {
+    /**
+     * 查询 分组列表
+     *
+     * @param query
+     * @return
+     */
+    @Override
+    public Page<GroupingItemDto> fetchGroupingItem(GameGroupingViewQuery query) {
 
-		Page<SignArrangeRecordEntity> page = new Page<>(query.getPage(), query.getPageSize());
+        Page<SignArrangeRecordEntity> page = new Page<>(query.getPage(), query.getPageSize());
 
-		LambdaQueryWrapper<SignArrangeRecordEntity> wrapper = new LambdaQueryWrapper<>();
-		wrapper.eq(Objects.nonNull(query.getGroupId()), SignArrangeRecordEntity::getGroupId, query.getGroupId());
-		wrapper.eq(SignArrangeRecordEntity::getGameId, query.getGameId());
+        LambdaQueryWrapper<SignArrangeRecordEntity> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Objects.nonNull(query.getGroupId()), SignArrangeRecordEntity::getGroupId, query.getGroupId());
+        wrapper.eq(SignArrangeRecordEntity::getGameId, query.getGameId());
 
-		Page<ItemLabelVo> rst = gameItemMapper.selectByPage(page, wrapper);
+        Page<ItemLabelVo> rst = gameItemMapper.selectByPage(page, wrapper);
 
-		Page<GroupingItemDto> response = new Page<>();
+        Page<GroupingItemDto> response = new Page<>();
 
-		response.setTotal(rst.getTotal());
-		response.setCurrent(rst.getCurrent());
-		response.setPages(rst.getPages());
+        response.setTotal(rst.getTotal());
+        response.setCurrent(rst.getCurrent());
+        response.setPages(rst.getPages());
 
-		List<GroupingItemDto> records = new ArrayList<>();
+        List<GroupingItemDto> records = new ArrayList<>();
 
-		if (CollectionUtils.isNotEmpty(rst.getRecords())) {
+        if (CollectionUtils.isNotEmpty(rst.getRecords())) {
 
-			List<Long> itemIds = rst.getRecords().stream().map(ItemLabelVo::getItemId).collect(Collectors.toList());
-			Map<Long, GameRuleSetting> ruleSets = getRuleSettingMap(itemIds);
-			rst.getRecords().forEach(record -> {
-				GroupingItemDto groupingItemDto = new GroupingItemDto();
+            List<Long> itemIds = rst.getRecords().stream().map(ItemLabelVo::getItemId).collect(Collectors.toList());
+            Map<Long, GameRuleSetting> ruleSets = getRuleSettingMap(itemIds);
+            rst.getRecords().forEach(record -> {
+                GroupingItemDto groupingItemDto = new GroupingItemDto();
 
-				groupingItemDto.setGameId(record.getGameId());
-				groupingItemDto.setGroupId(record.getGroupId());
-				groupingItemDto.setItemId(record.getItemId());
-				groupingItemDto.setGroupName(record.getGroupName());
-				groupingItemDto.setItemName(record.getItemName());
-				if (Objects.nonNull(ruleSets.get(record.getItemId()))) {
-					groupingItemDto.setJudgeCount(ruleSets.get(record.getItemId()).getJudgeGroupNum());
-					groupingItemDto.setRule(ruleSets.get(record.getItemId()).getScoreRule().toString());
-				}
-				records.add(groupingItemDto);
-			});
-		}
-		response.setRecords(records);
-		return response;
+                groupingItemDto.setGameId(record.getGameId());
+                groupingItemDto.setGroupId(record.getGroupId());
+                groupingItemDto.setItemId(record.getItemId());
+                groupingItemDto.setGroupName(record.getGroupName());
+                groupingItemDto.setItemName(record.getItemName());
+                if (Objects.nonNull(ruleSets.get(record.getItemId()))) {
+                    groupingItemDto.setJudgeCount(ruleSets.get(record.getItemId()).getJudgeGroupNum());
+                    groupingItemDto.setRule(ruleSets.get(record.getItemId()).getScoreRule().toString());
+                }
+                records.add(groupingItemDto);
+            });
+        }
+        response.setRecords(records);
+        return response;
 
-	}
+    }
 
-	private Map<Long, GameRuleSetting> getRuleSettingMap(List<Long> itemIdList) {
-		LambdaQueryWrapper<GameRuleSetting> query = new LambdaQueryWrapper<>();
-		query.in(GameRuleSetting::getItemId, itemIdList);
-		List<GameRuleSetting> result = gameRuleSettingMapper.selectList(query);
+    private Map<Long, GameRuleSetting> getRuleSettingMap(List<Long> itemIdList) {
+        LambdaQueryWrapper<GameRuleSetting> query = new LambdaQueryWrapper<>();
+        query.in(GameRuleSetting::getItemId, itemIdList);
+        List<GameRuleSetting> result = gameRuleSettingMapper.selectList(query);
 
-		return result.stream().collect(Collectors.toMap(GameRuleSetting::getItemId, Function.identity()));
-	}
+        return result.stream().collect(Collectors.toMap(GameRuleSetting::getItemId, Function.identity()));
+    }
 
-	@Override
-	public GroupingDetailDto fetchGroupingDetail(GameGroupingViewQuery query) {
+    @Override
+    public GroupingDetailDto fetchGroupingDetail(GameGroupingViewQuery query) {
 
-		LambdaQueryWrapper<GameItemEntity> wrapper = new LambdaQueryWrapper<>();
+        LambdaQueryWrapper<GameItemEntity> wrapper = new LambdaQueryWrapper<>();
 
-		wrapper.eq(GameItemEntity::getGameId, query.getGameId());
+        wrapper.eq(GameItemEntity::getGameId, query.getGameId());
 
-		wrapper.orderByAsc(GameItemEntity::getSort);
+        wrapper.orderByAsc(GameItemEntity::getSort);
 
-		List<GameItemEntity> itemList = gameItemMapper.selectList(wrapper);
+        List<GameItemEntity> itemList = gameItemMapper.selectList(wrapper);
 
-		GroupingDetailDto response = new GroupingDetailDto();
-		response.setGameId(query.getGameId());
-		if (CollectionUtils.isEmpty(itemList)) {
-			return response;
-		}
+        GroupingDetailDto response = new GroupingDetailDto();
+        response.setGameId(query.getGameId());
+        if (CollectionUtils.isEmpty(itemList)) {
+            return response;
+        }
 
-		List<GroupingDetailDto.GroupingItem> items = new ArrayList<>();
+        List<GroupingDetailDto.GroupingItem> items = new ArrayList<>();
 
-		for (GameItemEntity item : itemList) {
-			Long itemId = item.getId();
-			Long gameId = item.getGameId();
+        for (GameItemEntity item : itemList) {
+            Long itemId = item.getId();
+            Long gameId = item.getGameId();
 
-			// 配置item信息
-			GroupingDetailDto.GroupingItem itemDtos = new GroupingDetailDto.GroupingItem();
+            // 配置item信息
+            GroupingDetailDto.GroupingItem itemDtos = new GroupingDetailDto.GroupingItem();
 
-			itemDtos.setItemName(item.getItemName());
-			itemDtos.setItemId(itemId);
+            itemDtos.setItemName(item.getItemName());
+            itemDtos.setItemId(itemId);
 
-			// 查询该item下的报名信息
-			LambdaQueryWrapper<SignSingleEntity> wrapper1 = new LambdaQueryWrapper<>();
+            // 查询该item下的报名信息
+            LambdaQueryWrapper<SignSingleEntity> wrapper1 = new LambdaQueryWrapper<>();
 
-			wrapper1.eq(SignSingleEntity::getGameId, query.getGameId());
-			wrapper1.eq(SignSingleEntity::getItemId, itemId);
-			List<SignSingleEntity> signSingles = signSingleMapper.selectList(wrapper1);
-			List<GroupingDetailDto.GroupingItemSign> groupingItemSigns = new ArrayList<>();
-			if (CollectionUtils.isNotEmpty(signSingles)) {
+            wrapper1.eq(SignSingleEntity::getGameId, query.getGameId());
+            wrapper1.eq(SignSingleEntity::getItemId, itemId);
+            List<SignSingleEntity> signSingles = signSingleMapper.selectList(wrapper1);
+            List<GroupingDetailDto.GroupingItemSign> groupingItemSigns = new ArrayList<>();
+            if (CollectionUtils.isNotEmpty(signSingles)) {
 
-				for (SignSingleEntity signSingle : signSingles) {
-					GroupingDetailDto.GroupingItemSign sign = new GroupingDetailDto.GroupingItemSign();
-					sign.setName(signSingle.getName());
-					groupingItemSigns.add(sign);
-				}
+                for (SignSingleEntity signSingle : signSingles) {
+                    GroupingDetailDto.GroupingItemSign sign = new GroupingDetailDto.GroupingItemSign();
+                    sign.setName(signSingle.getName());
+                    groupingItemSigns.add(sign);
+                }
 
-			}
+            }
 
-			itemDtos.setGroupItemSignList(groupingItemSigns);
-			items.add(itemDtos);
+            itemDtos.setGroupItemSignList(groupingItemSigns);
+            items.add(itemDtos);
 
-		}
-		response.setGroupItemList(items);
-		return response;
-	}
+        }
+        response.setGroupItemList(items);
+        return response;
+    }
 
-	/**
-	 * 修改分组信息
-	 */
-	@Override
-	public int updateArrangeRecord() {
-		return 0;
-	}
+    /**
+     * 修改分组信息
+     */
+    @Override
+    public int updateArrangeRecord() {
+        return 0;
+    }
 
-	/**
-	 * 修改分组
-	 */
+    /**
+     * 修改分组
+     */
 
-	@Override
-	public int updateArrangeGrouping() {
-		return 0;
-	}
+    @Override
+    public int updateArrangeGrouping() {
+        return 0;
+    }
 
-	/**
-	 * 生成场序表
-	 */
-	@Override
-	public int initArrangeOrder() {
-		return 0;
-	}
+    /**
+     * 生成场序表
+     */
+    @Override
+    public int initArrangeOrder() {
+        return 0;
+    }
 
 }

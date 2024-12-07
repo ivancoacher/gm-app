@@ -9,8 +9,8 @@ import java.util.List;
 @Data
 public class GameGroupAreaItemListVo {
 
-	private Long gameId;
+    private Long gameId;
 
-	private List<GroupAreaItemDto> content = new ArrayList<>();
+    private List<GroupAreaItemDto> content = new ArrayList<>();
 
 }

@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 public class OrganizationController {
 
-	@ResponseBody
-	@RequestMapping("/")
-	public Integer index() {
-		return 2222;
-	}
+    @ResponseBody
+    @RequestMapping("/")
+    public Integer index() {
+        return 2222;
+    }
 
 }

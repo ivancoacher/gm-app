@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * 得分去平均
  */
-public class StrategyC implements ScoreStrategy{
+public class StrategyC implements ScoreStrategy {
     @Override
     public BigDecimal getScore(List<BigDecimal> scores) {
         if (scores.isEmpty()) return BigDecimal.ZERO; // 防止除零异常

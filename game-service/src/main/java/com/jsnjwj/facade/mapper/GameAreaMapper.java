@@ -14,6 +14,6 @@ import java.util.List;
  */
 public interface GameAreaMapper extends BaseMapper<GameAreaEntity> {
 
-	void saveBatch(@Param("list") List<GameAreaEntity> list);
+    void saveBatch(@Param("list") List<GameAreaEntity> list);
 
 }

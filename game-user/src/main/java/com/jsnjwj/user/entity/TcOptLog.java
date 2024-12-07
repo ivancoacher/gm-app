@@ -11,21 +11,21 @@ import java.util.Date;
 @TableName("tc_opt_log")
 public class TcOptLog {
 
-	@TableId(type = IdType.AUTO)
-	private Long id;
+    @TableId(type = IdType.AUTO)
+    private Long id;
 
-	private Long userId;
+    private Long userId;
 
-	private String remark;
+    private String remark;
 
-	private Integer operateType;
+    private Integer operateType;
 
-	private Long targetId;
+    private Long targetId;
 
-	private Date createTime;
+    private Date createTime;
 
-	private Date updateTime;
+    private Date updateTime;
 
-	;
+    ;
 
 }

@@ -8,14 +8,14 @@ import lombok.EqualsAndHashCode;
 @Data
 public class SignSingleUpdateQuery extends BaseRequest {
 
-	private Long applyId;
+    private Long applyId;
 
-	private String name;
+    private String name;
 
-	private int age;
+    private int age;
 
-	private int sex;
+    private int sex;
 
-	private String orgName;
+    private String orgName;
 
 }

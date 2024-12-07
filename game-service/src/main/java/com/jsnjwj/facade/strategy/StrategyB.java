@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * 去掉最高最低合计
  */
-public class StrategyB implements ScoreStrategy{
+public class StrategyB implements ScoreStrategy {
     @Override
     public BigDecimal getScore(List<BigDecimal> scores) {
         if (scores.size() <= 2) return BigDecimal.ZERO; // 不足以去掉最高最低

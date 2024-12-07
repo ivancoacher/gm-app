@@ -16,52 +16,52 @@ import java.util.Date;
 @Data
 public class GameRuleSettingDetail implements Serializable {
 
-	/**
-	 *
-	 */
-	@TableId(type = IdType.AUTO)
-	private Integer id;
+    /**
+     *
+     */
+    @TableId(type = IdType.AUTO)
+    private Integer id;
 
-	/**
-	 *
-	 */
-	private Long settingId;
+    /**
+     *
+     */
+    private Long settingId;
 
-	/**
-	 *
-	 */
-	private Integer num;
+    /**
+     *
+     */
+    private Integer num;
 
-	/**
-	 *
-	 */
-	private Integer scoreRatio;
+    /**
+     *
+     */
+    private Integer scoreRatio;
 
-	/**
-	 *
-	 */
-	private Integer scoreWeight;
+    /**
+     *
+     */
+    private Integer scoreWeight;
 
-	/**
-	 *
-	 */
-	private Integer extraType;
+    /**
+     *
+     */
+    private Integer extraType;
 
-	/**
-	 *
-	 */
-	private String extraName;
+    /**
+     *
+     */
+    private String extraName;
 
-	/**
-	 *
-	 */
-	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
-	private Date createdAt;
+    /**
+     *
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
+    private Date createdAt;
 
-	/**
-	 *
-	 */
-	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
-	private Date updatedAt;
+    /**
+     *
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
+    private Date updatedAt;
 
 }

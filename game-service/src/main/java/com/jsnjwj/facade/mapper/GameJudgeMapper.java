@@ -16,19 +16,19 @@ import java.util.List;
  */
 public interface GameJudgeMapper extends BaseMapper<GameJudgeEntity> {
 
-	@Select("select gj.id,gj.game_id as gameId,j.judge_name as judgeName,j.phone "
-			+ "from tc_game_judge as gj left join tc_judge as j on j.id = gj.judge_id "
-			+ "where gj.game_id = #{gameId}")
-	List<GameJudgeVo> selectPageList(@Param("gameId") Long gameId);
+    @Select("select gj.id,gj.game_id as gameId,j.judge_name as judgeName,j.phone "
+            + "from tc_game_judge as gj left join tc_judge as j on j.id = gj.judge_id "
+            + "where gj.game_id = #{gameId}")
+    List<GameJudgeVo> selectPageList(@Param("gameId") Long gameId);
 
-	@Select("select gj.id,gj.game_id as gameId,j.judge_name as judgeName,j.phone "
-			+ "from tc_game_judge as gj left join tc_judge as j on j.id = gj.judge_id "
-			+ "where gj.game_id = #{gameId}")
-	List<GameJudgeVo> selectItemList(@Param("gameId") Long gameId, @Param("itemId") Long itemId);
+    @Select("select gj.id,gj.game_id as gameId,j.judge_name as judgeName,j.phone "
+            + "from tc_game_judge as gj left join tc_judge as j on j.id = gj.judge_id "
+            + "where gj.game_id = #{gameId}")
+    List<GameJudgeVo> selectItemList(@Param("gameId") Long gameId, @Param("itemId") Long itemId);
 
-	@Select("select gj.id,gj.game_id as gameId,j.judge_name as judgeName,j.phone "
-			+ "from tc_game_judge as gj left join tc_judge as j on j.id = gj.judge_id "
-			+ "where gj.game_id = #{gameId}")
-	List<GameJudgeVo> selectAllList(@Param("gameId") Long gameId);
+    @Select("select gj.id,gj.game_id as gameId,j.judge_name as judgeName,j.phone "
+            + "from tc_game_judge as gj left join tc_judge as j on j.id = gj.judge_id "
+            + "where gj.game_id = #{gameId}")
+    List<GameJudgeVo> selectAllList(@Param("gameId") Long gameId);
 
 }

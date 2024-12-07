@@ -7,14 +7,14 @@ import com.jsnjwj.facade.query.GameGroupingViewQuery;
 
 public interface GameGroupingService {
 
-	Page<GroupingItemDto> fetchGroupingItem(GameGroupingViewQuery query);
+    Page<GroupingItemDto> fetchGroupingItem(GameGroupingViewQuery query);
 
-	GroupingDetailDto fetchGroupingDetail(GameGroupingViewQuery query);
+    GroupingDetailDto fetchGroupingDetail(GameGroupingViewQuery query);
 
-	int updateArrangeRecord();
+    int updateArrangeRecord();
 
-	int updateArrangeGrouping();
+    int updateArrangeGrouping();
 
-	int initArrangeOrder();
+    int initArrangeOrder();
 
 }
