@@ -1,5 +1,6 @@
 package com.jsnjwj.facade.manager;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsnjwj.common.response.ApiResponse;
@@ -11,9 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -51,6 +51,15 @@ public class GameItemManager {
         lambdaQuery.eq(Objects.nonNull(query.getGroupId()), GameItemEntity::getGroupId, query.getGroupId());
         return gameItemMapper.selectList(lambdaQuery);
     }
+
+    public Map<Long, GameItemEntity> fetchItemMap(List<Long> itemIds) {
+        LambdaQueryWrapper<GameItemEntity> lambdaQuery = new LambdaQueryWrapper<>();
+        lambdaQuery.in(GameItemEntity::getId, itemIds);
+        List<GameItemEntity> result = gameItemMapper.selectList(lambdaQuery);
+        return CollectionUtil.isNotEmpty(result) ? result.stream().collect(Collectors.toMap(GameItemEntity::getId, item -> item)) : new HashMap<>();
+    }
+
+
 
     public List<ItemLabelVo> fetchItemsByGroupId(Long groupId) {
         List<ItemLabelVo> response = new ArrayList<>();

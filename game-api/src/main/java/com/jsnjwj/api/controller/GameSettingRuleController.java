@@ -2,8 +2,10 @@ package com.jsnjwj.api.controller;
 
 import com.jsnjwj.common.response.ApiResponse;
 import com.jsnjwj.common.utils.ThreadLocalUtil;
-import com.jsnjwj.facade.query.GameSettingSetRulesQuery;
+import com.jsnjwj.facade.query.rule.ItemRuleQuery;
+import com.jsnjwj.facade.query.rule.ItemRuleSetQuery;
 import com.jsnjwj.facade.service.GameArrangeService;
+import com.jsnjwj.facade.service.GameItemRuleSetService;
 import com.jsnjwj.facade.service.GameSettingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -13,9 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/game/setting/rule")
 public class GameSettingRuleController {
 
-    private final GameSettingService gameSettingService;
-
-    private final GameArrangeService gameArrangeService;
+    private final GameItemRuleSetService gameItemRuleSetService;
 
     /**
      * 获取项目规则列表
@@ -24,10 +24,11 @@ public class GameSettingRuleController {
      * @return
      */
     @GetMapping("/getItemRuleList")
-    public ApiResponse<?> getItemRuleList(@RequestBody GameSettingSetRulesQuery query) {
+    public ApiResponse<?> getItemRuleList() {
+        ItemRuleQuery query = new ItemRuleQuery();
         query.setGameId(ThreadLocalUtil.getCurrentGameId());
         query.setUserId(ThreadLocalUtil.getCurrentUserId());
-        return gameArrangeService.getItemRules(query);
+        return gameItemRuleSetService.getItemRules(query);
     }
 
     /**
@@ -37,10 +38,10 @@ public class GameSettingRuleController {
      * @return
      */
     @GetMapping("/setItemRule")
-    public ApiResponse<?> setItemRule(@RequestBody GameSettingSetRulesQuery query) {
+    public ApiResponse<?> setItemRule(@RequestBody ItemRuleSetQuery query) {
         query.setGameId(ThreadLocalUtil.getCurrentGameId());
         query.setUserId(ThreadLocalUtil.getCurrentUserId());
-        return gameArrangeService.setItemRules(query);
+        return gameItemRuleSetService.setItemRules(query);
     }
 
     /**
@@ -50,35 +51,19 @@ public class GameSettingRuleController {
      * @return
      */
     @GetMapping("/getItemRuleDetail")
-    public ApiResponse<?> getItemRuleDetail(@RequestBody GameSettingSetRulesQuery query) {
+    public ApiResponse<?> getItemRuleDetail(@RequestBody ItemRuleQuery query) {
         query.setGameId(ThreadLocalUtil.getCurrentGameId());
         query.setUserId(ThreadLocalUtil.getCurrentUserId());
-        return gameArrangeService.getItemRulesDetail(query);
-    }
-
-    /**
-     * 设置规则
-     *
-     * @param query
-     * @return
-     */
-    @GetMapping("/setRule")
-    public ApiResponse<?> setRule(@RequestBody GameSettingSetRulesQuery query) {
-        query.setGameId(ThreadLocalUtil.getCurrentGameId());
-        query.setUserId(ThreadLocalUtil.getCurrentUserId());
-        return gameSettingService.setRules(query);
+        return gameItemRuleSetService.getItemRulesDetail(query);
     }
 
     /**
      * 获取规则
-     *
-     * @param gameId
-     * @param itemId
      * @return
      */
     @PostMapping("/getRuleList")
-    public ApiResponse<?> getRule(@RequestParam("gameId") Long gameId, @RequestParam("itemId") Long itemId) {
-        return gameSettingService.getRules(gameId, itemId);
+    public ApiResponse<?> getRule() {
+        return gameItemRuleSetService.getRules();
     }
 
 }

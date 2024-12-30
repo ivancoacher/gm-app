@@ -2,7 +2,7 @@ package com.jsnjwj.facade.manager;
 
 import com.jsnjwj.facade.mapper.GameItemRuleMapper;
 import com.jsnjwj.facade.mapper.GameRuleSettingMapper;
-import com.jsnjwj.facade.vo.GameItemRuleVo;
+import com.jsnjwj.facade.vo.rule.GameItemRuleVo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -33,8 +33,10 @@ public class GameItemRuleManager {
     }
 
     public int setItemRuleBatch(Long gameId, List<Long> itemId) {
-
-        gameRuleSettingMapper.insert();
+//        GameItemRule gameRuleSetting = new GameItemRule();
+//        gameRuleSetting.setGameId(gameId);
+//        gameRuleSetting.setItemId();
+//        gameRuleSettingMapper.insert();
 
         return 1;
     }

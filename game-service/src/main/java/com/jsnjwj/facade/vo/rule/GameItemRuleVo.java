@@ -1,4 +1,4 @@
-package com.jsnjwj.facade.vo;
+package com.jsnjwj.facade.vo.rule;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -15,7 +15,7 @@ public class GameItemRuleVo implements Serializable {
 
     private Long gameId;
 
-    private Long ruleId;
+    private Integer ruleId;
 
     private Long itemId;
 

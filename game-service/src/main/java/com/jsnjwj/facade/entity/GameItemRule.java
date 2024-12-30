@@ -36,7 +36,7 @@ public class GameItemRule implements Serializable {
     /**
      * 规则编号
      */
-    private Long ruleId;
+    private Integer ruleId;
 
     /**
      *
