@@ -28,13 +28,20 @@ public class GameItemRuleSetServiceImpl implements GameItemRuleSetService {
     private final GameItemRuleMapper gameItemRuleMapper;
     private final GameItemManager gameItemManager;
 
+    /**
+     * 获取所有项目对应的比赛规则
+     * @param query
+     * @return
+     */
     @Override
     public ApiResponse<List<GameItemRuleVo>> getItemRules(ItemRuleQuery query) {
         LambdaQueryWrapper<GameItemRule> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(GameItemRule::getGameId, query.getGameId());
         queryWrapper.eq(Objects.nonNull(query.getRuleId()),GameItemRule::getRuleId, query.getRuleId());
 
+        // 获取所有小项
         List<GameItemRuleVo> response = new ArrayList<>();
+
         Set<Long> itemIds = result.stream().map(GameItemRule::getItemId).collect(Collectors.toSet());
         Map<Long, GameItemEntity> itemEntities = gameItemManager.fetchItemMap(CollectionUtil.newArrayList(itemIds));
 

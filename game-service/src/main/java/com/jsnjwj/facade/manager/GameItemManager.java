@@ -8,6 +8,7 @@ import com.jsnjwj.facade.entity.GameItemEntity;
 import com.jsnjwj.facade.mapper.GameItemMapper;
 import com.jsnjwj.facade.query.GameItemListQuery;
 import com.jsnjwj.facade.vo.ItemLabelVo;
+import com.jsnjwj.facade.vo.rule.GameItemRuleVo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -81,5 +82,6 @@ public class GameItemManager {
     public GameItemEntity fetchItemInfo(Long itemId) {
         return gameItemMapper.selectById(itemId);
     }
+
 
 }

@@ -45,4 +45,8 @@ public class GameItemRuleManager {
         return 1;
     }
 
+
+    public List<GameItemRuleVo>  getItemRule(Long gameId, Long groupId, Long ruleId) {
+        return gameItemRuleMapper.selectItemRule(gameId, groupId, ruleId);
+    }
 }

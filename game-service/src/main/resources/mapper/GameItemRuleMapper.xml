@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jsnjwj.facade.mapper.GameItemRuleMapper">
+
+    <select id="selectItemRule" resultType="com.jsnjwj.facade.vo.rule.GameItemRuleVo">
+        select * from tc_game_item as a
+        left join tc_game_item_rule as r on r.item_id = a.id
+        <where>
+        <if test="gameId is not null">
+        </if>
+            <if test="groupId is not null">
+            </if>
+            <if test="itemId is not null">
+            </if>
+        </where>
+    </select>
+</mapper>

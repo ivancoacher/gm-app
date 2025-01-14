@@ -5,8 +5,11 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsnjwj.facade.entity.GameItemEntity;
 import com.jsnjwj.facade.vo.ItemLabelVo;
+import com.jsnjwj.facade.vo.rule.GameItemRuleVo;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 /**
  * @author user
@@ -24,5 +27,7 @@ public interface GameItemMapper extends BaseMapper<GameItemEntity> {
 
     @Select(sql)
     Page<ItemLabelVo> selectByPage(Page page, @Param("ew") LambdaQueryWrapper lwrapper);
+
+
 
 }
