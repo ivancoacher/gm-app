@@ -7,6 +7,7 @@ import com.jsnjwj.facade.entity.GameItemEntity;
 import com.jsnjwj.facade.entity.GameItemRule;
 import com.jsnjwj.facade.enums.SettingRuleEnum;
 import com.jsnjwj.facade.manager.GameItemManager;
+import com.jsnjwj.facade.manager.GameItemRuleManager;
 import com.jsnjwj.facade.mapper.GameItemRuleMapper;
 import com.jsnjwj.facade.query.GameItemListQuery;
 import com.jsnjwj.facade.query.rule.ItemRuleQuery;
@@ -29,6 +30,7 @@ public class GameItemRuleSetServiceImpl implements GameItemRuleSetService {
 
     private final GameItemRuleMapper gameItemRuleMapper;
     private final GameItemManager gameItemManager;
+    private final GameItemRuleManager gameItemRuleManager;
 
     /**
      * 获取所有项目对应的比赛规则
@@ -69,9 +71,30 @@ public class GameItemRuleSetServiceImpl implements GameItemRuleSetService {
         return ApiResponse.success(response);
     }
 
+    /**
+     * 设置项目规则
+     * @param query
+     * @return
+     */
     @Override
     public ApiResponse<Boolean> setItemRules(ItemRuleSetQuery query) {
-        return null;
+        if (Objects.nonNull(query.getItemId())){
+            GameItemRule gameItemRule = gameItemRuleManager.getGameItemRule(query.getGameId(),query.getItemId());
+            if (Objects.nonNull(gameItemRule)){
+                gameItemRule.setRuleId(query.getRuleId());
+            }else{
+                gameItemRule = new GameItemRule();
+                gameItemRule.setGameId(query.getGameId());
+                gameItemRule.setItemId(query.getItemId());
+                gameItemRule.setRuleId(query.getRuleId());
+            }
+            gameItemRuleManager.saveItemRule(gameItemRule);
+        }else if (Objects.nonNull(query.getGroupId())){
+
+        }
+
+
+        return ApiResponse.success(true);
     }
 
     @Override

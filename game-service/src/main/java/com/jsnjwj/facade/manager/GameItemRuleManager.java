@@ -1,5 +1,7 @@
 package com.jsnjwj.facade.manager;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.jsnjwj.facade.entity.GameItemRule;
 import com.jsnjwj.facade.mapper.GameItemRuleMapper;
 import com.jsnjwj.facade.mapper.GameRuleSettingMapper;
 import com.jsnjwj.facade.vo.rule.GameItemRuleVo;
@@ -7,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 项目规则设定
@@ -25,11 +28,19 @@ public class GameItemRuleManager {
         return null;
     }
 
-    public List<GameItemRuleVo> getGameItemRule(Long gameId, Long itemId) {
+    public GameItemRule getGameItemRule(Long gameId, Long itemId) {
+        LambdaQueryWrapper<GameItemRule> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(GameItemRule::getGameId, gameId);
+        queryWrapper.eq(GameItemRule::getItemId, itemId);
+        return gameItemRuleMapper.selectOne(queryWrapper);
+    }
 
-
-
-        return null;
+    public int saveItemRule(GameItemRule gameItemRule){
+        if (Objects.isNull(gameItemRule.getId())){
+            return gameItemRuleMapper.insert(gameItemRule);
+        }else{
+            return gameItemRuleMapper.updateById(gameItemRule);
+        }
     }
 
     public int setItemRuleBatch(Long gameId, List<Long> itemId) {
