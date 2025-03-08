@@ -38,7 +38,7 @@ public class GameItemServiceImpl implements GameItemService {
     @Override
     public ApiResponse<Page<ItemLabelVo>> fetchPages(GameItemListQuery query) {
 
-        return gameItemManager.fetchItemsPage(query);
+        return ApiResponse.success(gameItemManager.fetchItemsPage(query));
     }
 
     /**

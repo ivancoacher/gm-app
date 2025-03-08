@@ -27,7 +27,7 @@ public class GameItemManager {
         return response;
     }
 
-    public ApiResponse<Page<ItemLabelVo>> fetchItemsPage(GameItemListQuery query) {
+    public Page<ItemLabelVo> fetchItemsPage(GameItemListQuery query) {
         Long gameId = query.getGameId();
         Page<GameItemEntity> page = new Page<>(query.getPage(), query.getLimit());
         LambdaQueryWrapper<GameItemEntity> lambdaQuery = new LambdaQueryWrapper<>();
@@ -35,9 +35,7 @@ public class GameItemManager {
 
         lambdaQuery.eq(!StringUtils.isEmpty(query.getGroupId()), GameItemEntity::getGroupId, query.getGroupId());
         lambdaQuery.orderByAsc(GameItemEntity::getSort);
-        Page<ItemLabelVo> result = gameItemMapper.selectByPage(page, lambdaQuery);
-
-        return ApiResponse.success(result);
+        return gameItemMapper.selectByPage(page, lambdaQuery);
     }
 
     /**

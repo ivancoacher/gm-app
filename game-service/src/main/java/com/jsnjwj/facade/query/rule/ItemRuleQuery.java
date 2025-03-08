@@ -16,4 +16,6 @@ public class ItemRuleQuery extends BaseRequest {
 
     private Long ruleId;
 
+    private Long groupId;
+
 }

@@ -2,6 +2,7 @@ package com.jsnjwj.facade.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsnjwj.common.response.ApiResponse;
 import com.jsnjwj.facade.entity.GameItemEntity;
 import com.jsnjwj.facade.entity.GameItemRule;
@@ -13,6 +14,7 @@ import com.jsnjwj.facade.query.GameItemListQuery;
 import com.jsnjwj.facade.query.rule.ItemRuleQuery;
 import com.jsnjwj.facade.query.rule.ItemRuleSetQuery;
 import com.jsnjwj.facade.service.GameItemRuleSetService;
+import com.jsnjwj.facade.vo.ItemLabelVo;
 import com.jsnjwj.facade.vo.rule.GameItemRuleVo;
 import com.jsnjwj.facade.vo.rule.RuleVo;
 import lombok.RequiredArgsConstructor;
@@ -42,32 +44,33 @@ public class GameItemRuleSetServiceImpl implements GameItemRuleSetService {
 
         GameItemListQuery gameItemListQuery = new GameItemListQuery();
         gameItemListQuery.setGameId(query.getGameId());
-        gameItemListQuery.setGroupId(query.getGameId());
-
-        List<GameItemEntity> itemEntities = gameItemManager.fetchList(gameItemListQuery);
-        if (CollectionUtil.isEmpty(itemEntities)) {
+        gameItemListQuery.setGroupId(query.getGroupId());
+        Page<ItemLabelVo> itemEntities = gameItemManager.fetchItemsPage(gameItemListQuery);
+        if (CollectionUtil.isEmpty(itemEntities.getRecords())) {
             return ApiResponse.success(Collections.emptyList());
         }
         // 获取所有小项
-        List<GameItemRuleVo> response = new ArrayList<>();
+        Page<GameItemRuleVo> ruleResult = new Page<>();
         LambdaQueryWrapper<GameItemRule> ruleQueryWrapper = new LambdaQueryWrapper<>();
         ruleQueryWrapper.eq(GameItemRule::getGameId, query.getGameId());
-        ruleQueryWrapper.in(GameItemRule::getItemId,itemEntities.stream().map(GameItemEntity::getId).collect(Collectors.toList()));
+        ruleQueryWrapper.in(GameItemRule::getItemId,itemEntities.getRecords().stream().map(ItemLabelVo::getItemId).collect(Collectors.toList()));
         List<GameItemRule> result = gameItemRuleMapper.selectList(ruleQueryWrapper);
         Map<Long,GameItemRule> ruleMap = result.stream().collect(Collectors.toMap(GameItemRule::getItemId, Function.identity()));
 
-        response = itemEntities.stream().map(item->{
+        List<GameItemRuleVo> response = itemEntities.getRecords().stream().map(item->{
             GameItemRuleVo ruleVo = new GameItemRuleVo();
-            if (ruleMap.containsKey(item.getId())) {
-                ruleVo.setRuleId(ruleMap.get(item.getId()).getRuleId());
-                ruleVo.setRuleName(Objects.requireNonNull(SettingRuleEnum.getByCode(ruleMap.get(item.getId()).getRuleId())).getValue());
+            if (ruleMap.containsKey(item.getItemId())) {
+                ruleVo.setRuleId(ruleMap.get(item.getItemId()).getRuleId());
+                ruleVo.setRuleName(Objects.requireNonNull(SettingRuleEnum.getByCode(ruleMap.get(item.getItemId()).getRuleId())).getValue());
             }
             ruleVo.setGameId(item.getGameId());
             ruleVo.setItemName(item.getItemName());
+            ruleVo.setGroupName(item.getItemName());
 
             return ruleVo;
         }).collect(Collectors.toList());
-
+        ruleResult.setRecords(response);
+        ruleResult.setTotal(itemEntities.getTotal());
         return ApiResponse.success(response);
     }
 
