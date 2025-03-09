@@ -8,12 +8,6 @@ import java.util.List;
 
 public interface GameSettingService {
 
-    ApiResponse<?> setCourtNum(GameGroupingSetNumQuery query);
-
-    ApiResponse<Boolean> saveCourt(GameGroupingAreaSetQuery query);
-
-    ApiResponse<List<GameAreaEntity>> getCourts(Long gameId);
-
     ApiResponse<Boolean> setGroupingBatch(GameGroupingSetQuery query);
 
     ApiResponse<Boolean> setGrouping(GameGroupingSetQuery query);

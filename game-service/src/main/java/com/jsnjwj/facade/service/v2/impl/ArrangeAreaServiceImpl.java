@@ -5,14 +5,11 @@ import com.jsnjwj.facade.entity.GameAreaEntity;
 import com.jsnjwj.facade.manager.*;
 import com.jsnjwj.facade.query.GameGroupingAreaSetQuery;
 import com.jsnjwj.facade.query.GameGroupingSetNumQuery;
-import com.jsnjwj.facade.service.GameGroupService;
-import com.jsnjwj.facade.service.GameItemService;
 import com.jsnjwj.facade.service.v2.ArrangeAreaService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,33 +21,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ArrangeAreaServiceImpl implements ArrangeAreaService {
 
-
-    @Resource
-    private GameGroupingManager gameGroupingManager;
-
-    @Resource
-    private GameSettingRuleManager gameSettingRuleManager;
-
-    @Resource
-    private GameItemService gameItemService;
-
-    @Resource
-    private GameGroupService gameGroupService;
-
-    @Resource
-    private GameGroupManager groupManager;
-
-    @Resource
-    private GameItemManager itemManager;
-
-    @Resource
-    private GameAreaManager gameAreaManager;
-
-    @Resource
-    private GameManager gameManager;
+    private final GameGroupingManager gameGroupingManager;
 
     @Override
-    public ApiResponse<?> setCourtNum(GameGroupingSetNumQuery query) {
+    public ApiResponse<?> setAreaNum(GameGroupingSetNumQuery query) {
         if (query.getAreaNum() <= 0)
             return ApiResponse.error("请输入正确的场地数");
         int courtNum = 1;
@@ -71,7 +45,7 @@ public class ArrangeAreaServiceImpl implements ArrangeAreaService {
     }
 
     @Override
-    public ApiResponse<Boolean> saveCourt(GameGroupingAreaSetQuery query) {
+    public ApiResponse<Boolean> saveArea(GameGroupingAreaSetQuery query) {
         GameAreaEntity area = new GameAreaEntity();
         area.setId(query.getAreaId());
         area.setGameId(query.getGameId());
@@ -82,7 +56,7 @@ public class ArrangeAreaServiceImpl implements ArrangeAreaService {
     }
 
     @Override
-    public ApiResponse<List<GameAreaEntity>> getCourts(Long gameId) {
+    public ApiResponse<List<GameAreaEntity>> getAreas(Long gameId) {
         List<GameAreaEntity> response = gameGroupingManager.getCourts(gameId);
         return ApiResponse.success(response);
     }

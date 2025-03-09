@@ -5,21 +5,21 @@ import com.jsnjwj.common.utils.ThreadLocalUtil;
 import com.jsnjwj.facade.entity.GameAreaEntity;
 import com.jsnjwj.facade.query.GameGroupingAreaSetQuery;
 import com.jsnjwj.facade.query.GameGroupingSetNumQuery;
-import com.jsnjwj.facade.service.GameArrangeService;
+import com.jsnjwj.facade.service.v2.ArrangeAreaService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 /**
- * 场次管理
+ * 项目分组
  */
 @RestController
-@RequestMapping("/game/setting/arrange/session")
-public class GameSettingSessionController {
+@RequiredArgsConstructor
+@RequestMapping("/game/setting/arrange/area")
+public class ArrangeAreaController {
 
-    @Resource
-    private GameArrangeService gameArrangeService;
+    private final ArrangeAreaService arrangeAreaService;
 
     /**
      * 场地列表
@@ -30,7 +30,7 @@ public class GameSettingSessionController {
     public ApiResponse<List<GameAreaEntity>> getAreas() {
 
         Long gameId = ThreadLocalUtil.getCurrentGameId();
-        return gameArrangeService.getCourts(gameId);
+        return arrangeAreaService.getAreas(gameId);
     }
 
     /**
@@ -42,7 +42,7 @@ public class GameSettingSessionController {
     @PostMapping("/setNum")
     public ApiResponse<?> setAreaNum(@RequestBody GameGroupingSetNumQuery query) {
         query.setGameId(ThreadLocalUtil.getCurrentGameId());
-        return gameArrangeService.setCourtNum(query);
+        return arrangeAreaService.setAreaNum(query);
     }
 
     /**
@@ -54,7 +54,7 @@ public class GameSettingSessionController {
     @PostMapping("/update")
     public ApiResponse<Boolean> saveArea(@RequestBody GameGroupingAreaSetQuery query) {
         query.setGameId(ThreadLocalUtil.getCurrentGameId());
-        return gameArrangeService.saveCourt(query);
+        return arrangeAreaService.saveArea(query);
     }
 
 }

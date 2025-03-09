@@ -34,6 +34,8 @@ public class GroupingDetailDto {
 
         private String team;
 
+        private String sex;
+
     }
 
 }

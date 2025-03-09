@@ -4,9 +4,7 @@ import com.jsnjwj.common.response.ApiResponse;
 import com.jsnjwj.common.utils.ThreadLocalUtil;
 import com.jsnjwj.facade.query.rule.ItemRuleQuery;
 import com.jsnjwj.facade.query.rule.ItemRuleSetQuery;
-import com.jsnjwj.facade.service.GameArrangeService;
 import com.jsnjwj.facade.service.GameItemRuleSetService;
-import com.jsnjwj.facade.service.GameSettingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -58,6 +56,7 @@ public class GameSettingRuleController {
 
     /**
      * 获取规则
+     *
      * @return
      */
     @PostMapping("/getRuleList")

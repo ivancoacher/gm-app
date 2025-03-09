@@ -8,9 +8,10 @@ import com.jsnjwj.facade.query.GameGroupingSetNumQuery;
 import java.util.List;
 
 public interface ArrangeAreaService {
-    ApiResponse<?> setCourtNum(GameGroupingSetNumQuery query);
 
-    ApiResponse<Boolean> saveCourt(GameGroupingAreaSetQuery query);
+    ApiResponse<?> setAreaNum(GameGroupingSetNumQuery query);
 
-    ApiResponse<List<GameAreaEntity>> getCourts(Long gameId);
+    ApiResponse<Boolean> saveArea(GameGroupingAreaSetQuery query);
+
+    ApiResponse<List<GameAreaEntity>> getAreas(Long gameId);
 }
