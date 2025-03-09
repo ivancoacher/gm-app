@@ -4,7 +4,6 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsnjwj.common.response.ApiResponse;
-import com.jsnjwj.facade.entity.GameItemEntity;
 import com.jsnjwj.facade.entity.GameItemRule;
 import com.jsnjwj.facade.enums.SettingRuleEnum;
 import com.jsnjwj.facade.manager.GameItemManager;
@@ -36,6 +35,7 @@ public class GameItemRuleSetServiceImpl implements GameItemRuleSetService {
 
     /**
      * 获取所有项目对应的比赛规则
+     *
      * @param query
      * @return
      */
@@ -45,6 +45,8 @@ public class GameItemRuleSetServiceImpl implements GameItemRuleSetService {
         GameItemListQuery gameItemListQuery = new GameItemListQuery();
         gameItemListQuery.setGameId(query.getGameId());
         gameItemListQuery.setGroupId(query.getGroupId());
+        gameItemListQuery.setPage(query.getPage());
+        gameItemListQuery.setLimit(query.getLimit());
         Page<ItemLabelVo> itemEntities = gameItemManager.fetchItemsPage(gameItemListQuery);
         if (CollectionUtil.isEmpty(itemEntities.getRecords())) {
             return ApiResponse.success(Collections.emptyList());
@@ -53,11 +55,11 @@ public class GameItemRuleSetServiceImpl implements GameItemRuleSetService {
         Page<GameItemRuleVo> ruleResult = new Page<>();
         LambdaQueryWrapper<GameItemRule> ruleQueryWrapper = new LambdaQueryWrapper<>();
         ruleQueryWrapper.eq(GameItemRule::getGameId, query.getGameId());
-        ruleQueryWrapper.in(GameItemRule::getItemId,itemEntities.getRecords().stream().map(ItemLabelVo::getItemId).collect(Collectors.toList()));
+        ruleQueryWrapper.in(GameItemRule::getItemId, itemEntities.getRecords().stream().map(ItemLabelVo::getItemId).collect(Collectors.toList()));
         List<GameItemRule> result = gameItemRuleMapper.selectList(ruleQueryWrapper);
-        Map<Long,GameItemRule> ruleMap = result.stream().collect(Collectors.toMap(GameItemRule::getItemId, Function.identity()));
+        Map<Long, GameItemRule> ruleMap = result.stream().collect(Collectors.toMap(GameItemRule::getItemId, Function.identity()));
 
-        List<GameItemRuleVo> response = itemEntities.getRecords().stream().map(item->{
+        List<GameItemRuleVo> response = itemEntities.getRecords().stream().map(item -> {
             GameItemRuleVo ruleVo = new GameItemRuleVo();
             if (ruleMap.containsKey(item.getItemId())) {
                 ruleVo.setRuleId(ruleMap.get(item.getItemId()).getRuleId());
@@ -65,34 +67,36 @@ public class GameItemRuleSetServiceImpl implements GameItemRuleSetService {
             }
             ruleVo.setGameId(item.getGameId());
             ruleVo.setItemName(item.getItemName());
-            ruleVo.setGroupName(item.getItemName());
+            ruleVo.setGroupName(item.getGroupName());
+            ruleVo.setItemType(item.getItemType());
 
             return ruleVo;
         }).collect(Collectors.toList());
         ruleResult.setRecords(response);
         ruleResult.setTotal(itemEntities.getTotal());
-        return ApiResponse.success(response);
+        return ApiResponse.success(ruleResult);
     }
 
     /**
      * 设置项目规则
+     *
      * @param query
      * @return
      */
     @Override
     public ApiResponse<Boolean> setItemRules(ItemRuleSetQuery query) {
-        if (Objects.nonNull(query.getItemId())){
-            GameItemRule gameItemRule = gameItemRuleManager.getGameItemRule(query.getGameId(),query.getItemId());
-            if (Objects.nonNull(gameItemRule)){
+        if (Objects.nonNull(query.getItemId())) {
+            GameItemRule gameItemRule = gameItemRuleManager.getGameItemRule(query.getGameId(), query.getItemId());
+            if (Objects.nonNull(gameItemRule)) {
                 gameItemRule.setRuleId(query.getRuleId());
-            }else{
+            } else {
                 gameItemRule = new GameItemRule();
                 gameItemRule.setGameId(query.getGameId());
                 gameItemRule.setItemId(query.getItemId());
                 gameItemRule.setRuleId(query.getRuleId());
             }
             gameItemRuleManager.saveItemRule(gameItemRule);
-        }else if (Objects.nonNull(query.getGroupId())){
+        } else if (Objects.nonNull(query.getGroupId())) {
 
         }
 

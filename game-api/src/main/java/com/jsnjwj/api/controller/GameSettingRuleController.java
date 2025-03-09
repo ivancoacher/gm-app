@@ -24,8 +24,7 @@ public class GameSettingRuleController {
      * @return
      */
     @GetMapping("/getItemRuleList")
-    public ApiResponse<?> getItemRuleList() {
-        ItemRuleQuery query = new ItemRuleQuery();
+    public ApiResponse<?> getItemRuleList(ItemRuleQuery query) {
         query.setGameId(ThreadLocalUtil.getCurrentGameId());
         query.setUserId(ThreadLocalUtil.getCurrentUserId());
         return gameItemRuleSetService.getItemRules(query);

@@ -31,4 +31,6 @@ public class GameItemRuleVo implements Serializable {
 
     private LocalDateTime updateAt;
 
+    private String itemType;
+
 }

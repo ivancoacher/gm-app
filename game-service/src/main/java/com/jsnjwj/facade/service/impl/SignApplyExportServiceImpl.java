@@ -38,13 +38,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class SignApplyExportServiceImpl implements SignApplyExportService {
 
-    private final SignApplyManager signApplyManager;
-
     private final static String SHEET_NAME = "sheet1";
+    private final SignApplyManager signApplyManager;
+    private final Map<String, Long> groupCountMap = new HashMap<>();
 
-    private Map<String, Long> groupCountMap = new HashMap<>();
-
-    private Map<String, Integer> groupCountKeyMap = new HashMap<>();
+    private final Map<String, Integer> groupCountKeyMap = new HashMap<>();
 
     @Override
     public ApiResponse<?> exportSignProgram(SignSingleProgramExportQuery request) {
