@@ -1,24 +1,14 @@
 package com.jsnjwj.facade.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
-
-import java.io.Serializable;
 
 /**
  * @TableName tc_game_area
  */
 @Data
 @TableName(value = "tc_game_session")
-public class GameSessionEntity implements Serializable {
-
-    /**
-     * id
-     */
-    @TableId(type = IdType.AUTO)
-    private Long id;
+public class GameSessionEntity extends BaseEntity {
 
     /**
      * 赛事id

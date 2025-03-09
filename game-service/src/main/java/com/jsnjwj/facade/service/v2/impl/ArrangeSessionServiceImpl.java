@@ -1,21 +1,17 @@
 package com.jsnjwj.facade.service.v2.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.jsnjwj.common.response.ApiResponse;
-import com.jsnjwj.facade.entity.GameAreaEntity;
 import com.jsnjwj.facade.entity.GameSessionEntity;
 import com.jsnjwj.facade.manager.ArrangeSessionManager;
-import com.jsnjwj.facade.manager.GameGroupingManager;
-import com.jsnjwj.facade.query.GameGroupingAreaSetQuery;
 import com.jsnjwj.facade.query.GameGroupingSessionSetNumQuery;
 import com.jsnjwj.facade.query.GameGroupingSessionSetQuery;
-import com.jsnjwj.facade.query.GameGroupingSetNumQuery;
 import com.jsnjwj.facade.service.v2.ArrangeSessionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -66,6 +62,7 @@ public class ArrangeSessionServiceImpl implements ArrangeSessionService {
         area.setSessionName(query.getSessionName());
         area.setSessionNo(query.getSessionNo());
         area.setStatus(query.getStatus());
+        area.setCreatedAt(new Date());
         arrangeSessionManager.saveSession(area);
         return ApiResponse.success(true);
     }
