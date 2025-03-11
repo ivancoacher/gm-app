@@ -1,5 +1,11 @@
 package com.jsnjwj.facade.service.v2;
 
+import com.jsnjwj.common.response.ApiResponse;
+import com.jsnjwj.facade.query.session.ManualDrawQuery;
+import com.jsnjwj.facade.query.session.SystemDrawQuery;
+
 public interface DrawService {
-    boolean draw(Long gameId, String type);
+    ApiResponse<?> systemDraw(SystemDrawQuery query);
+    ApiResponse<?> getDraw(SystemDrawQuery query);
+    ApiResponse<?> manualDraw(ManualDrawQuery query);
 }

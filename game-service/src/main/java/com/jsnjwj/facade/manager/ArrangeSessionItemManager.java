@@ -32,6 +32,14 @@ public class ArrangeSessionItemManager {
         }
     }
 
+    public List<GameSessionItemEntity> fetchListBySessionId(Long gameId, Long sessionId){
+        LambdaQueryWrapper<GameSessionItemEntity> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(GameSessionItemEntity::getGameId, gameId);
+        queryWrapper.eq(GameSessionItemEntity::getSessionId, sessionId);
+        return gameSessionItemMapper.selectList(queryWrapper);
+    }
+
+
     public List<SessionItemVo> fetchBySessionId(Long gameId, Long sessionId){
         return gameSessionItemMapper.fetchBySessionId(gameId,sessionId);
     }

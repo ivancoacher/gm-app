@@ -123,7 +123,7 @@ public class SignApplyManager {
 
     public void saveTeamBatch(Long gameId, List<ImportTeamUploadDto> data) {
         List<SignTeamEntity> datas = new ArrayList<>();
-        if (data.size() > 0) {
+        if (!data.isEmpty()) {
             data.forEach(d -> {
                 SignTeamEntity team = new SignTeamEntity();
                 team.setGameId(gameId);
@@ -322,6 +322,13 @@ public class SignApplyManager {
         return signSingleMapper.selectList(wrapper);
     }
 
+    public List<SignSingleEntity> getApplyByItemIds(Long gameId, List<Long> itemIds) {
+        LambdaQueryWrapper<SignSingleEntity> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(SignSingleEntity::getGameId, gameId);
+        wrapper.in(SignSingleEntity::getItemId, itemIds);
+        return signSingleMapper.selectList(wrapper);
+    }
+
     /**
      * 获取报名数据中所有orgName
      */
@@ -515,6 +522,13 @@ public class SignApplyManager {
     public List<SignSingleEntity> countPlayerTimesByOrgId(Long orgId) {
         LambdaQueryWrapper<SignSingleEntity> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(SignSingleEntity::getOrgId, orgId);
+        return signSingleMapper.selectList(queryWrapper);
+
+    }
+
+    public List<SignSingleEntity> getSingleByGameId(Long gameId) {
+        LambdaQueryWrapper<SignSingleEntity> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(SignSingleEntity::getGameId, gameId);
         return signSingleMapper.selectList(queryWrapper);
 
     }

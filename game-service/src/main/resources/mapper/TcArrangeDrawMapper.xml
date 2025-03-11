@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jsnjwj.facade.mapper.GameDrawMapper">
+
+    <sql id="Base_Column_List">
+        id,game_id,area_name,
+        status,area_no
+    </sql>
+
+    <insert id="saveBatch">
+        INSERT INTO `tc_game_draw` (`game_id`, `session_id`, `session_no`, `sign_id`, `sort`,  `created_at`)
+        VALUES
+        <foreach collection="list" item="entity" separator=",">
+            (#{entity.gameId},#{entity.sessionId},#{entity.sessionNo},#{entity.signId},#{entity.sort}}, #{entity.createdAt})
+        </foreach>
+    </insert>
+</mapper>
