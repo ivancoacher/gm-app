@@ -88,10 +88,8 @@ public class ArrangeSessionItemServiceImpl implements ArrangeSessionItemService 
                 GameSessionItemEntity gameSessionItemEntity = new GameSessionItemEntity();
                 gameSessionItemEntity.setGameId(query.getGameId());
                 gameSessionItemEntity.setSessionId(query.getSessionId());
-                gameSessionItemEntity.setGameId(query.getGameId());
-                gameSessionItemEntity.setGameId(query.getGameId());
-                gameSessionItemEntity.setGameId(query.getGameId());
-
+                gameSessionItemEntity.setItemId(item.getItemId());
+                gameSessionItemEntity.setSort(item.getSort());
                 result.add(gameSessionItemEntity);
             });
 
