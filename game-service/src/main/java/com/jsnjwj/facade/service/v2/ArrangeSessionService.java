@@ -1,12 +1,9 @@
 package com.jsnjwj.facade.service.v2;
 
 import com.jsnjwj.common.response.ApiResponse;
-import com.jsnjwj.facade.entity.GameAreaEntity;
 import com.jsnjwj.facade.entity.GameSessionEntity;
-import com.jsnjwj.facade.query.GameGroupingAreaSetQuery;
-import com.jsnjwj.facade.query.GameGroupingSessionSetNumQuery;
-import com.jsnjwj.facade.query.GameGroupingSessionSetQuery;
-import com.jsnjwj.facade.query.GameGroupingSetNumQuery;
+import com.jsnjwj.facade.query.session.GameGroupingSessionSetNumQuery;
+import com.jsnjwj.facade.query.session.GameGroupingSessionSetQuery;
 
 import java.util.List;
 

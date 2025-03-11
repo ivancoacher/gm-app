@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jsnjwj.facade.mapper.GameSessionItemMapper">
+
+
+
+    <insert id="saveBatch">
+        insert into tc_game_session_item (`game_id`,`session_id`,`item_id`,`sort`) values
+        <foreach collection="list" item="entity" separator=",">
+            (#{entity.gameId},#{entity.sessionId},#{entity.itemId}, #{entity.sort})
+        </foreach>
+    </insert>
+    <select id="fetchBySessionId" resultType="com.jsnjwj.facade.vo.session.SessionItemVo">
+        select i.item_name as itemName,i.id as itemId,s.session_id as sessionId,s.sort from tc_game_session_item as s
+        left join tc_game_item as i on i.id = s.item_id
+        where s.session_id = #{sessionId} and s.game_id = #{gameId}
+        order by sort
+    </select>
+</mapper>

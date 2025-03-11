@@ -1,4 +1,4 @@
-package com.jsnjwj.facade.query;
+package com.jsnjwj.facade.query.session;
 
 import com.jsnjwj.common.request.BaseRequest;
 import lombok.Data;

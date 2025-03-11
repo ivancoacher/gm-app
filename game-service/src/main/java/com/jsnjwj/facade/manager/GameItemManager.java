@@ -51,6 +51,10 @@ public class GameItemManager {
         return gameItemMapper.selectList(lambdaQuery);
     }
 
+    public List<GameItemEntity> fetchListByWrapper(LambdaQueryWrapper<GameItemEntity> lambdaQuery) {
+        return gameItemMapper.selectList(lambdaQuery);
+    }
+
     public Map<Long, GameItemEntity> fetchItemMap(List<Long> itemIds) {
         LambdaQueryWrapper<GameItemEntity> lambdaQuery = new LambdaQueryWrapper<>();
         lambdaQuery.in(GameItemEntity::getId, itemIds);
