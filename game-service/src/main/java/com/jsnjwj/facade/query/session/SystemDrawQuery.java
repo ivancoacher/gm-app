@@ -13,4 +13,6 @@ public class SystemDrawQuery extends BaseRequest {
      */
     private Integer type;
 
+    private Integer sessionNo;
+
 }

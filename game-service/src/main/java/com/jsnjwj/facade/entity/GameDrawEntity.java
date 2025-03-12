@@ -26,7 +26,7 @@ public class GameDrawEntity extends BaseEntity {
     private Integer sessionNo;
 
     /**
-     *
+     * 报名id
      */
     private Long signId;
 

@@ -11,12 +11,17 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class ManualDrawQuery extends BaseRequest {
-    List<ManualDrawData> data;
+    private List<ManualDrawData> data;
 
+    private Integer sessionNo;
     @Getter
     @Setter
     public static class ManualDrawData {
 
+        /**
+         * 兼容不按场次编排的情况
+         */
+        private Integer sessionNo;
         private Long sessionId;
         private Long signId;
         private Integer sort;

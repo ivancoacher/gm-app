@@ -13,7 +13,38 @@
         INSERT INTO `tc_game_draw` (`game_id`, `session_id`, `session_no`, `sign_id`, `sort`,  `created_at`)
         VALUES
         <foreach collection="list" item="entity" separator=",">
-            (#{entity.gameId},#{entity.sessionId},#{entity.sessionNo},#{entity.signId},#{entity.sort}}, #{entity.createdAt})
+            (#{entity.gameId},#{entity.sessionId},#{entity.sessionNo},#{entity.signId},#{entity.sort}, #{entity.createdAt})
         </foreach>
     </insert>
+    <select id="getBySessionNo" resultType="com.jsnjwj.facade.dao.SessionDrawDao">
+        select d.session_no    as sessionNo,
+               d.id            as drawId,
+               d.session_id    as sessionId,
+               s2.session_name as sessionName,
+               d.sign_id       as signId,
+               s.name          as signName,
+               g.id            as groupId,
+               g.group_name    as groupName,
+               i.id            as itemId,
+               i.item_name     as itemName
+        from tc_game_draw as d
+                 left join tc_sign_single as s on s.id = d.sign_id
+                 left join tc_game_session as s2 on s2.id = d.session_id
+                 left join tc_game_item as i on i.id = s.item_id
+                 left join tc_game_group as g on g.id = i.group_id
+        where d.session_no = #{sessionNo}
+          and d.game_id = #{gameId}
+        order by d.sort
+
+    </select>
+    <select id="getSessionList" resultType="com.jsnjwj.facade.dao.SessionDrawListDao">
+        select s.session_id as sessionId,
+               if (s2.session_name is null, s2.session_name, "默认场次") as sessionName,
+               if (s2.session_no is null, s2.session_no, 0) as sessionNo,
+               s.game_id as gameId
+               from tc_game_draw s
+        left join tc_game_session s2 on s2.id = s.session_id
+        where s.game_id = #{gameId}
+        group by s.session_no
+    </select>
 </mapper>

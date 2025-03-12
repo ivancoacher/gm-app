@@ -24,7 +24,7 @@ public class ArrangeDrawController {
 
 
     /**
-     * 场地列表
+     * 自动编排
      *
      * @return
      */
@@ -35,6 +35,14 @@ public class ArrangeDrawController {
         return drawService.systemDraw(query);
     }
 
+    @PostMapping("/list")
+    public ApiResponse<?> getDrawList() {
+        SystemDrawQuery query = new SystemDrawQuery();
+        Long gameId = ThreadLocalUtil.getCurrentGameId();
+        query.setGameId(gameId);
+        return drawService.getDrawList(query);
+    }
+
     @PostMapping("/get")
     public ApiResponse<?> getDraw(@RequestBody SystemDrawQuery query) {
         Long gameId = ThreadLocalUtil.getCurrentGameId();
@@ -42,6 +50,12 @@ public class ArrangeDrawController {
         return drawService.getDraw(query);
     }
 
+    /**
+     * 手动编排设计
+     * 调整编排顺序
+     * @param query
+     * @return
+     */
     @PostMapping("/manual")
     public ApiResponse<?> manualDraw(@RequestBody ManualDrawQuery query) {
         query.setGameId(ThreadLocalUtil.getCurrentGameId());

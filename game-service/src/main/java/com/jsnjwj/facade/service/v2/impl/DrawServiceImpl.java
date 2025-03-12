@@ -1,13 +1,22 @@
 package com.jsnjwj.facade.service.v2.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.jsnjwj.common.response.ApiResponse;
-import com.jsnjwj.facade.entity.*;
+import com.jsnjwj.facade.dao.SessionDrawDao;
+import com.jsnjwj.facade.dao.SessionDrawListDao;
+import com.jsnjwj.facade.dto.ArrangeDrawDto;
+import com.jsnjwj.facade.entity.GameDrawEntity;
+import com.jsnjwj.facade.entity.GameSessionEntity;
+import com.jsnjwj.facade.entity.GameSessionItemEntity;
+import com.jsnjwj.facade.entity.SignSingleEntity;
 import com.jsnjwj.facade.enums.DrawTypeEnum;
 import com.jsnjwj.facade.manager.ArrangeDrawManager;
 import com.jsnjwj.facade.manager.ArrangeSessionItemManager;
 import com.jsnjwj.facade.manager.ArrangeSessionManager;
 import com.jsnjwj.facade.manager.SignApplyManager;
+import com.jsnjwj.facade.mapper.GameDrawMapper;
 import com.jsnjwj.facade.query.session.ManualDrawQuery;
 import com.jsnjwj.facade.query.session.SystemDrawQuery;
 import com.jsnjwj.facade.service.v2.DrawService;
@@ -36,6 +45,8 @@ public class DrawServiceImpl implements DrawService {
     private final SignApplyManager signApplyManager;
 
     private final ArrangeDrawManager drawManager;
+    private final GameDrawMapper gameDrawMapper;
+
     /**
      * 系统自动抽签分组
      */
@@ -46,23 +57,26 @@ public class DrawServiceImpl implements DrawService {
         Long gameId = query.getGameId();
         List<GameDrawEntity> result = new ArrayList<>();
         // 按场次抽签
-        if (DrawTypeEnum.DRAW_WITH_SESSION.getType() == type){
+        if (DrawTypeEnum.DRAW_WITH_SESSION.getType() == type) {
             // 查询所有场次
             List<GameSessionEntity> sessionList = sessionManager.getList(query.getGameId());
-            if (CollectionUtil.isEmpty(sessionList)){
+            if (CollectionUtil.isEmpty(sessionList)) {
                 return ApiResponse.error("请先创建场次");
             }
+            LambdaQueryWrapper<GameDrawEntity> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(GameDrawEntity::getGameId, gameId);
+            gameDrawMapper.delete(queryWrapper);
             // 查询各个场次内对应的小项
             sessionList.forEach(session -> {
-                List<GameSessionItemEntity> sessionItemEntities = sessionItemManager.fetchListBySessionId(gameId,session.getId());
-                if (CollectionUtil.isEmpty(sessionItemEntities)){
+                List<GameSessionItemEntity> sessionItemEntities = sessionItemManager.fetchListBySessionId(gameId, session.getId());
+                if (CollectionUtil.isEmpty(sessionItemEntities)) {
                     // 该场次未安排小项，则不处理
                     log.info("该场次未安排小项，则不处理");
                     return;
                 }
                 List<Long> itemIds = sessionItemEntities.stream().map(GameSessionItemEntity::getItemId).collect(Collectors.toList());
-                List<SignSingleEntity> signApplyManagers = signApplyManager.getApplyByItemIds(gameId,itemIds);
-                if (CollectionUtil.isEmpty(signApplyManagers)){
+                List<SignSingleEntity> signApplyManagers = signApplyManager.getApplyByItemIds(gameId, itemIds);
+                if (CollectionUtil.isEmpty(signApplyManagers)) {
                     log.info("该项目无报名记录");
                     return;
                 }
@@ -84,14 +98,16 @@ public class DrawServiceImpl implements DrawService {
             });
         }
         // 不按场次抽签
-        else{
-
+        else {
+            LambdaQueryWrapper<GameDrawEntity> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(GameDrawEntity::getGameId, gameId);
+            gameDrawMapper.delete(queryWrapper);
             // 创建默认场次
             GameSessionEntity gameSessionEntity = new GameSessionEntity();
             gameSessionEntity.setSessionNo(0);
             // 将所有小项安排进该场次中
             List<SignSingleEntity> signApplyManagers = signApplyManager.getSingleByGameId(gameId);
-            if (CollectionUtil.isNotEmpty(signApplyManagers)){
+            if (CollectionUtil.isNotEmpty(signApplyManagers)) {
                 List<Long> signIds = signApplyManagers.stream().map(SignSingleEntity::getId).collect(Collectors.toList());
                 Collections.shuffle(signIds);
                 for (int i = 0; i < signIds.size(); i++) {
@@ -111,31 +127,57 @@ public class DrawServiceImpl implements DrawService {
         return ApiResponse.success(true);
     }
 
+    @Override
+    public ApiResponse<?> getDrawList(SystemDrawQuery query) {
+        // 查询所有场次
+        Long gameId = query.getGameId();
+        List<SessionDrawListDao> result = gameDrawMapper.getSessionList(gameId);
+
+        return ApiResponse.success(result);
+    }
+
     /**
      * 查询所有排序内容
      */
     public ApiResponse<?> getDraw(SystemDrawQuery query) {
         // 查询所有场次
-
-        // 查询各个场次内对应的小项
-
-        // 将各个场次内的小项打乱，排序。相同选手，间隔5位
-
-        return ApiResponse.success();
+        Long gameId = query.getGameId();
+        Integer sessionNo = query.getSessionNo();
+        List<SessionDrawDao> result = gameDrawMapper.getBySessionNo(gameId, sessionNo);
+        List<ArrangeDrawDto> response = new ArrayList<>();
+        BeanUtil.copyProperties(result, response);
+        return ApiResponse.success(response);
     }
 
     /**
      * 人工抽签分组
+     *
      * @param query
      * @return
      */
     @Override
     public ApiResponse<?> manualDraw(ManualDrawQuery query) {
         Long gameId = query.getGameId();
-
+        if (CollectionUtil.isEmpty(query.getData())) {
+            return ApiResponse.error("数据为空");
+        }
         // 1、删除所有抽签记录
-
+        LambdaQueryWrapper<GameDrawEntity> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(GameDrawEntity::getGameId, gameId);
+        queryWrapper.eq(GameDrawEntity::getSessionNo, query.getSessionNo());
+        gameDrawMapper.delete(queryWrapper);
         // 2、保存抽签记录
+        List<GameDrawEntity> result = new ArrayList<>();
+        result = query.getData().stream().map(manualDrawData -> {
+            GameDrawEntity drawEntity = new GameDrawEntity();
+            drawEntity.setSort(manualDrawData.getSort());
+            drawEntity.setGameId(gameId);
+            drawEntity.setSessionNo(manualDrawData.getSessionNo());
+            drawEntity.setSessionId(manualDrawData.getSessionId());
+            drawEntity.setCreatedAt(new Date());
+            return drawEntity;
+        }).collect(Collectors.toList());
+        gameDrawMapper.saveBatch(result);
         return null;
     }
 
