@@ -22,6 +22,18 @@ public class ArrangeSessionManager {
         }
     }
 
+    public GameSessionEntity getBySessionId(Long sessionId) {
+        LambdaQueryWrapper<GameSessionEntity> query = new LambdaQueryWrapper<>();
+        query.eq(GameSessionEntity::getId, sessionId);
+        return gameSessionMapper.selectOne(query);
+    }
+
+    public GameSessionEntity getBySessionNo(Integer sessionNo) {
+        LambdaQueryWrapper<GameSessionEntity> query = new LambdaQueryWrapper<>();
+        query.eq(GameSessionEntity::getSessionNo, sessionNo);
+        return gameSessionMapper.selectOne(query);
+    }
+
     public void saveSessionBatch(List<GameSessionEntity> list) {
         gameSessionMapper.saveBatch(list);
     }

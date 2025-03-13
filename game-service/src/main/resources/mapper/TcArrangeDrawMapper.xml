@@ -38,9 +38,9 @@
 
     </select>
     <select id="getSessionList" resultType="com.jsnjwj.facade.dao.SessionDrawListDao">
-        select s.session_id as sessionId,
-               if (s2.session_name is null, s2.session_name, "默认场次") as sessionName,
-               if (s2.session_no is null, s2.session_no, 0) as sessionNo,
+        select if (s2.id is null, s.session_id, 0) as sessionId,
+               if (s2.session_name is null, "默认场次",s2.session_name) as sessionName,
+               if (s2.session_no is null, 0, s2.session_no) as sessionNo,
                s.game_id as gameId
                from tc_game_draw s
         left join tc_game_session s2 on s2.id = s.session_id

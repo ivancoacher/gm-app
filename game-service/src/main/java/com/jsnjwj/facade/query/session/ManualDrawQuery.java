@@ -21,9 +21,7 @@ public class ManualDrawQuery extends BaseRequest {
         /**
          * 兼容不按场次编排的情况
          */
-        private Integer sessionNo;
-        private Long sessionId;
-        private Long signId;
+        private Long drawId;
         private Integer sort;
     }
 
