@@ -21,116 +21,115 @@ import java.util.List;
 @RequiredArgsConstructor
 public class GameSignController {
 
-    private final SignApplyService signApplyService;
+	private final SignApplyService signApplyService;
 
-    private final SignApplyExportService signApplyExportService;
+	private final SignApplyExportService signApplyExportService;
 
-    @RequestMapping("/single/page")
-    public ApiResponse<?> fetchSinglePage(SignSingleListQuery query) {
-        query.setGameId(ThreadLocalUtil.getCurrentGameId());
-        query.setUserId(ThreadLocalUtil.getCurrentUserId());
-        return signApplyService.fetchSinglePage(query);
-    }
+	@RequestMapping("/single/page")
+	public ApiResponse<?> fetchSinglePage(SignSingleListQuery query) {
+		query.setGameId(ThreadLocalUtil.getCurrentGameId());
+		query.setUserId(ThreadLocalUtil.getCurrentUserId());
+		return signApplyService.fetchSinglePage(query);
+	}
 
-    @RequestMapping("/single/import")
-    public ApiResponse<?> singleImport(@RequestParam("importType") Integer importType,
-                                       @RequestParam("file") MultipartFile sourceFile) {
-        return signApplyService.importSingle(importType, sourceFile);
-    }
+	@RequestMapping("/single/import")
+	public ApiResponse<?> singleImport(@RequestParam("importType") Integer importType,
+			@RequestParam("file") MultipartFile sourceFile) {
+		return signApplyService.importSingle(importType, sourceFile);
+	}
 
-    /**
-     * 秩序册导出
-     *
-     * @param request SignSingleProgramExportQuery
-     * @return ApiResponse
-     */
-    @RequestMapping("/single/program/export")
-    public ApiResponse<?> singleImport(@RequestBody SignSingleProgramExportQuery request) {
-        request.setGameId(ThreadLocalUtil.getCurrentGameId());
-        return signApplyExportService.exportSignProgram(request);
-    }
+	/**
+	 * 秩序册导出
+	 * @param request SignSingleProgramExportQuery
+	 * @return ApiResponse
+	 */
+	@RequestMapping("/single/program/export")
+	public ApiResponse<?> singleImport(@RequestBody SignSingleProgramExportQuery request) {
+		request.setGameId(ThreadLocalUtil.getCurrentGameId());
+		return signApplyExportService.exportSignProgram(request);
+	}
 
-    @RequestMapping("/project/program/export")
-    public ApiResponse<?> projectImport(@RequestBody SignSingleProgramExportQuery request) {
-        request.setGameId(ThreadLocalUtil.getCurrentGameId());
-        return signApplyExportService.exportSignProjectProgram(request);
-    }
+	@RequestMapping("/project/program/export")
+	public ApiResponse<?> projectImport(@RequestBody SignSingleProgramExportQuery request) {
+		request.setGameId(ThreadLocalUtil.getCurrentGameId());
+		return signApplyExportService.exportSignProjectProgram(request);
+	}
 
-    @RequestMapping("/single/demo/import")
-    public ApiResponse<?> singleDemoImport(BaseRequest query, MultipartFile sourceFile) throws Exception {
-        query.setUserId(ThreadLocalUtil.getCurrentUserId());
-        return signApplyService.exportSingleDemo(query, sourceFile);
-    }
+	@RequestMapping("/single/demo/import")
+	public ApiResponse<?> singleDemoImport(BaseRequest query, MultipartFile sourceFile) throws Exception {
+		query.setUserId(ThreadLocalUtil.getCurrentUserId());
+		return signApplyService.exportSingleDemo(query, sourceFile);
+	}
 
-    @RequestMapping("/team/page")
-    public ApiResponse<?> fetchTeamPage(SignTeamListQuery query) {
-        query.setGameId(ThreadLocalUtil.getCurrentGameId());
-        query.setUserId(ThreadLocalUtil.getCurrentUserId());
-        return signApplyService.fetchTeamPage(query);
-    }
+	@RequestMapping("/team/page")
+	public ApiResponse<?> fetchTeamPage(SignTeamListQuery query) {
+		query.setGameId(ThreadLocalUtil.getCurrentGameId());
+		query.setUserId(ThreadLocalUtil.getCurrentUserId());
+		return signApplyService.fetchTeamPage(query);
+	}
 
-    @RequestMapping("/team/data")
-    public ApiResponse<?> fetchTeamData(SignTeamListQuery query) {
-        query.setGameId(ThreadLocalUtil.getCurrentGameId());
-        return signApplyService.fetchTeamData(query);
-    }
+	@RequestMapping("/team/data")
+	public ApiResponse<?> fetchTeamData(SignTeamListQuery query) {
+		query.setGameId(ThreadLocalUtil.getCurrentGameId());
+		return signApplyService.fetchTeamData(query);
+	}
 
-    @RequestMapping("/team/update")
-    public ApiResponse<?> updateTeam(@RequestBody SignTeamUpdateQuery query) {
-        query.setGameId(ThreadLocalUtil.getCurrentGameId());
-        return signApplyService.updateTeam(query);
-    }
+	@RequestMapping("/team/update")
+	public ApiResponse<?> updateTeam(@RequestBody SignTeamUpdateQuery query) {
+		query.setGameId(ThreadLocalUtil.getCurrentGameId());
+		return signApplyService.updateTeam(query);
+	}
 
-    @DeleteMapping("/team/{teamId}")
-    public ApiResponse<?> deleteTeam(@PathVariable Long teamId) {
+	@DeleteMapping("/team/{teamId}")
+	public ApiResponse<?> deleteTeam(@PathVariable Long teamId) {
 
-        return signApplyService.deleteTeam(teamId);
-    }
+		return signApplyService.deleteTeam(teamId);
+	}
 
-    @DeleteMapping("/single/{signId}")
-    public ApiResponse<?> deleteSign(@PathVariable Long signId) {
+	@DeleteMapping("/single/{signId}")
+	public ApiResponse<?> deleteSign(@PathVariable Long signId) {
 
-        return signApplyService.signDelete(signId);
-    }
+		return signApplyService.signDelete(signId);
+	}
 
-    @PostMapping("/single")
-    public ApiResponse<?> deleteSigns(@RequestBody List<Long> signIds) {
+	@PostMapping("/single")
+	public ApiResponse<?> deleteSigns(@RequestBody List<Long> signIds) {
 
-        return signApplyService.signDeleteBatch(signIds);
-    }
+		return signApplyService.signDeleteBatch(signIds);
+	}
 
-    @RequestMapping("/team/info/{id}")
-    public ApiResponse<?> fetchTeam(@PathVariable Long id) {
-        return signApplyService.fetchTeam(id);
-    }
+	@RequestMapping("/team/info/{id}")
+	public ApiResponse<?> fetchTeam(@PathVariable Long id) {
+		return signApplyService.fetchTeam(id);
+	}
 
-    @RequestMapping("/team/import")
-    public ApiResponse<?> teamImport(BaseRequest query, HttpServletRequest request) throws Exception {
-        MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
-        MultipartFile sourceFile = multiRequest.getFile("file");
-        query.setUserId(ThreadLocalUtil.getCurrentUserId());
-        return signApplyService.importTeam(query, sourceFile);
-    }
+	@RequestMapping("/team/import")
+	public ApiResponse<?> teamImport(BaseRequest query, HttpServletRequest request) throws Exception {
+		MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
+		MultipartFile sourceFile = multiRequest.getFile("file");
+		query.setUserId(ThreadLocalUtil.getCurrentUserId());
+		return signApplyService.importTeam(query, sourceFile);
+	}
 
-    @RequestMapping("/team/demo/export")
-    public ApiResponse<?> teamDemoExport(BaseRequest query, HttpServletRequest request) throws Exception {
-        MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
-        MultipartFile sourceFile = multiRequest.getFile("file");
-        query.setUserId(ThreadLocalUtil.getCurrentUserId());
-        return signApplyService.exportTeamDemo(query, sourceFile);
-    }
+	@RequestMapping("/team/demo/export")
+	public ApiResponse<?> teamDemoExport(BaseRequest query, HttpServletRequest request) throws Exception {
+		MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
+		MultipartFile sourceFile = multiRequest.getFile("file");
+		query.setUserId(ThreadLocalUtil.getCurrentUserId());
+		return signApplyService.exportTeamDemo(query, sourceFile);
+	}
 
-    @RequestMapping("/single/update")
-    public ApiResponse<?> teamDemoExport(@RequestBody SignSingleUpdateQuery request) {
-        request.setGameId(ThreadLocalUtil.getCurrentGameId());
-        request.setUserId(ThreadLocalUtil.getCurrentUserId());
-        return signApplyService.signUpdate(request);
-    }
+	@RequestMapping("/single/update")
+	public ApiResponse<?> teamDemoExport(@RequestBody SignSingleUpdateQuery request) {
+		request.setGameId(ThreadLocalUtil.getCurrentGameId());
+		request.setUserId(ThreadLocalUtil.getCurrentUserId());
+		return signApplyService.signUpdate(request);
+	}
 
-    @GetMapping("/org/list")
-    public ApiResponse<?> getOrgList() {
-        Long gameId = ThreadLocalUtil.getCurrentGameId();
-        return signApplyService.getOrgList(gameId);
-    }
+	@GetMapping("/org/list")
+	public ApiResponse<?> getOrgList() {
+		Long gameId = ThreadLocalUtil.getCurrentGameId();
+		return signApplyService.getOrgList(gameId);
+	}
 
 }

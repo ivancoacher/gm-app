@@ -14,6 +14,6 @@ import java.util.List;
  */
 public interface SignTeamMapper extends BaseMapper<SignTeamEntity> {
 
-    void saveBatch(@Param("list") List<SignTeamEntity> list);
+	void saveBatch(@Param("list") List<SignTeamEntity> list);
 
 }

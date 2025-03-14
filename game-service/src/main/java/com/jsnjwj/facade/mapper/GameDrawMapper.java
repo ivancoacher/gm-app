@@ -17,9 +17,11 @@ import java.util.List;
  * @Entity com.jsnjwj.service.entity.TcGameArea
  */
 public interface GameDrawMapper extends BaseMapper<GameDrawEntity> {
-    void saveBatch(@Param("list") List<GameDrawEntity> list);
 
-    List<SessionDrawDao> getBySessionNo(@Param("gameId") Long gameId, @Param("sessionNo") Integer sessionNo);
+	void saveBatch(@Param("list") List<GameDrawEntity> list);
 
-    List<SessionDrawListDao> getSessionList(@Param("gameId") Long gameId);
+	List<SessionDrawDao> getBySessionNo(@Param("gameId") Long gameId, @Param("sessionNo") Integer sessionNo);
+
+	List<SessionDrawListDao> getSessionList(@Param("gameId") Long gameId);
+
 }

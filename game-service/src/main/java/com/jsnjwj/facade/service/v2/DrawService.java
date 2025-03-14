@@ -6,11 +6,12 @@ import com.jsnjwj.facade.query.session.SystemDrawQuery;
 
 public interface DrawService {
 
-    ApiResponse<?> systemDraw(SystemDrawQuery query);
+	ApiResponse<?> systemDraw(SystemDrawQuery query);
 
-    ApiResponse<?> getDrawList(SystemDrawQuery query);
+	ApiResponse<?> getDrawList(SystemDrawQuery query);
 
-    ApiResponse<?> getDraw(SystemDrawQuery query);
+	ApiResponse<?> getDraw(SystemDrawQuery query);
 
-    ApiResponse<?> manualDraw(ManualDrawQuery query);
+	ApiResponse<?> manualDraw(ManualDrawQuery query);
+
 }

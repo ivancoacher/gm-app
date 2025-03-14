@@ -5,10 +5,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class BasePageRequest extends BaseRequest{
+public class BasePageRequest extends BaseRequest {
 
-    private Long page;
+	private Long page;
 
-    private Long limit;
+	private Long limit;
 
 }

@@ -10,12 +10,12 @@ import java.util.List;
 @Data
 public class ItemRuleSetQuery extends BaseRequest {
 
-    private Long gameId;
+	private Long itemId;
 
-    private Long itemId;
+	private Integer ruleId;
 
-    private Integer ruleId;
+	private Boolean syncGroup = false;
 
-    private Long groupId;
+	private Long groupId;
 
 }

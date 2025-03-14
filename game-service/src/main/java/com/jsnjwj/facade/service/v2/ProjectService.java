@@ -7,10 +7,10 @@ import java.util.List;
 
 public interface ProjectService {
 
+	boolean createMatchNumber(Long gameId);
 
-    boolean createMatchNumber(Long gameId);
+	List<MatchNumberVo> getMatchNumbers(Long gameId);
 
-    List<MatchNumberVo> getMatchNumbers(Long gameId);
+	boolean sortMatch(Long gameId, List<MatchItemSortVo> itemIds);
 
-    boolean sortMatch(Long gameId, List<MatchItemSortVo> itemIds);
 }

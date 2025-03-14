@@ -5,12 +5,12 @@ import lombok.Data;
 @Data
 public class GroupLabelVo {
 
-    private Long gameId;
+	private Long gameId;
 
-    private Long groupId;
+	private Long groupId;
 
-    private String groupName;
+	private String groupName;
 
-    private Integer sort;
+	private Integer sort;
 
 }

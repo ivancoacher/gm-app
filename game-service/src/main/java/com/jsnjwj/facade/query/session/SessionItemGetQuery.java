@@ -7,8 +7,8 @@ import lombok.Setter;
 @Setter
 public class SessionItemGetQuery {
 
-    private Long gameId;
+	private Long gameId;
 
-    private Long sessionId;
+	private Long sessionId;
 
 }

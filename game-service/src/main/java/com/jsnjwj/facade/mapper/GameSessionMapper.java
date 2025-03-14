@@ -15,6 +15,6 @@ import java.util.List;
  */
 public interface GameSessionMapper extends BaseMapper<GameSessionEntity> {
 
-    void saveBatch(@Param("list") List<GameSessionEntity> list);
+	void saveBatch(@Param("list") List<GameSessionEntity> list);
 
 }

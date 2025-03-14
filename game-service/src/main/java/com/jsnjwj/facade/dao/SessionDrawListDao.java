@@ -7,11 +7,12 @@ import lombok.Setter;
 @Setter
 public class SessionDrawListDao {
 
-    private Long sessionId;
+	private Long sessionId;
 
-    private Integer sessionNo;
+	private Integer sessionNo;
 
-    private Long gameId;
+	private Long gameId;
 
-    private String sessionName;
+	private String sessionName;
+
 }

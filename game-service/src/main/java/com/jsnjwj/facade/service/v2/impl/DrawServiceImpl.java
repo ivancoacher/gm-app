@@ -36,289 +36,299 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class DrawServiceImpl implements DrawService {
 
-    private final ArrangeSessionManager sessionManager;
+	private final ArrangeSessionManager sessionManager;
 
-    private final ArrangeSessionItemManager sessionItemManager;
+	private final ArrangeSessionItemManager sessionItemManager;
 
-    private final SignApplyManager signApplyManager;
+	private final SignApplyManager signApplyManager;
 
-    private final ArrangeDrawManager drawManager;
-    private final GameDrawMapper gameDrawMapper;
+	private final ArrangeDrawManager drawManager;
 
-    private final Integer MIN_GAP = 5;
+	private final GameDrawMapper gameDrawMapper;
 
-    private final int MAX_POSITIONS = 1000; // 最大位置数
+	private final Integer MIN_GAP = 5;
 
-    /**
-     * 系统自动抽签分组
-     */
-    @Override
-    public ApiResponse<?> systemDraw(SystemDrawQuery query) {
-        // 判断抽签分组类型
-        Integer type = query.getType();
-        Long gameId = query.getGameId();
-        List<GameDrawEntity> result = new ArrayList<>();
-        // 按场次抽签
-        if (DrawTypeEnum.DRAW_WITH_SESSION.getType() == type) {
-            // 查询所有场次
-            List<GameSessionEntity> sessionList = sessionManager.getList(query.getGameId());
-            Map<Long,Integer> sessionMap = sessionList.stream().collect(Collectors.toMap(GameSessionEntity::getId, GameSessionEntity::getSessionNo));
-            if (CollectionUtil.isEmpty(sessionList)) {
-                return ApiResponse.error("请先创建场次");
-            }
-            LambdaQueryWrapper<GameDrawEntity> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.eq(GameDrawEntity::getGameId, gameId);
-            gameDrawMapper.delete(queryWrapper);
+	private final int MAX_POSITIONS = 1000; // 最大位置数
 
-            Map<Long, List<Long>> sessionItems = new HashMap<>();
-            List<Long> itemAllIds = new ArrayList<>();
-            sessionList.forEach(session -> {
-                List<Long> itemIds = sessionItemManager.fetchListBySessionId(gameId, session.getId()).stream().map(GameSessionItemEntity::getItemId).collect(Collectors.toList());
-                sessionItems.put(session.getId(), itemIds);
-                itemAllIds.addAll(itemIds);
-            });
-            Map<Long, List<Long>> itemContestants = new HashMap<>();
-            for (Long itemId : itemAllIds) {
-                List<SignSingleEntity> signApplyList = signApplyManager.getApplyByItem(gameId, itemId);
-                if (CollectionUtil.isEmpty(signApplyList)) {
-                    continue;
-                }
-                List<Long> contestants = signApplyList.stream().map(SignSingleEntity::getId).collect(Collectors.toList());
-                itemContestants.put(itemId, contestants);
-            }
-            Map<Long, Set<Integer>> sessionPositions = new HashMap<>();
+	/**
+	 * 系统自动抽签分组
+	 */
+	@Override
+	public ApiResponse<?> systemDraw(SystemDrawQuery query) {
+		// 判断抽签分组类型
+		Integer type = query.getType();
+		Long gameId = query.getGameId();
+		List<GameDrawEntity> result = new ArrayList<>();
+		// 按场次抽签
+		if (DrawTypeEnum.DRAW_WITH_SESSION.getType() == type) {
+			// 查询所有场次
+			List<GameSessionEntity> sessionList = sessionManager.getList(query.getGameId());
+			Map<Long, Integer> sessionMap = sessionList.stream()
+				.collect(Collectors.toMap(GameSessionEntity::getId, GameSessionEntity::getSessionNo));
+			if (CollectionUtil.isEmpty(sessionList)) {
+				return ApiResponse.error("请先创建场次");
+			}
+			LambdaQueryWrapper<GameDrawEntity> queryWrapper = new LambdaQueryWrapper<>();
+			queryWrapper.eq(GameDrawEntity::getGameId, gameId);
+			gameDrawMapper.delete(queryWrapper);
 
-            // 记录每个选手在每个场次中的位置
-            Map<Long, Map<Long, Integer>> contestantPositions = new HashMap<>();
+			Map<Long, List<Long>> sessionItems = new HashMap<>();
+			List<Long> itemAllIds = new ArrayList<>();
+			sessionList.forEach(session -> {
+				List<Long> itemIds = sessionItemManager.fetchListBySessionId(gameId, session.getId())
+					.stream()
+					.map(GameSessionItemEntity::getItemId)
+					.collect(Collectors.toList());
+				sessionItems.put(session.getId(), itemIds);
+				itemAllIds.addAll(itemIds);
+			});
+			Map<Long, List<Long>> itemContestants = new HashMap<>();
+			for (Long itemId : itemAllIds) {
+				List<SignSingleEntity> signApplyList = signApplyManager.getApplyByItem(gameId, itemId);
+				if (CollectionUtil.isEmpty(signApplyList)) {
+					continue;
+				}
+				List<Long> contestants = signApplyList.stream()
+					.map(SignSingleEntity::getId)
+					.collect(Collectors.toList());
+				itemContestants.put(itemId, contestants);
+			}
+			Map<Long, Set<Integer>> sessionPositions = new HashMap<>();
 
-            // 记录每个场次的安排结果
-            Map<Long, Map<Integer, Map<Long, Long>>> sessionArrangements = new HashMap<>();
+			// 记录每个选手在每个场次中的位置
+			Map<Long, Map<Long, Integer>> contestantPositions = new HashMap<>();
 
-            for (GameSessionEntity session : sessionList) {
-                sessionArrangements.put(session.getId(), new HashMap<>());
-                sessionPositions.put(session.getId(), new HashSet<>());
-            }
+			// 记录每个场次的安排结果
+			Map<Long, Map<Integer, Map<Long, Long>>> sessionArrangements = new HashMap<>();
 
-            for (Map.Entry<Long, List<Long>> entry : sessionItems.entrySet()) {
-                long sessionId = entry.getKey();
-                List<Long> projects = entry.getValue();
+			for (GameSessionEntity session : sessionList) {
+				sessionArrangements.put(session.getId(), new HashMap<>());
+				sessionPositions.put(session.getId(), new HashSet<>());
+			}
 
-                System.out.println("\n安排场次 " + sessionId + " 的项目:");
+			for (Map.Entry<Long, List<Long>> entry : sessionItems.entrySet()) {
+				long sessionId = entry.getKey();
+				List<Long> projects = entry.getValue();
 
-                // 为该场次的每个项目安排选手
-                for (Long project : projects) {
-                    System.out.println("  项目: " + project);
-                    List<Long> contestants = itemContestants.get(project);
+				System.out.println("\n安排场次 " + sessionId + " 的项目:");
 
-                    if (contestants == null || contestants.isEmpty()) {
-                        System.out.println("    无选手报名此项目");
-                        continue;
-                    }
+				// 为该场次的每个项目安排选手
+				for (Long project : projects) {
+					System.out.println("  项目: " + project);
+					List<Long> contestants = itemContestants.get(project);
 
-                    // 为每个选手安排位置
-                    for (Long contestant : contestants) {
-                        // 查找合适的位置
-                        int position = findSuitablePosition(contestant, sessionId, contestantPositions, sessionPositions.get(sessionId), MIN_GAP);
+					if (contestants == null || contestants.isEmpty()) {
+						System.out.println("    无选手报名此项目");
+						continue;
+					}
 
-                        // 记录安排结果
-                        Map<Integer, Map<Long, Long>> sessionArrangement = sessionArrangements.get(sessionId);
-                        if (!sessionArrangement.containsKey(position)) {
-                            sessionArrangement.put(position, new HashMap<>());
-                        }
-                        sessionArrangement.get(position).put(project, contestant);
+					// 为每个选手安排位置
+					for (Long contestant : contestants) {
+						// 查找合适的位置
+						int position = findSuitablePosition(contestant, sessionId, contestantPositions,
+								sessionPositions.get(sessionId), MIN_GAP);
 
-                        // 更新选手位置记录
-                        if (!contestantPositions.containsKey(contestant)) {
-                            contestantPositions.put(contestant, new HashMap<>());
-                        }
-                        contestantPositions.get(contestant).put(sessionId, position);
+						// 记录安排结果
+						Map<Integer, Map<Long, Long>> sessionArrangement = sessionArrangements.get(sessionId);
+						if (!sessionArrangement.containsKey(position)) {
+							sessionArrangement.put(position, new HashMap<>());
+						}
+						sessionArrangement.get(position).put(project, contestant);
 
-                        GameDrawEntity gameDrawEntity = new GameDrawEntity();
-                        gameDrawEntity.setGameId(gameId);
-                        gameDrawEntity.setSessionId(sessionId);
-                        gameDrawEntity.setSessionNo(sessionMap.get(sessionId));
-                        gameDrawEntity.setSignId(contestant);
-                        gameDrawEntity.setSort(position);
-                        gameDrawEntity.setCreatedAt(new Date());
-                        result.add(gameDrawEntity);
-                    }
-                }
-            }
+						// 更新选手位置记录
+						if (!contestantPositions.containsKey(contestant)) {
+							contestantPositions.put(contestant, new HashMap<>());
+						}
+						contestantPositions.get(contestant).put(sessionId, position);
 
+						GameDrawEntity gameDrawEntity = new GameDrawEntity();
+						gameDrawEntity.setGameId(gameId);
+						gameDrawEntity.setSessionId(sessionId);
+						gameDrawEntity.setSessionNo(sessionMap.get(sessionId));
+						gameDrawEntity.setSignId(contestant);
+						gameDrawEntity.setSort(position);
+						gameDrawEntity.setCreatedAt(new Date());
+						result.add(gameDrawEntity);
+					}
+				}
+			}
 
+			// // 查询各个场次内对应的小项
+			// sessionList.forEach(session -> {
+			// List<GameSessionItemEntity> sessionItemEntities =
+			// sessionItemManager.fetchListBySessionId(gameId, session.getId());
+			// if (CollectionUtil.isEmpty(sessionItemEntities)) {
+			// // 该场次未安排小项，则不处理
+			// log.info("该场次未安排小项，则不处理");
+			// return;
+			// }
+			// List<Long> itemIds =
+			// sessionItemEntities.stream().map(GameSessionItemEntity::getItemId).collect(Collectors.toList());
+			// List<SignSingleEntity> signApplyManagers =
+			// signApplyManager.getApplyByItemIds(gameId, itemIds);
+			// if (CollectionUtil.isEmpty(signApplyManagers)) {
+			// log.info("该项目无报名记录");
+			// return;
+			// }
+			// List<Long> signIds =
+			// signApplyManagers.stream().map(SignSingleEntity::getId).collect(Collectors.toList());
+			// // 将各个场次内的小项打乱，排序。相同选手，间隔5位
+			//
+			// Collections.shuffle(signIds);
+			//
+			// for (int i = 0; i < signIds.size(); i++) {
+			// GameDrawEntity gameDrawEntity = new GameDrawEntity();
+			// gameDrawEntity.setGameId(gameId);
+			// gameDrawEntity.setSessionId(session.getId());
+			// gameDrawEntity.setSessionNo(session.getSessionNo());
+			// gameDrawEntity.setSignId(signIds.get(i));
+			// gameDrawEntity.setSort(i);
+			// gameDrawEntity.setCreatedAt(new Date());
+			// result.add(gameDrawEntity);
+			// }
+			// });
+		}
+		// 不按场次抽签
+		else {
+			LambdaQueryWrapper<GameDrawEntity> queryWrapper = new LambdaQueryWrapper<>();
+			queryWrapper.eq(GameDrawEntity::getGameId, gameId);
+			gameDrawMapper.delete(queryWrapper);
+			// 创建默认场次
+			GameSessionEntity gameSessionEntity = new GameSessionEntity();
+			gameSessionEntity.setSessionNo(0);
 
-//            // 查询各个场次内对应的小项
-//            sessionList.forEach(session -> {
-//                List<GameSessionItemEntity> sessionItemEntities = sessionItemManager.fetchListBySessionId(gameId, session.getId());
-//                if (CollectionUtil.isEmpty(sessionItemEntities)) {
-//                    // 该场次未安排小项，则不处理
-//                    log.info("该场次未安排小项，则不处理");
-//                    return;
-//                }
-//                List<Long> itemIds = sessionItemEntities.stream().map(GameSessionItemEntity::getItemId).collect(Collectors.toList());
-//                List<SignSingleEntity> signApplyManagers = signApplyManager.getApplyByItemIds(gameId, itemIds);
-//                if (CollectionUtil.isEmpty(signApplyManagers)) {
-//                    log.info("该项目无报名记录");
-//                    return;
-//                }
-//                List<Long> signIds = signApplyManagers.stream().map(SignSingleEntity::getId).collect(Collectors.toList());
-//                // 将各个场次内的小项打乱，排序。相同选手，间隔5位
-//
-//                Collections.shuffle(signIds);
-//
-//                for (int i = 0; i < signIds.size(); i++) {
-//                    GameDrawEntity gameDrawEntity = new GameDrawEntity();
-//                    gameDrawEntity.setGameId(gameId);
-//                    gameDrawEntity.setSessionId(session.getId());
-//                    gameDrawEntity.setSessionNo(session.getSessionNo());
-//                    gameDrawEntity.setSignId(signIds.get(i));
-//                    gameDrawEntity.setSort(i);
-//                    gameDrawEntity.setCreatedAt(new Date());
-//                    result.add(gameDrawEntity);
-//                }
-//            });
-        }
-        // 不按场次抽签
-        else {
-            LambdaQueryWrapper<GameDrawEntity> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.eq(GameDrawEntity::getGameId, gameId);
-            gameDrawMapper.delete(queryWrapper);
-            // 创建默认场次
-            GameSessionEntity gameSessionEntity = new GameSessionEntity();
-            gameSessionEntity.setSessionNo(0);
+			// 将所有小项安排进该场次中
+			List<SignSingleEntity> signApplyManagers = signApplyManager.getSingleByGameId(gameId);
+			if (CollectionUtil.isNotEmpty(signApplyManagers)) {
+				List<Long> signIds = signApplyManagers.stream()
+					.map(SignSingleEntity::getId)
+					.collect(Collectors.toList());
+				Collections.shuffle(signIds);
+				for (int i = 0; i < signIds.size(); i++) {
+					GameDrawEntity gameDrawEntity = new GameDrawEntity();
+					gameDrawEntity.setGameId(gameId);
+					gameDrawEntity.setSessionNo(gameSessionEntity.getSessionNo());
+					gameDrawEntity.setSignId(signIds.get(i));
+					gameDrawEntity.setSessionId(0L);
+					gameDrawEntity.setSort(i);
+					gameDrawEntity.setCreatedAt(new Date());
+					result.add(gameDrawEntity);
+				}
+			}
+		}
 
-            // 将所有小项安排进该场次中
-            List<SignSingleEntity> signApplyManagers = signApplyManager.getSingleByGameId(gameId);
-            if (CollectionUtil.isNotEmpty(signApplyManagers)) {
-                List<Long> signIds = signApplyManagers.stream().map(SignSingleEntity::getId).collect(Collectors.toList());
-                Collections.shuffle(signIds);
-                for (int i = 0; i < signIds.size(); i++) {
-                    GameDrawEntity gameDrawEntity = new GameDrawEntity();
-                    gameDrawEntity.setGameId(gameId);
-                    gameDrawEntity.setSessionNo(gameSessionEntity.getSessionNo());
-                    gameDrawEntity.setSignId(signIds.get(i));
-                    gameDrawEntity.setSessionId(0L);
-                    gameDrawEntity.setSort(i);
-                    gameDrawEntity.setCreatedAt(new Date());
-                    result.add(gameDrawEntity);
-                }
-            }
-        }
+		drawManager.saveBatch(result);
 
-        drawManager.saveBatch(result);
+		return ApiResponse.success(true);
+	}
 
-        return ApiResponse.success(true);
-    }
+	/**
+	 * 随机按照场次抽签
+	 *
+	 */
+	private int findSuitablePosition(Long contestant, Long sessionId, Map<Long, Map<Long, Integer>> contestantPositions,
+			Set<Integer> occupiedPositions,
 
-    /**
-     * 随机按照场次抽签
-     *
-     */
-    private int findSuitablePosition(Long contestant, Long sessionId,
-                                            Map<Long, Map<Long, Integer>> contestantPositions,
-                                     Set<Integer> occupiedPositions,
+			int minGap) {
+		// 获取选手在当前场次已有的位置
+		Integer existingPosition = null;
+		if (contestantPositions.containsKey(contestant) && contestantPositions.get(contestant).containsKey(sessionId)) {
+			existingPosition = contestantPositions.get(contestant).get(sessionId);
+			return existingPosition;
+		}
 
-                                     int minGap) {
-        // 获取选手在当前场次已有的位置
-        Integer existingPosition = null;
-        if (contestantPositions.containsKey(contestant) &&
-                contestantPositions.get(contestant).containsKey(sessionId)) {
-            existingPosition = contestantPositions.get(contestant).get(sessionId);
-            return existingPosition;
-        }
+		for (int pos = 1; pos <= MAX_POSITIONS; pos++) {
+			// 检查位置是否已被占用
+			if (occupiedPositions.contains(pos)) {
+				continue;
+			}
 
-        for (int pos = 1; pos <= MAX_POSITIONS; pos++) {
-            // 检查位置是否已被占用
-            if (occupiedPositions.contains(pos)) {
-                continue;
-            }
+			// 检查是否满足与同一选手其他项目的间隔要求
+			if (existingPosition != null && Math.abs(pos - existingPosition) < minGap) {
+				continue;
+			}
 
-            // 检查是否满足与同一选手其他项目的间隔要求
-            if (existingPosition != null && Math.abs(pos - existingPosition) < minGap) {
-                continue;
-            }
+			return pos;
+		}
 
-            return pos;
-        }
+		// 如果选手在此场次没有位置，从位置1开始
+		if (existingPosition == null) {
+			return 1;
+		}
 
-        // 如果选手在此场次没有位置，从位置1开始
-        if (existingPosition == null) {
-            return 1;
-        }
+		// 选手已有位置，找一个至少间隔minGap的新位置
+		return existingPosition + minGap;
+	}
 
-        // 选手已有位置，找一个至少间隔minGap的新位置
-        return existingPosition + minGap;
-    }
+	@Override
+	public ApiResponse<?> getDrawList(SystemDrawQuery query) {
+		// 查询所有场次
+		Long gameId = query.getGameId();
+		List<SessionDrawListDao> result = gameDrawMapper.getSessionList(gameId);
+		result.forEach(item -> {
+			if (item.getSessionNo() == 0) {
+				item.setSessionName("默认场次");
+			}
+		});
+		return ApiResponse.success(result);
+	}
 
-    @Override
-    public ApiResponse<?> getDrawList(SystemDrawQuery query) {
-        // 查询所有场次
-        Long gameId = query.getGameId();
-        List<SessionDrawListDao> result = gameDrawMapper.getSessionList(gameId);
-        result.forEach(item -> {
-            if (item.getSessionNo() == 0){
-                item.setSessionName("默认场次");
-            }
-        });
-        return ApiResponse.success(result);
-    }
+	/**
+	 * 查询所有排序内容
+	 */
+	public ApiResponse<?> getDraw(SystemDrawQuery query) {
+		// 查询所有场次
+		Long gameId = query.getGameId();
+		Integer sessionNo = query.getSessionNo();
+		List<SessionDrawDao> result = gameDrawMapper.getBySessionNo(gameId, sessionNo);
+		DrawDetailVo response = new DrawDetailVo();
+		if (0 == sessionNo) {
+			response.setSessionNo(0);
+			response.setSessionId(0L);
+			response.setSessionName("默认场次");
+		}
+		else {
+			GameSessionEntity session = sessionManager.getBySessionNo(sessionNo);
+			response.setSessionNo(session.getSessionNo());
+			response.setSessionId(session.getId());
+			response.setSessionName(session.getSessionName());
+		}
+		if (CollectionUtil.isEmpty(result)) {
+			return ApiResponse.success(response);
+		}
+		response.setData(result.stream().map(item -> {
+			ArrangeDrawDto dto = new ArrangeDrawDto();
+			BeanUtil.copyProperties(item, dto);
+			return dto;
+		}).collect(Collectors.toList()));
+		return ApiResponse.success(response);
+	}
 
-    /**
-     * 查询所有排序内容
-     */
-    public ApiResponse<?> getDraw(SystemDrawQuery query) {
-        // 查询所有场次
-        Long gameId = query.getGameId();
-        Integer sessionNo = query.getSessionNo();
-        List<SessionDrawDao> result = gameDrawMapper.getBySessionNo(gameId, sessionNo);
-        DrawDetailVo response = new DrawDetailVo();
-        if (0 == sessionNo){
-            response.setSessionNo(0);
-            response.setSessionId(0L);
-            response.setSessionName("默认场次");
-        }else{
-            GameSessionEntity session = sessionManager.getBySessionNo(sessionNo);
-            response.setSessionNo(session.getSessionNo());
-            response.setSessionId(session.getId());
-            response.setSessionName(session.getSessionName());
-        }
-        if (CollectionUtil.isEmpty(result)){
-            return ApiResponse.success(response);
-        }
-        response.setData(result.stream().map(item -> {
-            ArrangeDrawDto dto = new ArrangeDrawDto();
-            BeanUtil.copyProperties(item, dto);
-            return dto;
-        }).collect(Collectors.toList()));
-        return ApiResponse.success(response);
-    }
-
-    /**
-     * 人工抽签分组
-     *
-     * @param query
-     * @return
-     */
-    @Override
-    public ApiResponse<?> manualDraw(ManualDrawQuery query) {
-        Long gameId = query.getGameId();
-        if (CollectionUtil.isEmpty(query.getData())) {
-            return ApiResponse.error("数据为空");
-        }
-        // 1、删除所有抽签记录
-//        LambdaQueryWrapper<GameDrawEntity> queryWrapper = new LambdaQueryWrapper<>();
-//        queryWrapper.eq(GameDrawEntity::getGameId, gameId);
-//        queryWrapper.eq(GameDrawEntity::getSessionNo, query.getSessionNo());
-//        gameDrawMapper.delete(queryWrapper);
-        // 2、保存抽签记录
-        query.getData().forEach(manualDrawData -> {
-            GameDrawEntity gameDrawEntity = gameDrawMapper.selectById(manualDrawData.getDrawId());
-            gameDrawEntity.setSort(manualDrawData.getSort());
-            if (!Objects.equals(manualDrawData.getSort(), gameDrawEntity.getSort())){
-                gameDrawMapper.updateById(gameDrawEntity);
-            }
-        });
-        return ApiResponse.success();
-    }
+	/**
+	 * 人工抽签分组
+	 * @param query
+	 * @return
+	 */
+	@Override
+	public ApiResponse<?> manualDraw(ManualDrawQuery query) {
+		Long gameId = query.getGameId();
+		if (CollectionUtil.isEmpty(query.getData())) {
+			return ApiResponse.error("数据为空");
+		}
+		// 1、删除所有抽签记录
+		// LambdaQueryWrapper<GameDrawEntity> queryWrapper = new LambdaQueryWrapper<>();
+		// queryWrapper.eq(GameDrawEntity::getGameId, gameId);
+		// queryWrapper.eq(GameDrawEntity::getSessionNo, query.getSessionNo());
+		// gameDrawMapper.delete(queryWrapper);
+		// 2、保存抽签记录
+		query.getData().forEach(manualDrawData -> {
+			GameDrawEntity gameDrawEntity = gameDrawMapper.selectById(manualDrawData.getDrawId());
+			gameDrawEntity.setSort(manualDrawData.getSort());
+			if (!Objects.equals(manualDrawData.getSort(), gameDrawEntity.getSort())) {
+				gameDrawMapper.updateById(gameDrawEntity);
+			}
+		});
+		return ApiResponse.success();
+	}
 
 }

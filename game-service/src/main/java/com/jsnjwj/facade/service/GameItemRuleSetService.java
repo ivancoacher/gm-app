@@ -10,11 +10,12 @@ import java.util.List;
 
 public interface GameItemRuleSetService {
 
-    ApiResponse<List<GameItemRuleVo>> getItemRules(ItemRuleQuery query);
+	ApiResponse<List<GameItemRuleVo>> getItemRules(ItemRuleQuery query);
 
-    ApiResponse<Boolean> setItemRules(ItemRuleSetQuery query);
+	ApiResponse<Boolean> setItemRules(ItemRuleSetQuery query);
 
-    ApiResponse<GameItemRuleVo> getItemRulesDetail(ItemRuleQuery query);
+	ApiResponse<GameItemRuleVo> getItemRulesDetail(ItemRuleQuery query);
 
-    ApiResponse<List<RuleVo>> getRules();
+	ApiResponse<List<RuleVo>> getRules();
+
 }

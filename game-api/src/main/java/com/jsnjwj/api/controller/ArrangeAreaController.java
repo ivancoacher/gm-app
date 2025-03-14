@@ -19,42 +19,39 @@ import java.util.List;
 @RequestMapping("/game/setting/arrange/area")
 public class ArrangeAreaController {
 
-    private final ArrangeAreaService arrangeAreaService;
+	private final ArrangeAreaService arrangeAreaService;
 
-    /**
-     * 场地列表
-     *
-     * @return
-     */
-    @GetMapping("/list")
-    public ApiResponse<List<GameAreaEntity>> getAreas() {
+	/**
+	 * 场地列表
+	 * @return
+	 */
+	@GetMapping("/list")
+	public ApiResponse<List<GameAreaEntity>> getAreas() {
 
-        Long gameId = ThreadLocalUtil.getCurrentGameId();
-        return arrangeAreaService.getAreas(gameId);
-    }
+		Long gameId = ThreadLocalUtil.getCurrentGameId();
+		return arrangeAreaService.getAreas(gameId);
+	}
 
-    /**
-     * 设置场地数量
-     *
-     * @param query
-     * @return
-     */
-    @PostMapping("/setNum")
-    public ApiResponse<?> setAreaNum(@RequestBody GameGroupingSetNumQuery query) {
-        query.setGameId(ThreadLocalUtil.getCurrentGameId());
-        return arrangeAreaService.setAreaNum(query);
-    }
+	/**
+	 * 设置场地数量
+	 * @param query
+	 * @return
+	 */
+	@PostMapping("/setNum")
+	public ApiResponse<?> setAreaNum(@RequestBody GameGroupingSetNumQuery query) {
+		query.setGameId(ThreadLocalUtil.getCurrentGameId());
+		return arrangeAreaService.setAreaNum(query);
+	}
 
-    /**
-     * 修改场地信息
-     *
-     * @param query
-     * @return
-     */
-    @PostMapping("/update")
-    public ApiResponse<Boolean> saveArea(@RequestBody GameGroupingAreaSetQuery query) {
-        query.setGameId(ThreadLocalUtil.getCurrentGameId());
-        return arrangeAreaService.saveArea(query);
-    }
+	/**
+	 * 修改场地信息
+	 * @param query
+	 * @return
+	 */
+	@PostMapping("/update")
+	public ApiResponse<Boolean> saveArea(@RequestBody GameGroupingAreaSetQuery query) {
+		query.setGameId(ThreadLocalUtil.getCurrentGameId());
+		return arrangeAreaService.saveArea(query);
+	}
 
 }

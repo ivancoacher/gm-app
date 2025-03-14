@@ -9,6 +9,6 @@ import java.util.List;
 @Data
 public class GameGroupBatchUpdateQuery extends BaseRequest {
 
-    List<GroupLabelVo> data;
+	List<GroupLabelVo> data;
 
 }

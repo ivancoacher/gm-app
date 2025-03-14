@@ -5,5 +5,6 @@ import java.util.List;
 
 public interface ScoreStrategy {
 
-    BigDecimal getScore(List<BigDecimal> scores);
+	BigDecimal getScore(List<BigDecimal> scores);
+
 }

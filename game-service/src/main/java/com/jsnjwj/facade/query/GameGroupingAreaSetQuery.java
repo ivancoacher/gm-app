@@ -8,12 +8,12 @@ import lombok.EqualsAndHashCode;
 @Data
 public class GameGroupingAreaSetQuery extends BaseRequest {
 
-    private String areaName;
+	private String areaName;
 
-    private Integer areaNo;
+	private Integer areaNo;
 
-    private Integer status;
+	private Integer status;
 
-    private Long areaId;
+	private Long areaId;
 
 }

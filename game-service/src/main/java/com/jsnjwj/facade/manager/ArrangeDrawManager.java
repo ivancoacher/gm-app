@@ -14,9 +14,11 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 public class ArrangeDrawManager {
-    private final GameDrawMapper drawMapper;
 
-    public void saveBatch(List<GameDrawEntity> list){
-        drawMapper.saveBatch(list);
-    }
+	private final GameDrawMapper drawMapper;
+
+	public void saveBatch(List<GameDrawEntity> list) {
+		drawMapper.saveBatch(list);
+	}
+
 }

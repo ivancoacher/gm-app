@@ -22,62 +22,62 @@ import java.util.Date;
 @NoArgsConstructor
 public class SignTeamEntity implements Serializable {
 
-    /**
-     *
-     */
-    @TableId(type = IdType.AUTO)
-    private Long id;
+	/**
+	 *
+	 */
+	@TableId(type = IdType.AUTO)
+	private Long id;
 
-    /**
-     *
-     */
-    private Long gameId;
+	/**
+	 *
+	 */
+	private Long gameId;
 
-    /**
-     *
-     */
-    @ExcelProperty("队伍名称")
-    private String teamName;
+	/**
+	 *
+	 */
+	@ExcelProperty("队伍名称")
+	private String teamName;
 
-    /**
-     *
-     */
-    @ExcelProperty("领队名")
-    private String leaderName;
+	/**
+	 *
+	 */
+	@ExcelProperty("领队名")
+	private String leaderName;
 
-    /**
-     *
-     */
-    @ExcelProperty("领队电话")
-    private String leaderTel;
+	/**
+	 *
+	 */
+	@ExcelProperty("领队电话")
+	private String leaderTel;
 
-    /**
-     *
-     */
-    private String coachName;
+	/**
+	 *
+	 */
+	private String coachName;
 
-    /**
-     *
-     */
-    private String coachTel;
+	/**
+	 *
+	 */
+	private String coachTel;
 
-    /**
-     *
-     */
-    private String remark;
+	/**
+	 *
+	 */
+	private String remark;
 
-    /**
-     *
-     */
-    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
-    private Date createTime;
+	/**
+	 *
+	 */
+	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
+	private Date createTime;
 
-    /**
-     *
-     */
-    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
-    private Date updateTime;
+	/**
+	 *
+	 */
+	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
+	private Date updateTime;
 
-    private Long orgId;
+	private Long orgId;
 
 }

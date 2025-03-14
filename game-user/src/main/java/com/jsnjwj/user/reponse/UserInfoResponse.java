@@ -7,24 +7,24 @@ import java.util.List;
 @Data
 public class UserInfoResponse {
 
-    private Long userId;
+	private Long userId;
 
-    private String name;
+	private String name;
 
-    private String avatar;
+	private String avatar;
 
-    private List<String> roles;
+	private List<String> roles;
 
-    private String info;
+	private String info;
 
-    private Long organizationId;
+	private Long organizationId;
 
-    private Integer organizationStatus;
+	private Integer organizationStatus;
 
-    private String organizationName;
+	private String organizationName;
 
-    private Integer depId;
+	private Integer depId;
 
-    private String phone;
+	private String phone;
 
 }

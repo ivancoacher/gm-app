@@ -15,18 +15,18 @@ import java.util.List;
 @Service
 public class GameArrangeSettingManager {
 
-    @Resource
-    private SignArrangeSettingDetailMapper signArrangeSettingDetailMapper;
+	@Resource
+	private SignArrangeSettingDetailMapper signArrangeSettingDetailMapper;
 
-    @Resource
-    private SignArrangeSettingMapper signArrangeSettingMapper;
+	@Resource
+	private SignArrangeSettingMapper signArrangeSettingMapper;
 
-    private Integer updateSetting(SignArrangeSettingEntity record) {
-        return signArrangeSettingMapper.updateById(record);
-    }
+	private Integer updateSetting(SignArrangeSettingEntity record) {
+		return signArrangeSettingMapper.updateById(record);
+	}
 
-    private Integer syncSettingDetail(Long settingId, List<SignArrangeSettingDetailEntity> list) {
-        return signArrangeSettingDetailMapper.insertBatchSomeColumn(list);
-    }
+	private Integer syncSettingDetail(Long settingId, List<SignArrangeSettingDetailEntity> list) {
+		return signArrangeSettingDetailMapper.insertBatchSomeColumn(list);
+	}
 
 }

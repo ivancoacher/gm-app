@@ -22,60 +22,59 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ArrangeSessionServiceImpl implements ArrangeSessionService {
 
-    private final ArrangeSessionManager arrangeSessionManager;
+	private final ArrangeSessionManager arrangeSessionManager;
 
-    /**
-     * 创建场地
-     */
-    @Override
-    public ApiResponse<?> setSessionNum(GameGroupingSessionSetNumQuery query) {
-        if (query.getSessionNum() <= 0)
-            return ApiResponse.error("请输入正确的场地数");
-        int courtNum = 1;
-        arrangeSessionManager.resetCourt(query.getGameId());
+	/**
+	 * 创建场地
+	 */
+	@Override
+	public ApiResponse<?> setSessionNum(GameGroupingSessionSetNumQuery query) {
+		if (query.getSessionNum() <= 0)
+			return ApiResponse.error("请输入正确的场地数");
+		int courtNum = 1;
+		arrangeSessionManager.resetCourt(query.getGameId());
 
-        List<GameSessionEntity> areas = new ArrayList<>();
-        while (courtNum <= query.getSessionNum()) {
-            GameSessionEntity area = new GameSessionEntity();
-            area.setGameId(query.getGameId());
-            area.setSessionName("场次" + courtNum);
-            area.setSessionNo(courtNum);
-            area.setStatus(1);
-            areas.add(area);
-            courtNum++;
-        }
-        arrangeSessionManager.saveSessionBatch(areas);
-        return ApiResponse.success(true);
-    }
+		List<GameSessionEntity> areas = new ArrayList<>();
+		while (courtNum <= query.getSessionNum()) {
+			GameSessionEntity area = new GameSessionEntity();
+			area.setGameId(query.getGameId());
+			area.setSessionName("场次" + courtNum);
+			area.setSessionNo(courtNum);
+			area.setStatus(1);
+			areas.add(area);
+			courtNum++;
+		}
+		arrangeSessionManager.saveSessionBatch(areas);
+		return ApiResponse.success(true);
+	}
 
-    /**
-     * 保存场地
-     *
-     * @param query
-     * @return
-     */
-    @Override
-    public ApiResponse<Boolean> saveSession(GameGroupingSessionSetQuery query) {
-        GameSessionEntity area = new GameSessionEntity();
-        area.setId(query.getSessionId());
-        area.setGameId(query.getGameId());
-        area.setSessionName(query.getSessionName());
-        area.setSessionNo(query.getSessionNo());
-        area.setStatus(query.getStatus());
-        area.setCreatedAt(new Date());
-        arrangeSessionManager.saveSession(area);
-        return ApiResponse.success(true);
-    }
+	/**
+	 * 保存场地
+	 * @param query
+	 * @return
+	 */
+	@Override
+	public ApiResponse<Boolean> saveSession(GameGroupingSessionSetQuery query) {
+		GameSessionEntity area = new GameSessionEntity();
+		area.setId(query.getSessionId());
+		area.setGameId(query.getGameId());
+		area.setSessionName(query.getSessionName());
+		area.setSessionNo(query.getSessionNo());
+		area.setStatus(query.getStatus());
+		area.setCreatedAt(new Date());
+		arrangeSessionManager.saveSession(area);
+		return ApiResponse.success(true);
+	}
 
-    /**
-     * 获取所有场地对应场次信息
-     *
-     * @param gameId
-     * @return
-     */
-    @Override
-    public ApiResponse<List<GameSessionEntity>> getSessions(Long gameId) {
-        List<GameSessionEntity> response = arrangeSessionManager.getList(gameId);
-        return ApiResponse.success(response);
-    }
+	/**
+	 * 获取所有场地对应场次信息
+	 * @param gameId
+	 * @return
+	 */
+	@Override
+	public ApiResponse<List<GameSessionEntity>> getSessions(Long gameId) {
+		List<GameSessionEntity> response = arrangeSessionManager.getList(gameId);
+		return ApiResponse.success(response);
+	}
+
 }

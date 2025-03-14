@@ -8,8 +8,8 @@ import lombok.EqualsAndHashCode;
 @Data
 public class GameJudgeSetQuery extends BaseRequest {
 
-    private String judgeName;
+	private String judgeName;
 
-    private String phone;
+	private String phone;
 
 }

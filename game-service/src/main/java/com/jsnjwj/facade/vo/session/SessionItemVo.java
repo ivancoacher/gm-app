@@ -7,12 +7,12 @@ import lombok.Setter;
 @Setter
 public class SessionItemVo {
 
-    private String itemName;
+	private String itemName;
 
-    private String itemId;
+	private String itemId;
 
-    private Integer sessionId;
+	private Integer sessionId;
 
-    private Integer sort;
+	private Integer sort;
 
 }

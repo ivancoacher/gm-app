@@ -7,8 +7,8 @@ import lombok.Setter;
 @Setter
 public class ImportGroupDto {
 
-    private String groupName;
+	private String groupName;
 
-    private Long groupId;
+	private Long groupId;
 
 }

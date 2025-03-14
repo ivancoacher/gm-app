@@ -15,20 +15,20 @@ import java.util.List;
 
 public interface GameItemService {
 
-    ApiResponse<Page<ItemLabelVo>> fetchPages(GameItemListQuery query);
+	ApiResponse<Page<ItemLabelVo>> fetchPages(GameItemListQuery query);
 
-    List<ItemLabelVo> fetchList(GameItemListQuery query);
+	List<ItemLabelVo> fetchList(GameItemListQuery query);
 
-    void importData(BaseRequest query, MultipartFile file);
+	void importData(BaseRequest query, MultipartFile file);
 
-    Boolean save(GameItemSaveQuery query);
+	Boolean save(GameItemSaveQuery query);
 
-    int update(GameItemUpdateQuery query);
+	int update(GameItemUpdateQuery query);
 
-    boolean updateBatch(GameItemBatchUpdateQuery request);
+	boolean updateBatch(GameItemBatchUpdateQuery request);
 
-    GameItemEntity fetchOne(Long itemId);
+	GameItemEntity fetchOne(Long itemId);
 
-    ApiResponse<?> delete(Long itemId);
+	ApiResponse<?> delete(Long itemId);
 
 }

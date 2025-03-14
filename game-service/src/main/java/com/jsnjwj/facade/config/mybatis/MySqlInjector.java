@@ -10,12 +10,12 @@ import java.util.List;
 
 public class MySqlInjector extends DefaultSqlInjector {
 
-    @Override
-    public List<AbstractMethod> getMethodList(Class<?> mapperClass, TableInfo tableInfo) {
-        List<AbstractMethod> methodList = super.getMethodList(mapperClass, tableInfo);
-        // 更新时自动填充的字段，不用插入值
-        methodList.add(new InsertBatchSomeColumn(i -> i.getFieldFill() != FieldFill.UPDATE));
-        return methodList;
-    }
+	@Override
+	public List<AbstractMethod> getMethodList(Class<?> mapperClass, TableInfo tableInfo) {
+		List<AbstractMethod> methodList = super.getMethodList(mapperClass, tableInfo);
+		// 更新时自动填充的字段，不用插入值
+		methodList.add(new InsertBatchSomeColumn(i -> i.getFieldFill() != FieldFill.UPDATE));
+		return methodList;
+	}
 
 }

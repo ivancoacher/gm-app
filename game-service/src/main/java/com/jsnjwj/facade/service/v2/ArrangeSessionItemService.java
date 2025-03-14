@@ -12,9 +12,10 @@ import java.util.List;
 
 public interface ArrangeSessionItemService {
 
-    ApiResponse<?> getUnSelectedItem(SessionItemGetQuery query);
+	ApiResponse<?> getUnSelectedItem(SessionItemGetQuery query);
 
-    ApiResponse<SessionItemDto> getSelectedItem(SessionItemGetQuery query);
+	ApiResponse<SessionItemDto> getSelectedItem(SessionItemGetQuery query);
 
-    ApiResponse<Boolean> saveSessionItem(SessionItemSetQuery query);
+	ApiResponse<Boolean> saveSessionItem(SessionItemSetQuery query);
+
 }

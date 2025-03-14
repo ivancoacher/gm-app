@@ -6,10 +6,11 @@ import lombok.Setter;
 @Getter
 @Setter
 public class MatchItemSortVo {
-    private Long gameId;
 
-    private Integer sort;
+	private Long gameId;
 
-    private Long itemId;
+	private Integer sort;
+
+	private Long itemId;
 
 }

@@ -8,12 +8,12 @@ import com.jsnjwj.user.vo.OperateLogVo;
 
 public interface UserService {
 
-    ApiResponse<String> login(LoginRequest request);
+	ApiResponse<String> login(LoginRequest request);
 
-    ApiResponse<String> register(LoginRequest request);
+	ApiResponse<String> register(LoginRequest request);
 
-    ApiResponse info(Long userId);
+	ApiResponse info(Long userId);
 
-    ApiResponse<Page<OperateLogVo>> fetchOptLogList(FetchOptLogRequest request);
+	ApiResponse<Page<OperateLogVo>> fetchOptLogList(FetchOptLogRequest request);
 
 }

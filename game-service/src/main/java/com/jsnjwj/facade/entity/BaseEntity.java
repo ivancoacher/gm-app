@@ -12,13 +12,13 @@ import java.util.Date;
 @Setter
 public class BaseEntity {
 
-    @TableId(type = IdType.AUTO)
-    private Long id;
+	@TableId(type = IdType.AUTO)
+	private Long id;
 
-    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
-    private Date updatedAt;
+	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
+	private Date updatedAt;
 
-    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
-    private Date createdAt;
+	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
+	private Date createdAt;
 
 }

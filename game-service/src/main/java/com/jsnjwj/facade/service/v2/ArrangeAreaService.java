@@ -9,9 +9,10 @@ import java.util.List;
 
 public interface ArrangeAreaService {
 
-    ApiResponse<?> setAreaNum(GameGroupingSetNumQuery query);
+	ApiResponse<?> setAreaNum(GameGroupingSetNumQuery query);
 
-    ApiResponse<Boolean> saveArea(GameGroupingAreaSetQuery query);
+	ApiResponse<Boolean> saveArea(GameGroupingAreaSetQuery query);
 
-    ApiResponse<List<GameAreaEntity>> getAreas(Long gameId);
+	ApiResponse<List<GameAreaEntity>> getAreas(Long gameId);
+
 }

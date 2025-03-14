@@ -22,63 +22,60 @@ import java.util.List;
 @RequestMapping("/game/setting/arrange/session")
 public class ArrangeSessionController {
 
-    private final ArrangeSessionService arrangeSessionService;
+	private final ArrangeSessionService arrangeSessionService;
 
-    private final ArrangeSessionItemService arrangeSessionItemService;
+	private final ArrangeSessionItemService arrangeSessionItemService;
 
-    /**
-     * 场地列表
-     *
-     * @return
-     */
-    @GetMapping("/list")
-    public ApiResponse<List<GameSessionEntity>> getSessions() {
-        Long gameId = ThreadLocalUtil.getCurrentGameId();
-        return arrangeSessionService.getSessions(gameId);
-    }
+	/**
+	 * 场地列表
+	 * @return
+	 */
+	@GetMapping("/list")
+	public ApiResponse<List<GameSessionEntity>> getSessions() {
+		Long gameId = ThreadLocalUtil.getCurrentGameId();
+		return arrangeSessionService.getSessions(gameId);
+	}
 
-    /**
-     * 设置场地数量
-     *
-     * @param query
-     * @return
-     */
-    @PostMapping("/setNum")
-    public ApiResponse<?> setSessionNum(@RequestBody GameGroupingSessionSetNumQuery query) {
-        query.setGameId(ThreadLocalUtil.getCurrentGameId());
-        return arrangeSessionService.setSessionNum(query);
-    }
+	/**
+	 * 设置场地数量
+	 * @param query
+	 * @return
+	 */
+	@PostMapping("/setNum")
+	public ApiResponse<?> setSessionNum(@RequestBody GameGroupingSessionSetNumQuery query) {
+		query.setGameId(ThreadLocalUtil.getCurrentGameId());
+		return arrangeSessionService.setSessionNum(query);
+	}
 
-    /**
-     * 修改场地信息
-     *
-     * @param query
-     */
-    @PostMapping("/update")
-    public ApiResponse<Boolean> saveSession(@RequestBody GameGroupingSessionSetQuery query) {
-        query.setGameId(ThreadLocalUtil.getCurrentGameId());
-        return arrangeSessionService.saveSession(query);
-    }
+	/**
+	 * 修改场地信息
+	 * @param query
+	 */
+	@PostMapping("/update")
+	public ApiResponse<Boolean> saveSession(@RequestBody GameGroupingSessionSetQuery query) {
+		query.setGameId(ThreadLocalUtil.getCurrentGameId());
+		return arrangeSessionService.saveSession(query);
+	}
 
-    @GetMapping("/item/unSelected")
-    public ApiResponse<?> getUnSelected() {
-        SessionItemGetQuery query = new SessionItemGetQuery();
-        query.setGameId(ThreadLocalUtil.getCurrentGameId());
-        return arrangeSessionItemService.getUnSelectedItem(query);
-    }
+	@GetMapping("/item/unSelected")
+	public ApiResponse<?> getUnSelected() {
+		SessionItemGetQuery query = new SessionItemGetQuery();
+		query.setGameId(ThreadLocalUtil.getCurrentGameId());
+		return arrangeSessionItemService.getUnSelectedItem(query);
+	}
 
-    @GetMapping("/item/selected")
-    public ApiResponse<?> getSelected(@RequestParam("sessionId") Long sessionId) {
-        SessionItemGetQuery query = new SessionItemGetQuery();
-        query.setSessionId(sessionId);
-        query.setGameId(ThreadLocalUtil.getCurrentGameId());
-        return arrangeSessionItemService.getSelectedItem(query);
-    }
+	@GetMapping("/item/selected")
+	public ApiResponse<?> getSelected(@RequestParam("sessionId") Long sessionId) {
+		SessionItemGetQuery query = new SessionItemGetQuery();
+		query.setSessionId(sessionId);
+		query.setGameId(ThreadLocalUtil.getCurrentGameId());
+		return arrangeSessionItemService.getSelectedItem(query);
+	}
 
-    @PostMapping("/item/save")
-    public ApiResponse<Boolean> saveItem(@RequestBody SessionItemSetQuery query) {
-        query.setGameId(ThreadLocalUtil.getCurrentGameId());
-        return arrangeSessionItemService.saveSessionItem(query);
-    }
+	@PostMapping("/item/save")
+	public ApiResponse<Boolean> saveItem(@RequestBody SessionItemSetQuery query) {
+		query.setGameId(ThreadLocalUtil.getCurrentGameId());
+		return arrangeSessionItemService.saveSessionItem(query);
+	}
 
 }

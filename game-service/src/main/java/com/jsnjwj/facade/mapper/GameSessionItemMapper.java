@@ -16,8 +16,8 @@ import java.util.List;
  */
 public interface GameSessionItemMapper extends BaseMapper<GameSessionItemEntity> {
 
-    List<SessionItemVo> fetchBySessionId(@Param("gameId") Long gameId,@Param("sessionId") Long sessionId);
+	List<SessionItemVo> fetchBySessionId(@Param("gameId") Long gameId, @Param("sessionId") Long sessionId);
 
-    void saveBatch(@Param("list") List<GameSessionItemEntity> list);
+	void saveBatch(@Param("list") List<GameSessionItemEntity> list);
 
 }

@@ -9,9 +9,10 @@ import java.util.List;
 
 public interface ArrangeSessionService {
 
-    ApiResponse<?> setSessionNum(GameGroupingSessionSetNumQuery query);
+	ApiResponse<?> setSessionNum(GameGroupingSessionSetNumQuery query);
 
-    ApiResponse<Boolean> saveSession(GameGroupingSessionSetQuery query);
+	ApiResponse<Boolean> saveSession(GameGroupingSessionSetQuery query);
 
-    ApiResponse<List<GameSessionEntity>> getSessions(Long gameId);
+	ApiResponse<List<GameSessionEntity>> getSessions(Long gameId);
+
 }

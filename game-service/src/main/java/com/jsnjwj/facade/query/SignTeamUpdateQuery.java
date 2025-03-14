@@ -8,12 +8,12 @@ import lombok.EqualsAndHashCode;
 @Data
 public class SignTeamUpdateQuery extends BaseRequest {
 
-    private Long teamId;
+	private Long teamId;
 
-    private String teamName;
+	private String teamName;
 
-    private Long orgId;
+	private Long orgId;
 
-    private String orgName;
+	private String orgName;
 
 }

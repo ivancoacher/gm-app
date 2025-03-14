@@ -10,10 +10,10 @@ import java.util.List;
 @Data
 public class GameGroupingSetQuery extends BaseRequest {
 
-    private Integer areaNo;
+	private Integer areaNo;
 
-    private List<Long> itemIds;
+	private List<Long> itemIds;
 
-    private Integer areaId;
+	private Integer areaId;
 
 }

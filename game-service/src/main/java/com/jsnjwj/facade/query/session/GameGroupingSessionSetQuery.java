@@ -8,12 +8,12 @@ import lombok.EqualsAndHashCode;
 @Data
 public class GameGroupingSessionSetQuery extends BaseRequest {
 
-    private String sessionName;
+	private String sessionName;
 
-    private Integer sessionNo;
+	private Integer sessionNo;
 
-    private Integer status;
+	private Integer status;
 
-    private Long sessionId;
+	private Long sessionId;
 
 }

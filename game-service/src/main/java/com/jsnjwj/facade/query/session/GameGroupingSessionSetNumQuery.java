@@ -8,6 +8,6 @@ import lombok.EqualsAndHashCode;
 @Data
 public class GameGroupingSessionSetNumQuery extends BaseRequest {
 
-    private Integer sessionNum;
+	private Integer sessionNum;
 
 }

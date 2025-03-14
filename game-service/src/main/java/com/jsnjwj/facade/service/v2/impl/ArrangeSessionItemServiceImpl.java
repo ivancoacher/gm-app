@@ -32,71 +32,72 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ArrangeSessionItemServiceImpl implements ArrangeSessionItemService {
 
-    private final ArrangeSessionItemManager arrangeSessionItemManager;
+	private final ArrangeSessionItemManager arrangeSessionItemManager;
 
-    private final GameItemManager gameItemManager;
-    private final GameSessionMapper gameSessionMapper;
+	private final GameItemManager gameItemManager;
 
-    /**
-     * 查询剩余未排场次项目
-     * @param query
-     * @return
-     */
-    @Override
-    public ApiResponse<?> getUnSelectedItem(SessionItemGetQuery query) {
-        // 查询已排场次项目
-        List<Long> selectedItemIds = arrangeSessionItemManager.selectAllSelectedItemIds(query.getGameId());
-        // 排除已排
-        LambdaQueryWrapper<GameItemEntity> query1 = new LambdaQueryWrapper<>();
-        query1.eq(GameItemEntity::getGameId,query.getGameId());
-        if (CollectionUtil.isNotEmpty(selectedItemIds)){
-            query1.notIn(GameItemEntity::getId,selectedItemIds);
-        }
-        List<GameItemEntity> list = gameItemManager.fetchListByWrapper(query1);
-        return ApiResponse.success(list);
-    }
+	private final GameSessionMapper gameSessionMapper;
 
-    /**
-     * 查询当前场次已排项目
-     * @param query
-     * @return
-     */
-    @Override
-    public ApiResponse<SessionItemDto> getSelectedItem(SessionItemGetQuery query) {
-        SessionItemDto sessionItemDto = new SessionItemDto();
-        sessionItemDto.setGameId(query.getGameId());
-        List<SessionItemVo> list = arrangeSessionItemManager.fetchBySessionId(query.getGameId(),query.getSessionId());
-        sessionItemDto.setData(list);
-        GameSessionEntity session = gameSessionMapper.selectById(query.getSessionId());
-        sessionItemDto.setSessionName(session.getSessionName());
-        return ApiResponse.success(sessionItemDto);
-    }
+	/**
+	 * 查询剩余未排场次项目
+	 * @param query
+	 * @return
+	 */
+	@Override
+	public ApiResponse<?> getUnSelectedItem(SessionItemGetQuery query) {
+		// 查询已排场次项目
+		List<Long> selectedItemIds = arrangeSessionItemManager.selectAllSelectedItemIds(query.getGameId());
+		// 排除已排
+		LambdaQueryWrapper<GameItemEntity> query1 = new LambdaQueryWrapper<>();
+		query1.eq(GameItemEntity::getGameId, query.getGameId());
+		if (CollectionUtil.isNotEmpty(selectedItemIds)) {
+			query1.notIn(GameItemEntity::getId, selectedItemIds);
+		}
+		List<GameItemEntity> list = gameItemManager.fetchListByWrapper(query1);
+		return ApiResponse.success(list);
+	}
 
-    /**
-     * 保存场次-项目关系
-     * @param query
-     * @return
-     */
-    @Override
-    public ApiResponse<Boolean> saveSessionItem(SessionItemSetQuery query) {
+	/**
+	 * 查询当前场次已排项目
+	 * @param query
+	 * @return
+	 */
+	@Override
+	public ApiResponse<SessionItemDto> getSelectedItem(SessionItemGetQuery query) {
+		SessionItemDto sessionItemDto = new SessionItemDto();
+		sessionItemDto.setGameId(query.getGameId());
+		List<SessionItemVo> list = arrangeSessionItemManager.fetchBySessionId(query.getGameId(), query.getSessionId());
+		sessionItemDto.setData(list);
+		GameSessionEntity session = gameSessionMapper.selectById(query.getSessionId());
+		sessionItemDto.setSessionName(session.getSessionName());
+		return ApiResponse.success(sessionItemDto);
+	}
 
-        arrangeSessionItemManager.deleteBySessionId(query.getGameId(),query.getSessionId());
+	/**
+	 * 保存场次-项目关系
+	 * @param query
+	 * @return
+	 */
+	@Override
+	public ApiResponse<Boolean> saveSessionItem(SessionItemSetQuery query) {
 
-        List<GameSessionItemEntity> result = new ArrayList<>();
-        if (CollectionUtil.isNotEmpty(query.getData())){
-            query.getData().forEach(item->{
-                GameSessionItemEntity gameSessionItemEntity = new GameSessionItemEntity();
-                gameSessionItemEntity.setGameId(query.getGameId());
-                gameSessionItemEntity.setSessionId(query.getSessionId());
-                gameSessionItemEntity.setItemId(item.getItemId());
-                gameSessionItemEntity.setSort(item.getSort());
-                result.add(gameSessionItemEntity);
-            });
+		arrangeSessionItemManager.deleteBySessionId(query.getGameId(), query.getSessionId());
 
-            arrangeSessionItemManager.saveBatch(result);
-        }
+		List<GameSessionItemEntity> result = new ArrayList<>();
+		if (CollectionUtil.isNotEmpty(query.getData())) {
+			query.getData().forEach(item -> {
+				GameSessionItemEntity gameSessionItemEntity = new GameSessionItemEntity();
+				gameSessionItemEntity.setGameId(query.getGameId());
+				gameSessionItemEntity.setSessionId(query.getSessionId());
+				gameSessionItemEntity.setItemId(item.getItemId());
+				gameSessionItemEntity.setSort(item.getSort());
+				result.add(gameSessionItemEntity);
+			});
 
+			arrangeSessionItemManager.saveBatch(result);
+		}
 
-        return ApiResponse.success(true);
-    }
+		return ApiResponse.success(true);
+	}
+
 }

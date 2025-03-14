@@ -8,11 +8,11 @@ import lombok.EqualsAndHashCode;
 @Data
 public class SystemDrawQuery extends BaseRequest {
 
-    /**
-     * @see com.jsnjwj.facade.enums.DrawTypeEnum
-     */
-    private Integer type;
+	/**
+	 * @see com.jsnjwj.facade.enums.DrawTypeEnum
+	 */
+	private Integer type;
 
-    private Integer sessionNo;
+	private Integer sessionNo;
 
 }
