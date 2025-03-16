@@ -26,9 +26,11 @@
                g.id            as groupId,
                g.group_name    as groupName,
                i.id            as itemId,
-               i.item_name     as itemName
+               i.item_name     as itemName,
+               t.team_name     as teamName
         from tc_game_draw as d
                  left join tc_sign_single as s on s.id = d.sign_id
+            left join tc_sign_team as t on t.id = s.team_id and t.game_id = s.game_id
                  left join tc_game_session as s2 on s2.id = d.session_id
                  left join tc_game_item as i on i.id = s.item_id
                  left join tc_game_group as g on g.id = i.group_id

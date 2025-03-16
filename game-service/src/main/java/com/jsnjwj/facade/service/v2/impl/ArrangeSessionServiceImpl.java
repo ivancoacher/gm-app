@@ -2,6 +2,8 @@ package com.jsnjwj.facade.service.v2.impl;
 
 import com.jsnjwj.common.response.ApiResponse;
 import com.jsnjwj.facade.entity.GameSessionEntity;
+import com.jsnjwj.facade.manager.ArrangeAreaSessionManager;
+import com.jsnjwj.facade.manager.ArrangeSessionItemManager;
 import com.jsnjwj.facade.manager.ArrangeSessionManager;
 import com.jsnjwj.facade.query.session.GameGroupingSessionSetNumQuery;
 import com.jsnjwj.facade.query.session.GameGroupingSessionSetQuery;
@@ -24,6 +26,10 @@ public class ArrangeSessionServiceImpl implements ArrangeSessionService {
 
 	private final ArrangeSessionManager arrangeSessionManager;
 
+	private final ArrangeSessionItemManager arrangeSessionItemManager;
+
+	private final ArrangeAreaSessionManager arrangeAreaSessionManager;
+
 	/**
 	 * 创建场地
 	 */
@@ -32,8 +38,16 @@ public class ArrangeSessionServiceImpl implements ArrangeSessionService {
 		if (query.getSessionNum() <= 0)
 			return ApiResponse.error("请输入正确的场地数");
 		int courtNum = 1;
+		// 重置所有场次数据
 		arrangeSessionManager.resetCourt(query.getGameId());
-
+		// 重置场次项目编排数据
+		if (arrangeSessionItemManager.checkSessionItemExist(query.getGameId(), null)) {
+			arrangeSessionItemManager.deleteBySessionId(query.getGameId(), null);
+		}
+		// 重置场地-场次编排数据
+		if (arrangeAreaSessionManager.checkSessionItemExist(query.getGameId(), null)) {
+			arrangeAreaSessionManager.deleteBySessionId(query.getGameId(), null);
+		}
 		List<GameSessionEntity> areas = new ArrayList<>();
 		while (courtNum <= query.getSessionNum()) {
 			GameSessionEntity area = new GameSessionEntity();

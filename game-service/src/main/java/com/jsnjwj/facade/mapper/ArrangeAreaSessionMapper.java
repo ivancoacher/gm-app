@@ -15,4 +15,6 @@ import java.util.List;
  */
 public interface ArrangeAreaSessionMapper extends BaseMapper<ArrangeAreaSessionEntity> {
 
+	int checkSessionItemExist(@Param("gameId") Long gameId, @Param("sessionId") Long sessionId);
+
 }

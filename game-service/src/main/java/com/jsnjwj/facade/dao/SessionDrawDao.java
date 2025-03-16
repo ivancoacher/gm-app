@@ -31,4 +31,6 @@ public class SessionDrawDao {
 
 	private String groupName;
 
+	private String teamName;
+
 }

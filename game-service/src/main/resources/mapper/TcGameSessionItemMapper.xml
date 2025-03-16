@@ -26,4 +26,15 @@
         where game_id = #{gameId}
         group by session_id
     </select>
+    <select id="checkSessionItemExist" resultType="java.lang.Integer">
+        select count(1) from tc_game_session_item
+        <where>
+            <if test="sessionId != null">
+                and session_id = #{sessionId}
+            </if>
+            <if test="gameId != null">
+                and game_id = #{gameId}
+            </if>
+        </where>
+    </select>
 </mapper>

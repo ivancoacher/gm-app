@@ -31,4 +31,6 @@ public class ArrangeDrawDto {
 
 	private String groupName;
 
+	private String teamName;
+
 }

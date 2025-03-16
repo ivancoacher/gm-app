@@ -55,7 +55,7 @@ public class ArrangeSessionItemManager {
 	public void deleteBySessionId(Long gameId, Long sessionId) {
 		LambdaQueryWrapper<GameSessionItemEntity> lambdaQueryWrapper = new LambdaQueryWrapper<>();
 		lambdaQueryWrapper.eq(GameSessionItemEntity::getGameId, gameId);
-		lambdaQueryWrapper.eq(GameSessionItemEntity::getSessionId, sessionId);
+		lambdaQueryWrapper.eq(Objects.nonNull(sessionId), GameSessionItemEntity::getSessionId, sessionId);
 		gameSessionItemMapper.delete(lambdaQueryWrapper);
 	}
 
@@ -65,6 +65,10 @@ public class ArrangeSessionItemManager {
 
 	public List<Long> selectArrangedSessionIds(Long gameId) {
 		return gameSessionItemMapper.selectArrangedSessionIds(gameId);
+	}
+
+	public boolean checkSessionItemExist(Long gameId, Long sessionId) {
+		return gameSessionItemMapper.checkSessionItemExist(gameId, sessionId) > 0;
 	}
 
 }
