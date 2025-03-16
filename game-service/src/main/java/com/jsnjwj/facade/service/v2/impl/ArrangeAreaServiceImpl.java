@@ -31,10 +31,15 @@ import java.util.stream.Collectors;
 public class ArrangeAreaServiceImpl implements ArrangeAreaService {
 
 	private final GameGroupingManager gameGroupingManager;
+
 	private final GameAreaManager gameAreaManager;
+
 	private final ArrangeSessionManager arrangeSessionManager;
+
 	private final ArrangeSessionItemManager arrangeSessionItemManager;
+
 	private final ArrangeAreaSessionMapper arrangeAreaSessionMapper;
+
 	private final ArrangeDrawManager arrangeDrawManager;
 
 	@Override
@@ -67,13 +72,13 @@ public class ArrangeAreaServiceImpl implements ArrangeAreaService {
 		area.setStatus(query.getStatus());
 		gameGroupingManager.saveCourt(area);
 
-		if (CollectionUtil.isNotEmpty(query.getSessionIds())){
+		if (CollectionUtil.isNotEmpty(query.getSessionIds())) {
 			LambdaQueryWrapper<ArrangeAreaSessionEntity> queryWrapper = new LambdaQueryWrapper<>();
 			queryWrapper.eq(ArrangeAreaSessionEntity::getAreaId, query.getAreaId());
 			queryWrapper.eq(ArrangeAreaSessionEntity::getGameId, query.getGameId());
 			arrangeAreaSessionMapper.delete(queryWrapper);
 
-			for (Long sessionId : query.getSessionIds()){
+			for (Long sessionId : query.getSessionIds()) {
 				ArrangeAreaSessionEntity session = new ArrangeAreaSessionEntity();
 				session.setSessionId(sessionId);
 				session.setGameId(query.getGameId());
@@ -84,7 +89,6 @@ public class ArrangeAreaServiceImpl implements ArrangeAreaService {
 				arrangeAreaSessionMapper.insert(session);
 			}
 		}
-
 
 		return ApiResponse.success(true);
 	}
@@ -117,57 +121,59 @@ public class ArrangeAreaServiceImpl implements ArrangeAreaService {
 		// 1.获取已设置的场次(不包含默认场次)
 		List<GameSessionEntity> gameSessionEntities = arrangeSessionManager.getList(query.getGameId());
 		Map<Long, GameSessionEntity> gameSessionEntityMap = gameSessionEntities.stream()
-				.collect(Collectors.toMap(GameSessionEntity::getId, session -> session));
+			.collect(Collectors.toMap(GameSessionEntity::getId, session -> session));
 
 		List<Long> sessionIds = new ArrayList<>();
 
-		if (CollectionUtil.isNotEmpty(gameSessionEntities)){
+		if (CollectionUtil.isNotEmpty(gameSessionEntities)) {
 			List<Long> chosenSessionIds = gameSessionEntities.stream()
-					.filter(Objects::nonNull)
-					.map(GameSessionEntity::getId)
-					.collect(Collectors.toList());
+				.filter(Objects::nonNull)
+				.map(GameSessionEntity::getId)
+				.collect(Collectors.toList());
 			sessionIds.addAll(chosenSessionIds);
 		}
 
 		// 2.获取已分组过的场次（包含默认场次）
 		List<SessionDrawListDao> sessionVoList = arrangeDrawManager.getSessionList(query.getGameId());
-		if (CollectionUtil.isNotEmpty(sessionVoList)){
-			sessionIds.addAll(sessionVoList.stream().map(SessionDrawListDao::getSessionId).collect(Collectors.toList()));
+		if (CollectionUtil.isNotEmpty(sessionVoList)) {
+			sessionIds
+				.addAll(sessionVoList.stream().map(SessionDrawListDao::getSessionId).collect(Collectors.toList()));
 		}
 
 		List<SessionChooseDto> response = new ArrayList<>();
-		if (CollectionUtil.isEmpty(sessionIds)){
+		if (CollectionUtil.isEmpty(sessionIds)) {
 			return ApiResponse.success(response);
 		}
 
 		// 查询当前场地已排场次
-		List<ArrangeSessionVo> selectedSession = gameAreaManager.selectSessionExceptArea(query.getGameId(), query.getAreaId());
+		List<ArrangeSessionVo> selectedSession = gameAreaManager.selectSessionExceptArea(query.getGameId(),
+				query.getAreaId());
 		Map<Long, ArrangeSessionVo> selectedSessionMap = selectedSession.stream()
-				.collect(Collectors.toMap(ArrangeSessionVo::getSessionId, session -> session));
-
+			.collect(Collectors.toMap(ArrangeSessionVo::getSessionId, session -> session));
 
 		response = sessionIds.stream().distinct().map(session -> {
 			SessionChooseDto dto = new SessionChooseDto();
 			dto.setAreaId(query.getAreaId());
 
-			if (session == 0L){
+			if (session == 0L) {
 				dto.setSessionName("默认场次");
 				dto.setSessionId(0L);
-			}else{
+			}
+			else {
 				dto.setSessionId(session);
 				dto.setSessionName(gameSessionEntityMap.get(session).getSessionName());
 			}
-//			dto.setDisabled(true);
-//
-			if (selectedSessionMap.containsKey(session)){
+			// dto.setDisabled(true);
+			//
+			if (selectedSessionMap.containsKey(session)) {
 				dto.setDisabled(true);
-			}else{
+			}
+			else {
 				dto.setDisabled(false);
 			}
 			return dto;
 		}).collect(Collectors.toList());
 		return ApiResponse.success(response);
 	}
-
 
 }

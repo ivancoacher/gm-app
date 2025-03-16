@@ -27,7 +27,8 @@ public class ArrangeDrawManager {
 	 * @param gameId
 	 * @return
 	 */
-	public List<SessionDrawListDao> getSessionList(Long gameId){
+	public List<SessionDrawListDao> getSessionList(Long gameId) {
 		return drawMapper.getSessionList(gameId);
 	}
+
 }

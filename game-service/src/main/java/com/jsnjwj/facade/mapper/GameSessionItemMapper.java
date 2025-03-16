@@ -21,4 +21,5 @@ public interface GameSessionItemMapper extends BaseMapper<GameSessionItemEntity>
 	void saveBatch(@Param("list") List<GameSessionItemEntity> list);
 
 	List<Long> selectArrangedSessionIds(@Param("gameId") Long gameId);
+
 }

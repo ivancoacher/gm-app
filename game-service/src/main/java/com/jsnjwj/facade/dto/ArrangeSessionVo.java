@@ -9,10 +9,10 @@ import java.util.List;
 @Setter
 public class ArrangeSessionVo {
 
+	private Long sessionId;
 
-    private Long sessionId;
+	private String sessionName;
 
-    private String sessionName;
+	private Integer sessionNo;
 
-    private Integer sessionNo;
 }

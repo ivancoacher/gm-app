@@ -43,7 +43,9 @@ public class ArrangeSessionItemServiceImpl implements ArrangeSessionItemService 
 	private final GameItemManager gameItemManager;
 
 	private final GameSessionMapper gameSessionMapper;
+
 	private final GameGroupingManager gameGroupingManager;
+
 	private final GameGroupManager gameGroupManager;
 
 	/**
@@ -68,8 +70,9 @@ public class ArrangeSessionItemServiceImpl implements ArrangeSessionItemService 
 
 		List<GroupLabelVo> groupEntities = gameGroupManager.fetchGroups(query.getGameId());
 		List<SessionItemVo> response = new ArrayList<>();
-		if (CollectionUtil.isNotEmpty(groupEntities)){
-			Map<Long, GroupLabelVo> groupLabelVoMap = groupEntities.stream().collect(Collectors.toMap(GroupLabelVo::getGroupId, group -> group));
+		if (CollectionUtil.isNotEmpty(groupEntities)) {
+			Map<Long, GroupLabelVo> groupLabelVoMap = groupEntities.stream()
+				.collect(Collectors.toMap(GroupLabelVo::getGroupId, group -> group));
 			response = list.stream().map(item -> {
 				SessionItemVo vo = new SessionItemVo();
 				vo.setGroupName(groupLabelVoMap.get(item.getGroupId()).getGroupName());

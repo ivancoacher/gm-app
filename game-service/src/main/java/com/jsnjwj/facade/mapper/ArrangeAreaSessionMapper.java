@@ -15,5 +15,4 @@ import java.util.List;
  */
 public interface ArrangeAreaSessionMapper extends BaseMapper<ArrangeAreaSessionEntity> {
 
-
 }

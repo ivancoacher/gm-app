@@ -182,7 +182,7 @@ public class DrawServiceImpl implements DrawService {
 				}
 			}
 		}
-		if (CollectionUtil.isEmpty(result)){
+		if (CollectionUtil.isEmpty(result)) {
 			return ApiResponse.error("操作失败");
 		}
 		drawManager.saveBatch(result);

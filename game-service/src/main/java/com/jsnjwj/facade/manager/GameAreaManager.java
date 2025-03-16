@@ -75,12 +75,12 @@ public class GameAreaManager {
 
 	}
 
-	public List<ArrangeSessionVo> selectSessionExceptArea(Long gameId, Long areaId){
-		return gameAreaMapper.selectSessionExceptArea(gameId,areaId);
+	public List<ArrangeSessionVo> selectSessionExceptArea(Long gameId, Long areaId) {
+		return gameAreaMapper.selectSessionExceptArea(gameId, areaId);
 	}
 
-	public List<ArrangeSessionVo> selectSession(Long gameId, Long areaId){
-		return gameAreaMapper.selectSession(gameId,areaId);
+	public List<ArrangeSessionVo> selectSession(Long gameId, Long areaId) {
+		return gameAreaMapper.selectSession(gameId, areaId);
 	}
 
 }

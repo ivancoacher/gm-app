@@ -17,4 +17,5 @@ public interface ArrangeAreaService {
 	ApiResponse<List<ArrangeAreaSessionDto>> getAreas(Long gameId);
 
 	ApiResponse<List<SessionChooseDto>> selectSessionList(GameGroupingAreaSetQuery query);
+
 }
