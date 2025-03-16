@@ -1,6 +1,7 @@
 package com.jsnjwj.facade.manager;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.jsnjwj.facade.dto.ArrangeSessionVo;
 import com.jsnjwj.facade.entity.GameAreaEntity;
 import com.jsnjwj.facade.entity.GameAreaItemEntity;
 import com.jsnjwj.facade.mapper.GameAreaItemMapper;
@@ -72,6 +73,14 @@ public class GameAreaManager {
 
 		return gameAreaItemMapper.selectList(wrapper);
 
+	}
+
+	public List<ArrangeSessionVo> selectSessionExceptArea(Long gameId, Long areaId){
+		return gameAreaMapper.selectSessionExceptArea(gameId,areaId);
+	}
+
+	public List<ArrangeSessionVo> selectSession(Long gameId, Long areaId){
+		return gameAreaMapper.selectSession(gameId,areaId);
 	}
 
 }

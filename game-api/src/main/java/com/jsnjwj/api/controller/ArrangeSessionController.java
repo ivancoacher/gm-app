@@ -57,6 +57,10 @@ public class ArrangeSessionController {
 		return arrangeSessionService.saveSession(query);
 	}
 
+	/**
+	 * 剩余未选场次项目
+	 * @return
+	 */
 	@GetMapping("/item/unSelected")
 	public ApiResponse<?> getUnSelected() {
 		SessionItemGetQuery query = new SessionItemGetQuery();
@@ -64,6 +68,11 @@ public class ArrangeSessionController {
 		return arrangeSessionItemService.getUnSelectedItem(query);
 	}
 
+	/**
+	 * 查询该场次内的已选项目
+	 * @param sessionId
+	 * @return
+	 */
 	@GetMapping("/item/selected")
 	public ApiResponse<?> getSelected(@RequestParam("sessionId") Long sessionId) {
 		SessionItemGetQuery query = new SessionItemGetQuery();

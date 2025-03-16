@@ -13,9 +13,17 @@
         </foreach>
     </insert>
     <select id="fetchBySessionId" resultType="com.jsnjwj.facade.vo.session.SessionItemVo">
-        select i.item_name as itemName,i.id as itemId,s.session_id as sessionId,s.sort from tc_game_session_item as s
+        select i.item_name as itemName,i.id as itemId,s.session_id as sessionId,s.sort ,g.group_name as groupName
+        from tc_game_session_item as s
         left join tc_game_item as i on i.id = s.item_id
+        left join tc_game_group as g on g.id = i.group_id
         where s.session_id = #{sessionId} and s.game_id = #{gameId}
         order by sort
+    </select>
+    <select id="selectArrangedSessionIds" resultType="java.lang.Long">
+        select session_id
+        from tc_game_session_item
+        where game_id = #{gameId}
+        group by session_id
     </select>
 </mapper>

@@ -2,7 +2,8 @@ package com.jsnjwj.api.controller;
 
 import com.jsnjwj.common.response.ApiResponse;
 import com.jsnjwj.common.utils.ThreadLocalUtil;
-import com.jsnjwj.facade.entity.GameAreaEntity;
+import com.jsnjwj.facade.dto.ArrangeAreaSessionDto;
+import com.jsnjwj.facade.dto.SessionChooseDto;
 import com.jsnjwj.facade.query.GameGroupingAreaSetQuery;
 import com.jsnjwj.facade.query.GameGroupingSetNumQuery;
 import com.jsnjwj.facade.service.v2.ArrangeAreaService;
@@ -26,8 +27,7 @@ public class ArrangeAreaController {
 	 * @return
 	 */
 	@GetMapping("/list")
-	public ApiResponse<List<GameAreaEntity>> getAreas() {
-
+	public ApiResponse<List<ArrangeAreaSessionDto>> getAreas() {
 		Long gameId = ThreadLocalUtil.getCurrentGameId();
 		return arrangeAreaService.getAreas(gameId);
 	}
@@ -52,6 +52,12 @@ public class ArrangeAreaController {
 	public ApiResponse<Boolean> saveArea(@RequestBody GameGroupingAreaSetQuery query) {
 		query.setGameId(ThreadLocalUtil.getCurrentGameId());
 		return arrangeAreaService.saveArea(query);
+	}
+
+	@PostMapping("/session/select")
+	public ApiResponse<List<SessionChooseDto>> selectSession(@RequestBody GameGroupingAreaSetQuery query) {
+		query.setGameId(ThreadLocalUtil.getCurrentGameId());
+		return arrangeAreaService.selectSessionList(query);
 	}
 
 }

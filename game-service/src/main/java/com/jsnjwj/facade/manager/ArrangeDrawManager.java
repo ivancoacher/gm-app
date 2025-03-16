@@ -1,6 +1,7 @@
 package com.jsnjwj.facade.manager;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.jsnjwj.facade.dao.SessionDrawListDao;
 import com.jsnjwj.facade.entity.GameDrawEntity;
 import com.jsnjwj.facade.entity.GameSessionEntity;
 import com.jsnjwj.facade.mapper.GameDrawMapper;
@@ -21,4 +22,12 @@ public class ArrangeDrawManager {
 		drawMapper.saveBatch(list);
 	}
 
+	/**
+	 * 获取已抽签分组场次
+	 * @param gameId
+	 * @return
+	 */
+	public List<SessionDrawListDao> getSessionList(Long gameId){
+		return drawMapper.getSessionList(gameId);
+	}
 }

@@ -21,6 +21,11 @@ public class ArrangeSessionItemManager {
 
 	private final GameSessionItemMapper gameSessionItemMapper;
 
+	/**
+	 * 获取已排场次对应的项目id
+	 * @param gameId
+	 * @return
+	 */
 	public List<Long> selectAllSelectedItemIds(Long gameId) {
 		LambdaQueryWrapper<GameSessionItemEntity> sessionItemQuery = new LambdaQueryWrapper<>();
 		sessionItemQuery.eq(GameSessionItemEntity::getGameId, gameId);
@@ -56,6 +61,10 @@ public class ArrangeSessionItemManager {
 
 	public void saveBatch(List<GameSessionItemEntity> list) {
 		gameSessionItemMapper.saveBatch(list);
+	}
+
+	public List<Long> selectArrangedSessionIds(Long gameId) {
+		return gameSessionItemMapper.selectArrangedSessionIds(gameId);
 	}
 
 }

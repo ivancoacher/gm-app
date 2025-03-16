@@ -1,6 +1,7 @@
 package com.jsnjwj.facade.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.jsnjwj.facade.dto.ArrangeSessionVo;
 import com.jsnjwj.facade.entity.GameAreaEntity;
 import org.apache.ibatis.annotations.Param;
 
@@ -15,5 +16,9 @@ import java.util.List;
 public interface GameAreaMapper extends BaseMapper<GameAreaEntity> {
 
 	void saveBatch(@Param("list") List<GameAreaEntity> list);
+
+	List<ArrangeSessionVo> selectSession(@Param("gameId") Long gameId, @Param("areaId") Long areaId);
+
+	List<ArrangeSessionVo> selectSessionExceptArea(@Param("gameId") Long gameId, @Param("areaId") Long areaId);
 
 }

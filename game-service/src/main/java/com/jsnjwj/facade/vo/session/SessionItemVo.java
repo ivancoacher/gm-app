@@ -7,9 +7,11 @@ import lombok.Setter;
 @Setter
 public class SessionItemVo {
 
+	private String groupName;
+
 	private String itemName;
 
-	private String itemId;
+	private Long itemId;
 
 	private Integer sessionId;
 

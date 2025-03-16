@@ -153,40 +153,6 @@ public class DrawServiceImpl implements DrawService {
 				}
 			}
 
-			// // 查询各个场次内对应的小项
-			// sessionList.forEach(session -> {
-			// List<GameSessionItemEntity> sessionItemEntities =
-			// sessionItemManager.fetchListBySessionId(gameId, session.getId());
-			// if (CollectionUtil.isEmpty(sessionItemEntities)) {
-			// // 该场次未安排小项，则不处理
-			// log.info("该场次未安排小项，则不处理");
-			// return;
-			// }
-			// List<Long> itemIds =
-			// sessionItemEntities.stream().map(GameSessionItemEntity::getItemId).collect(Collectors.toList());
-			// List<SignSingleEntity> signApplyManagers =
-			// signApplyManager.getApplyByItemIds(gameId, itemIds);
-			// if (CollectionUtil.isEmpty(signApplyManagers)) {
-			// log.info("该项目无报名记录");
-			// return;
-			// }
-			// List<Long> signIds =
-			// signApplyManagers.stream().map(SignSingleEntity::getId).collect(Collectors.toList());
-			// // 将各个场次内的小项打乱，排序。相同选手，间隔5位
-			//
-			// Collections.shuffle(signIds);
-			//
-			// for (int i = 0; i < signIds.size(); i++) {
-			// GameDrawEntity gameDrawEntity = new GameDrawEntity();
-			// gameDrawEntity.setGameId(gameId);
-			// gameDrawEntity.setSessionId(session.getId());
-			// gameDrawEntity.setSessionNo(session.getSessionNo());
-			// gameDrawEntity.setSignId(signIds.get(i));
-			// gameDrawEntity.setSort(i);
-			// gameDrawEntity.setCreatedAt(new Date());
-			// result.add(gameDrawEntity);
-			// }
-			// });
 		}
 		// 不按场次抽签
 		else {
@@ -216,7 +182,9 @@ public class DrawServiceImpl implements DrawService {
 				}
 			}
 		}
-
+		if (CollectionUtil.isEmpty(result)){
+			return ApiResponse.error("操作失败");
+		}
 		drawManager.saveBatch(result);
 
 		return ApiResponse.success(true);
@@ -323,8 +291,9 @@ public class DrawServiceImpl implements DrawService {
 		// 2、保存抽签记录
 		query.getData().forEach(manualDrawData -> {
 			GameDrawEntity gameDrawEntity = gameDrawMapper.selectById(manualDrawData.getDrawId());
-			gameDrawEntity.setSort(manualDrawData.getSort());
 			if (!Objects.equals(manualDrawData.getSort(), gameDrawEntity.getSort())) {
+				gameDrawEntity.setSort(manualDrawData.getSort());
+				gameDrawEntity.setUpdatedAt(new Date());
 				gameDrawMapper.updateById(gameDrawEntity);
 			}
 		});

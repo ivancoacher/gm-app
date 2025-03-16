@@ -23,4 +23,20 @@
             (#{entity.gameId},#{entity.areaName},#{entity.status}, #{entity.areaNo})
         </foreach>
     </insert>
+    <select id="selectSession" resultType="com.jsnjwj.facade.dto.ArrangeSessionVo">
+        select s.session_id as sessionId
+             ,if (a.session_name is null ,"默认场次",a.session_name) as sessionName
+             ,if(a.session_no is null,"0",a.session_no) as sessionNo
+        from tc_game_area_session as s
+        left join tc_game_session as a on a.id = s.session_id
+        where s.area_id = #{areaId} and s.game_id = #{gameId}
+    </select>
+
+    <select id="selectSessionExceptArea" resultType="com.jsnjwj.facade.dto.ArrangeSessionVo">
+        select s.session_id as sessionId,a.session_name as sessionName,a.session_no as sessionNo
+        from tc_game_area_session as s
+                 left join tc_game_session as a on a.id = s.session_id
+        where s.area_id != #{areaId} and s.game_id = #{gameId}
+    </select>
+
 </mapper>
