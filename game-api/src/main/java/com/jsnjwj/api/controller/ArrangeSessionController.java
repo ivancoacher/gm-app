@@ -48,6 +48,26 @@ public class ArrangeSessionController {
 	}
 
 	/**
+	 * 新增场次
+	 * @return
+	 */
+	@PostMapping("/add")
+	public ApiResponse<?> addSession() {
+		return arrangeSessionService.addSession(ThreadLocalUtil.getCurrentGameId());
+	}
+
+	/**
+	 * 删除场次
+	 * @param query
+	 * @return
+	 */
+	@PostMapping("/delete")
+	public ApiResponse<?> deleteSession(@RequestBody GameGroupingSessionSetQuery query) {
+		query.setGameId(ThreadLocalUtil.getCurrentGameId());
+		return arrangeSessionService.deleteSession(query);
+	}
+
+	/**
 	 * 修改场地信息
 	 * @param query
 	 */

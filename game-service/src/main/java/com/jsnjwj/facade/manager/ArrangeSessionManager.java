@@ -15,6 +15,14 @@ public class ArrangeSessionManager {
 
 	private final GameSessionMapper gameSessionMapper;
 
+
+	public void deleteById(Long gameId, Long sessionId){
+		LambdaQueryWrapper<GameSessionEntity> queryWrapper = new LambdaQueryWrapper<>();
+		queryWrapper.eq(GameSessionEntity::getId, sessionId);
+		queryWrapper.eq(GameSessionEntity::getGameId, gameId);
+		gameSessionMapper.delete(queryWrapper);
+	}
+
 	public int saveSession(GameSessionEntity query) {
 		if (Objects.nonNull(query.getId())) {
 			return gameSessionMapper.updateById(query);
@@ -43,6 +51,7 @@ public class ArrangeSessionManager {
 	public List<GameSessionEntity> getList(Long gameId) {
 		LambdaQueryWrapper<GameSessionEntity> queryWrapper = new LambdaQueryWrapper<>();
 		queryWrapper.eq(GameSessionEntity::getGameId, gameId);
+		queryWrapper.orderByAsc(GameSessionEntity::getSessionNo);
 		return gameSessionMapper.selectList(queryWrapper);
 	}
 
