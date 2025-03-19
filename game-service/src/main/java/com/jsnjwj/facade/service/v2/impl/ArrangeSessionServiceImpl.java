@@ -74,13 +74,14 @@ public class ArrangeSessionServiceImpl implements ArrangeSessionService {
 		List<GameSessionEntity> sessionEntities = arrangeSessionManager.getList(gameId);
 		int courtNum = 1;
 		GameSessionEntity areaEntity = new GameSessionEntity();
-		if (CollectionUtil.isEmpty(sessionEntities)){
+		if (CollectionUtil.isEmpty(sessionEntities)) {
 			areaEntity.setGameId(gameId);
 			areaEntity.setSessionName("场次" + courtNum);
 			areaEntity.setSessionNo(courtNum);
 			areaEntity.setStatus(1);
-		}else{
-			courtNum = sessionEntities.get(sessionEntities.size()-1).getSessionNo()+1;
+		}
+		else {
+			courtNum = sessionEntities.get(sessionEntities.size() - 1).getSessionNo() + 1;
 			areaEntity.setGameId(gameId);
 			areaEntity.setSessionName("场次" + courtNum);
 			areaEntity.setSessionNo(courtNum);
@@ -101,12 +102,13 @@ public class ArrangeSessionServiceImpl implements ArrangeSessionService {
 		Long sessionId = query.getSessionId();
 		Long gameId = query.getGameId();
 		// 校验该场次下，是否存在已排项目
-		List<GameSessionItemEntity> gameSessionItemEntities = arrangeSessionItemManager.fetchListBySessionId(gameId, sessionId);
-		if (CollectionUtil.isNotEmpty(gameSessionItemEntities)){
-			arrangeSessionItemManager.deleteBySessionId(gameId,sessionId);
+		List<GameSessionItemEntity> gameSessionItemEntities = arrangeSessionItemManager.fetchListBySessionId(gameId,
+				sessionId);
+		if (CollectionUtil.isNotEmpty(gameSessionItemEntities)) {
+			arrangeSessionItemManager.deleteBySessionId(gameId, sessionId);
 		}
 		// 删除场次
-		arrangeSessionManager.deleteById(gameId,sessionId);
+		arrangeSessionManager.deleteById(gameId, sessionId);
 
 		return ApiResponse.success();
 	}

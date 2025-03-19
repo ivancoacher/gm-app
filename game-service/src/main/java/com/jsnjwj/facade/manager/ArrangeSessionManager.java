@@ -15,8 +15,7 @@ public class ArrangeSessionManager {
 
 	private final GameSessionMapper gameSessionMapper;
 
-
-	public void deleteById(Long gameId, Long sessionId){
+	public void deleteById(Long gameId, Long sessionId) {
 		LambdaQueryWrapper<GameSessionEntity> queryWrapper = new LambdaQueryWrapper<>();
 		queryWrapper.eq(GameSessionEntity::getId, sessionId);
 		queryWrapper.eq(GameSessionEntity::getGameId, gameId);
