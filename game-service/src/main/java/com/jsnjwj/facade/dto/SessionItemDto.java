@@ -13,6 +13,8 @@ public class SessionItemDto {
 
 	private String sessionName;
 
+	private Long sessionId;
+
 	private List<SessionItemVo> data = new ArrayList<>();
 
 }

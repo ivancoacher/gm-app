@@ -3,10 +3,7 @@ package com.jsnjwj.api.controller;
 import com.jsnjwj.common.response.ApiResponse;
 import com.jsnjwj.common.utils.ThreadLocalUtil;
 import com.jsnjwj.facade.entity.GameSessionEntity;
-import com.jsnjwj.facade.query.session.GameGroupingSessionSetNumQuery;
-import com.jsnjwj.facade.query.session.GameGroupingSessionSetQuery;
-import com.jsnjwj.facade.query.session.SessionItemGetQuery;
-import com.jsnjwj.facade.query.session.SessionItemSetQuery;
+import com.jsnjwj.facade.query.session.*;
 import com.jsnjwj.facade.service.v2.ArrangeSessionItemService;
 import com.jsnjwj.facade.service.v2.ArrangeSessionService;
 import lombok.RequiredArgsConstructor;
@@ -101,10 +98,23 @@ public class ArrangeSessionController {
 		return arrangeSessionItemService.getSelectedItem(query);
 	}
 
+	@GetMapping("/item/selected/list")
+	public ApiResponse<?> getSelectedList() {
+		SessionItemGetQuery query = new SessionItemGetQuery();
+		query.setGameId(ThreadLocalUtil.getCurrentGameId());
+		return arrangeSessionItemService.getSelectedItemList(query);
+	}
+
 	@PostMapping("/item/save")
 	public ApiResponse<Boolean> saveItem(@RequestBody SessionItemSetQuery query) {
 		query.setGameId(ThreadLocalUtil.getCurrentGameId());
 		return arrangeSessionItemService.saveSessionItem(query);
+	}
+
+	@PostMapping("/item/save/batch")
+	public ApiResponse<Boolean> saveItemBatch(@RequestBody SessionItemSetBatchQuery query) {
+		query.setGameId(ThreadLocalUtil.getCurrentGameId());
+		return arrangeSessionItemService.saveSessionItemBatch(query);
 	}
 
 }

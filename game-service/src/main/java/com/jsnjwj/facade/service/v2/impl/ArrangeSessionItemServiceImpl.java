@@ -14,10 +14,7 @@ import com.jsnjwj.facade.manager.GameGroupingManager;
 import com.jsnjwj.facade.manager.GameItemManager;
 import com.jsnjwj.facade.mapper.GameSessionMapper;
 import com.jsnjwj.facade.query.GameItemListQuery;
-import com.jsnjwj.facade.query.session.GameGroupingSessionSetNumQuery;
-import com.jsnjwj.facade.query.session.GameGroupingSessionSetQuery;
-import com.jsnjwj.facade.query.session.SessionItemGetQuery;
-import com.jsnjwj.facade.query.session.SessionItemSetQuery;
+import com.jsnjwj.facade.query.session.*;
 import com.jsnjwj.facade.service.v2.ArrangeSessionItemService;
 import com.jsnjwj.facade.vo.GroupLabelVo;
 import com.jsnjwj.facade.vo.session.SessionItemVo;
@@ -25,9 +22,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -43,8 +38,6 @@ public class ArrangeSessionItemServiceImpl implements ArrangeSessionItemService 
 	private final GameItemManager gameItemManager;
 
 	private final GameSessionMapper gameSessionMapper;
-
-	private final GameGroupingManager gameGroupingManager;
 
 	private final GameGroupManager gameGroupManager;
 
@@ -92,13 +85,38 @@ public class ArrangeSessionItemServiceImpl implements ArrangeSessionItemService 
 	 * @return
 	 */
 	@Override
+	public ApiResponse<List<SessionItemDto>> getSelectedItemList(SessionItemGetQuery query) {
+
+		List<GameSessionEntity> sessionEntities = gameSessionMapper.selectList(
+				new LambdaQueryWrapper<GameSessionEntity>().eq(GameSessionEntity::getGameId, query.getGameId()));
+		List<SessionItemDto> response = new ArrayList<>();
+		if (CollectionUtil.isNotEmpty(sessionEntities)) {
+			for (GameSessionEntity session : sessionEntities) {
+				SessionItemDto sessionItemDto = new SessionItemDto();
+				sessionItemDto.setGameId(query.getGameId());
+				sessionItemDto.setSessionId(session.getId());
+				List<SessionItemVo> list = arrangeSessionItemManager.fetchBySessionId(query.getGameId(),
+						session.getId());
+				sessionItemDto.setData(list);
+				sessionItemDto.setSessionName(session.getSessionName());
+				response.add(sessionItemDto);
+			}
+		}
+
+		return ApiResponse.success(response);
+	}
+
+	@Override
 	public ApiResponse<SessionItemDto> getSelectedItem(SessionItemGetQuery query) {
+
 		SessionItemDto sessionItemDto = new SessionItemDto();
 		sessionItemDto.setGameId(query.getGameId());
 		List<SessionItemVo> list = arrangeSessionItemManager.fetchBySessionId(query.getGameId(), query.getSessionId());
 		sessionItemDto.setData(list);
 		GameSessionEntity session = gameSessionMapper.selectById(query.getSessionId());
 		sessionItemDto.setSessionName(session.getSessionName());
+		sessionItemDto.setSessionId(session.getId());
+
 		return ApiResponse.success(sessionItemDto);
 	}
 
@@ -115,14 +133,47 @@ public class ArrangeSessionItemServiceImpl implements ArrangeSessionItemService 
 		List<GameSessionItemEntity> result = new ArrayList<>();
 		if (CollectionUtil.isNotEmpty(query.getData())) {
 			query.getData().forEach(item -> {
+				if (Objects.isNull(item.getItemId())) {
+					return;
+				}
 				GameSessionItemEntity gameSessionItemEntity = new GameSessionItemEntity();
 				gameSessionItemEntity.setGameId(query.getGameId());
 				gameSessionItemEntity.setSessionId(query.getSessionId());
 				gameSessionItemEntity.setItemId(item.getItemId());
 				gameSessionItemEntity.setSort(item.getSort());
+				gameSessionItemEntity.setCreatedAt(new Date());
 				result.add(gameSessionItemEntity);
 			});
 
+			arrangeSessionItemManager.saveBatch(result);
+		}
+
+		return ApiResponse.success(true);
+	}
+
+	/**
+	 * 批量保存场次-项目关系
+	 * @param query
+	 * @return
+	 */
+	@Override
+	public ApiResponse<Boolean> saveSessionItemBatch(SessionItemSetBatchQuery query) {
+
+		arrangeSessionItemManager.deleteBySessionId(query.getGameId(), null);
+
+		List<GameSessionItemEntity> result = new ArrayList<>();
+		if (CollectionUtil.isNotEmpty(query.getData())) {
+			query.getData().forEach(session -> {
+				session.getData().forEach(item -> {
+					GameSessionItemEntity gameSessionItemEntity = new GameSessionItemEntity();
+					gameSessionItemEntity.setGameId(query.getGameId());
+					gameSessionItemEntity.setSessionId(session.getSessionId());
+					gameSessionItemEntity.setItemId(item.getItemId());
+					gameSessionItemEntity.setSort(item.getSort());
+					gameSessionItemEntity.setCreatedAt(new Date());
+					result.add(gameSessionItemEntity);
+				});
+			});
 			arrangeSessionItemManager.saveBatch(result);
 		}
 
