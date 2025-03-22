@@ -34,6 +34,16 @@ public class ArrangeSessionController {
 	}
 
 	/**
+	 * 项目分配统计
+	 * @return
+	 */
+	@GetMapping("/info")
+	public ApiResponse<List<GameSessionEntity>> getSessionInfo() {
+		Long gameId = ThreadLocalUtil.getCurrentGameId();
+		return arrangeSessionService.getSessions(gameId);
+	}
+
+	/**
 	 * 设置场地数量
 	 * @param query
 	 * @return

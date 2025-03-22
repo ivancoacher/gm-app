@@ -19,4 +19,6 @@ public interface ArrangeSessionService {
 
 	ApiResponse<List<GameSessionEntity>> getSessions(Long gameId);
 
+	ApiResponse<List<GameSessionEntity>> getSessionInfo(Long gameId);
+
 }
