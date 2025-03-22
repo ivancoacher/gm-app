@@ -89,9 +89,11 @@ public class ArrangeSessionController {
 	 * @return
 	 */
 	@GetMapping("/item/unSelected")
-	public ApiResponse<?> getUnSelected() {
+	public ApiResponse<?> getUnSelected(@RequestParam(value = "groupId", required = false) Long groupId, @RequestParam(value = "itemId",required = false) Long itemId) {
 		SessionItemGetQuery query = new SessionItemGetQuery();
 		query.setGameId(ThreadLocalUtil.getCurrentGameId());
+		query.setGroupId(groupId);
+		query.setItemId(itemId);
 		return arrangeSessionItemService.getUnSelectedItem(query);
 	}
 
@@ -125,6 +127,13 @@ public class ArrangeSessionController {
 	public ApiResponse<Boolean> saveItemBatch(@RequestBody SessionItemSetBatchQuery query) {
 		query.setGameId(ThreadLocalUtil.getCurrentGameId());
 		return arrangeSessionItemService.saveSessionItemBatch(query);
+	}
+
+	@PostMapping("/item/save/random")
+	public ApiResponse<Boolean> saveItemRandom() {
+		SessionItemSetBatchQuery query = new SessionItemSetBatchQuery();
+		query.setGameId(ThreadLocalUtil.getCurrentGameId());
+		return arrangeSessionItemService.saveSessionItemRandom(query);
 	}
 
 }

@@ -50,6 +50,12 @@ public class GameItemManager {
 		return gameItemMapper.selectList(lambdaQuery);
 	}
 
+	public List<GameItemEntity> fetchListByGameId(Long gameId) {
+		LambdaQueryWrapper<GameItemEntity> lambdaQuery = new LambdaQueryWrapper<>();
+		lambdaQuery.eq(GameItemEntity::getGameId, gameId);
+		return gameItemMapper.selectList(lambdaQuery);
+	}
+
 	public List<GameItemEntity> fetchListByWrapper(LambdaQueryWrapper<GameItemEntity> lambdaQuery) {
 		return gameItemMapper.selectList(lambdaQuery);
 	}

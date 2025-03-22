@@ -19,4 +19,6 @@ public interface ArrangeSessionItemService {
 
 	ApiResponse<Boolean> saveSessionItemBatch(SessionItemSetBatchQuery query);
 
+	ApiResponse<Boolean> saveSessionItemRandom(SessionItemSetBatchQuery query);
+
 }

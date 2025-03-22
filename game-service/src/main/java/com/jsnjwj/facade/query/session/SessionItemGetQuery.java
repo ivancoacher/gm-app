@@ -11,4 +11,8 @@ public class SessionItemGetQuery {
 
 	private Long sessionId;
 
+	private Long groupId;
+
+	private Long itemId;
+
 }

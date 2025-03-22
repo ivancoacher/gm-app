@@ -142,4 +142,9 @@ public class ArrangeSessionServiceImpl implements ArrangeSessionService {
 		return ApiResponse.success(response);
 	}
 
+	@Override
+	public ApiResponse<List<GameSessionEntity>> getSessionInfo(Long gameId) {
+		return null;
+	}
+
 }
