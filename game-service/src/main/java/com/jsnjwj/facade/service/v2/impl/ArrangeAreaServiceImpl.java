@@ -119,7 +119,7 @@ public class ArrangeAreaServiceImpl implements ArrangeAreaService {
 	@Override
 	public ApiResponse<List<SessionChooseDto>> selectSessionList(GameGroupingAreaSetQuery query) {
 		// 1.获取已设置的场次(不包含默认场次)
-		List<GameSessionEntity> gameSessionEntities = arrangeSessionManager.getList(query.getGameId());
+		List<GameSessionEntity> gameSessionEntities = arrangeSessionManager.getListByGameId(query.getGameId());
 		Map<Long, GameSessionEntity> gameSessionEntityMap = gameSessionEntities.stream()
 			.collect(Collectors.toMap(GameSessionEntity::getId, session -> session));
 

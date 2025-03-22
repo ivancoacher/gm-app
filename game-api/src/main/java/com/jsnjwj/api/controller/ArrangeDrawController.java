@@ -41,11 +41,28 @@ public class ArrangeDrawController {
 		return drawService.getDrawList(query);
 	}
 
-	@PostMapping("/get")
-	public ApiResponse<?> getDraw(@RequestBody SystemDrawQuery query) {
+	/**
+	 * 获取单个场次的编排数据
+	 * @param query
+	 * @return
+	 */
+	@PostMapping("/bySession")
+	public ApiResponse<?> getSessionDraw(@RequestBody SystemDrawQuery query) {
 		Long gameId = ThreadLocalUtil.getCurrentGameId();
 		query.setGameId(gameId);
 		return drawService.getDraw(query);
+	}
+
+	/**
+	 * 查询所有场次的编排数据
+	 * @param query
+	 * @return
+	 */
+	@PostMapping("/bySessions")
+	public ApiResponse<?> getSessionsDraw(@RequestBody SystemDrawQuery query) {
+		Long gameId = ThreadLocalUtil.getCurrentGameId();
+		query.setGameId(gameId);
+		return drawService.getAllSessionDraw(query);
 	}
 
 	/**
@@ -57,6 +74,17 @@ public class ArrangeDrawController {
 	public ApiResponse<?> manualDraw(@RequestBody ManualDrawQuery query) {
 		query.setGameId(ThreadLocalUtil.getCurrentGameId());
 		return drawService.manualDraw(query);
+	}
+
+	/**
+	 * 保存全部抽签分组数据
+	 * @param query
+	 * @return
+	 */
+	@PostMapping("/manual/batch")
+	public ApiResponse<?> manualDrawBatch(@RequestBody ManualDrawBatchQuery query) {
+		query.setGameId(ThreadLocalUtil.getCurrentGameId());
+		return drawService.manualDrawBatch(query);
 	}
 
 }

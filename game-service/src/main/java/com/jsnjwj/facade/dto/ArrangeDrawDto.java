@@ -33,4 +33,6 @@ public class ArrangeDrawDto {
 
 	private String teamName;
 
+	private Integer sort;
+
 }

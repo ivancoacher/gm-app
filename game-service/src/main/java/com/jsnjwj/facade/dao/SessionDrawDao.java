@@ -33,4 +33,6 @@ public class SessionDrawDao {
 
 	private String teamName;
 
+	private Integer sort;
+
 }

@@ -71,7 +71,7 @@ public class ArrangeSessionServiceImpl implements ArrangeSessionService {
 	 */
 	@Override
 	public ApiResponse<?> addSession(Long gameId) {
-		List<GameSessionEntity> sessionEntities = arrangeSessionManager.getList(gameId);
+		List<GameSessionEntity> sessionEntities = arrangeSessionManager.getListByGameId(gameId);
 		int courtNum = 1;
 		GameSessionEntity areaEntity = new GameSessionEntity();
 		if (CollectionUtil.isEmpty(sessionEntities)) {
@@ -138,7 +138,7 @@ public class ArrangeSessionServiceImpl implements ArrangeSessionService {
 	 */
 	@Override
 	public ApiResponse<List<GameSessionEntity>> getSessions(Long gameId) {
-		List<GameSessionEntity> response = arrangeSessionManager.getList(gameId);
+		List<GameSessionEntity> response = arrangeSessionManager.getListByGameId(gameId);
 		return ApiResponse.success(response);
 	}
 

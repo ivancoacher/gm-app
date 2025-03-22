@@ -27,7 +27,8 @@
                g.group_name    as groupName,
                i.id            as itemId,
                i.item_name     as itemName,
-               t.team_name     as teamName
+               t.team_name     as teamName,
+               d.sort as sort
         from tc_game_draw as d
                  left join tc_sign_single as s on s.id = d.sign_id
             left join tc_sign_team as t on t.id = s.team_id and t.game_id = s.game_id

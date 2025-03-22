@@ -47,7 +47,7 @@ public class ArrangeSessionManager {
 		gameSessionMapper.saveBatch(list);
 	}
 
-	public List<GameSessionEntity> getList(Long gameId) {
+	public List<GameSessionEntity> getListByGameId(Long gameId) {
 		LambdaQueryWrapper<GameSessionEntity> queryWrapper = new LambdaQueryWrapper<>();
 		queryWrapper.eq(GameSessionEntity::getGameId, gameId);
 		queryWrapper.orderByAsc(GameSessionEntity::getSessionNo);
