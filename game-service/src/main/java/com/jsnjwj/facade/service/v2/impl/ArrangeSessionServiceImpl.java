@@ -2,14 +2,19 @@ package com.jsnjwj.facade.service.v2.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.jsnjwj.common.response.ApiResponse;
+import com.jsnjwj.facade.dto.ArrangeSessionInfoDto;
+import com.jsnjwj.facade.dto.ArrangeSessionVo;
+import com.jsnjwj.facade.dto.SessionItemDto;
 import com.jsnjwj.facade.entity.GameSessionEntity;
 import com.jsnjwj.facade.entity.GameSessionItemEntity;
 import com.jsnjwj.facade.manager.ArrangeAreaSessionManager;
 import com.jsnjwj.facade.manager.ArrangeSessionItemManager;
 import com.jsnjwj.facade.manager.ArrangeSessionManager;
+import com.jsnjwj.facade.manager.GameItemManager;
 import com.jsnjwj.facade.query.session.GameGroupingSessionSetNumQuery;
 import com.jsnjwj.facade.query.session.GameGroupingSessionSetQuery;
 import com.jsnjwj.facade.service.v2.ArrangeSessionService;
+import com.jsnjwj.facade.vo.session.SessionItemVo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -17,6 +22,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 场地安排
@@ -31,6 +37,8 @@ public class ArrangeSessionServiceImpl implements ArrangeSessionService {
 	private final ArrangeSessionItemManager arrangeSessionItemManager;
 
 	private final ArrangeAreaSessionManager arrangeAreaSessionManager;
+
+	private final GameItemManager gameItemManager;
 
 	/**
 	 * 创建场地
@@ -137,14 +145,45 @@ public class ArrangeSessionServiceImpl implements ArrangeSessionService {
 	 * @return
 	 */
 	@Override
-	public ApiResponse<List<GameSessionEntity>> getSessions(Long gameId) {
-		List<GameSessionEntity> response = arrangeSessionManager.getListByGameId(gameId);
+	public ApiResponse<List<ArrangeSessionVo>> getSessions(Long gameId) {
+		// 获取所有场次信息
+		List<GameSessionEntity> sessionList = arrangeSessionManager.getListByGameId(gameId);
+
+		if (CollectionUtil.isEmpty(sessionList)) {
+			return ApiResponse.success(new ArrayList<>());
+		}
+		List<ArrangeSessionVo> response = new ArrayList<>();
+
+		response = sessionList.stream().map(session -> {
+			ArrangeSessionVo arrangeSessionVo = new ArrangeSessionVo();
+			arrangeSessionVo.setSessionId(session.getId());
+			arrangeSessionVo.setSessionName(session.getSessionName());
+			arrangeSessionVo.setSessionNo(session.getSessionNo());
+
+			// 校验该场次下，是否存在已排项目
+			List<SessionItemVo> sessionItemList = arrangeSessionItemManager.fetchBySessionId(gameId, session.getId());
+			if (CollectionUtil.isNotEmpty(sessionItemList)) {
+
+				arrangeSessionVo.setItemNum(sessionItemList.size());
+
+				arrangeSessionVo
+					.setItemList(sessionItemList.size() > 3 ? sessionItemList.subList(0, 3) : sessionItemList);
+
+			}
+			return arrangeSessionVo;
+		}).collect(Collectors.toList());
+
 		return ApiResponse.success(response);
 	}
 
 	@Override
-	public ApiResponse<List<GameSessionEntity>> getSessionInfo(Long gameId) {
-		return null;
+	public ApiResponse<ArrangeSessionInfoDto> getSessionInfo(Long gameId) {
+		Long totalNum = gameItemManager.countByGameId(gameId);
+		Long arrangedNum = arrangeSessionItemManager.countByGameId(gameId);
+		ArrangeSessionInfoDto arrangeSessionInfoDto = new ArrangeSessionInfoDto();
+		arrangeSessionInfoDto.setTotalItemCount(totalNum.intValue());
+		arrangeSessionInfoDto.setArrangedItemCount(arrangedNum.intValue());
+		return ApiResponse.success(arrangeSessionInfoDto);
 	}
 
 }

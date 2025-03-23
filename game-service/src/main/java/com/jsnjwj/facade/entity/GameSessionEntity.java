@@ -3,6 +3,8 @@ package com.jsnjwj.facade.entity;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * @TableName tc_game_area
  */

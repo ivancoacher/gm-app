@@ -56,12 +56,11 @@ public class ArrangeSessionItemServiceImpl implements ArrangeSessionItemService 
 			query1.notIn(GameItemEntity::getId, selectedItemIds);
 		}
 
-		if (Objects.nonNull(query.getGroupId())){
+		if (Objects.nonNull(query.getGroupId())) {
 			query1.eq(GameItemEntity::getGroupId, query.getGroupId());
 		}
 
-
-		if (Objects.nonNull(query.getItemId())){
+		if (Objects.nonNull(query.getItemId())) {
 			query1.eq(GameItemEntity::getId, query.getItemId());
 		}
 
@@ -183,7 +182,7 @@ public class ArrangeSessionItemServiceImpl implements ArrangeSessionItemService 
 					result.add(gameSessionItemEntity);
 				});
 			});
-			if (CollectionUtil.isNotEmpty(result)){
+			if (CollectionUtil.isNotEmpty(result)) {
 				arrangeSessionItemManager.saveBatch(result);
 			}
 		}
@@ -196,20 +195,20 @@ public class ArrangeSessionItemServiceImpl implements ArrangeSessionItemService 
 		Long gameId = query.getGameId();
 		List<GameSessionEntity> sessionEntities = gameSessionMapper.selectList(
 				new LambdaQueryWrapper<GameSessionEntity>().eq(GameSessionEntity::getGameId, query.getGameId()));
-		if(CollectionUtil.isEmpty(sessionEntities)){
+		if (CollectionUtil.isEmpty(sessionEntities)) {
 			return ApiResponse.error("请先设置场次");
 		}
 		// 清空所有场次项目
 		arrangeSessionItemManager.deleteBySessionId(query.getGameId(), null);
 
 		List<GameItemEntity> itemList = gameItemManager.fetchListByGameId(gameId);
-		if (CollectionUtil.isEmpty(itemList)){
+		if (CollectionUtil.isEmpty(itemList)) {
 			return ApiResponse.error("请先导入赛事项目");
 		}
 
 		Map<Long, List<GameItemEntity>> allocateResult = allocateAllProjects(itemList, sessionEntities);
 		log.info("分配结果：{}", JSON.toJSONString(allocateResult));
-		if (Objects.isNull(allocateResult)){
+		if (Objects.isNull(allocateResult)) {
 			return ApiResponse.error("随机分配失败");
 		}
 		List<GameSessionItemEntity> result = new ArrayList<>();
@@ -231,8 +230,8 @@ public class ArrangeSessionItemServiceImpl implements ArrangeSessionItemService 
 		return ApiResponse.success(true);
 	}
 
-
-	public Map<Long, List<GameItemEntity>> allocateAllProjects(List<GameItemEntity> projects, List<GameSessionEntity> sessions) {
+	public Map<Long, List<GameItemEntity>> allocateAllProjects(List<GameItemEntity> projects,
+			List<GameSessionEntity> sessions) {
 		// 验证输入参数
 		if (sessions == null || sessions.isEmpty()) {
 			throw new IllegalArgumentException("场次列表不能为空");
@@ -279,6 +278,5 @@ public class ArrangeSessionItemServiceImpl implements ArrangeSessionItemService 
 
 		return allocation;
 	}
-
 
 }

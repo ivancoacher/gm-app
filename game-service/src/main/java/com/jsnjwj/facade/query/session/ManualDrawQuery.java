@@ -18,7 +18,6 @@ public class ManualDrawQuery extends BaseRequest {
 
 	private Long sessionId;
 
-
 	@Getter
 	@Setter
 	public static class ManualDrawData {

@@ -2,6 +2,8 @@ package com.jsnjwj.api.controller;
 
 import com.jsnjwj.common.response.ApiResponse;
 import com.jsnjwj.common.utils.ThreadLocalUtil;
+import com.jsnjwj.facade.dto.ArrangeSessionInfoDto;
+import com.jsnjwj.facade.dto.ArrangeSessionVo;
 import com.jsnjwj.facade.entity.GameSessionEntity;
 import com.jsnjwj.facade.query.session.*;
 import com.jsnjwj.facade.service.v2.ArrangeSessionItemService;
@@ -28,7 +30,7 @@ public class ArrangeSessionController {
 	 * @return
 	 */
 	@GetMapping("/list")
-	public ApiResponse<List<GameSessionEntity>> getSessions() {
+	public ApiResponse<List<ArrangeSessionVo>> getSessions() {
 		Long gameId = ThreadLocalUtil.getCurrentGameId();
 		return arrangeSessionService.getSessions(gameId);
 	}
@@ -38,9 +40,9 @@ public class ArrangeSessionController {
 	 * @return
 	 */
 	@GetMapping("/info")
-	public ApiResponse<List<GameSessionEntity>> getSessionInfo() {
+	public ApiResponse<ArrangeSessionInfoDto> getSessionInfo() {
 		Long gameId = ThreadLocalUtil.getCurrentGameId();
-		return arrangeSessionService.getSessions(gameId);
+		return arrangeSessionService.getSessionInfo(gameId);
 	}
 
 	/**
@@ -89,7 +91,8 @@ public class ArrangeSessionController {
 	 * @return
 	 */
 	@GetMapping("/item/unSelected")
-	public ApiResponse<?> getUnSelected(@RequestParam(value = "groupId", required = false) Long groupId, @RequestParam(value = "itemId",required = false) Long itemId) {
+	public ApiResponse<?> getUnSelected(@RequestParam(value = "groupId", required = false) Long groupId,
+			@RequestParam(value = "itemId", required = false) Long itemId) {
 		SessionItemGetQuery query = new SessionItemGetQuery();
 		query.setGameId(ThreadLocalUtil.getCurrentGameId());
 		query.setGroupId(groupId);

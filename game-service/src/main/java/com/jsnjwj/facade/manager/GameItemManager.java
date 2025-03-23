@@ -89,4 +89,9 @@ public class GameItemManager {
 		return gameItemMapper.selectById(itemId);
 	}
 
+	public Long countByGameId(Long gameId) {
+		return gameItemMapper
+			.selectCount(new LambdaQueryWrapper<GameItemEntity>().eq(GameItemEntity::getGameId, gameId));
+	}
+
 }

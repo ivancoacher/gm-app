@@ -71,4 +71,9 @@ public class ArrangeSessionItemManager {
 		return gameSessionItemMapper.checkSessionItemExist(gameId, sessionId) > 0;
 	}
 
+	public Long countByGameId(Long gameId) {
+		return gameSessionItemMapper
+			.selectCount(new LambdaQueryWrapper<GameSessionItemEntity>().eq(GameSessionItemEntity::getGameId, gameId));
+	}
+
 }
