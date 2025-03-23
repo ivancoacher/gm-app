@@ -7,10 +7,10 @@ import lombok.Setter;
 @Setter
 public class ImportItemDto {
 
-    private Long itemId;
+	private Long itemId;
 
-    private String itemName;
+	private String itemName;
 
-    private String groupName;
+	private String groupName;
 
 }

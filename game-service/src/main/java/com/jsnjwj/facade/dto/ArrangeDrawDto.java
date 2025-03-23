@@ -7,32 +7,32 @@ import lombok.Setter;
 @Setter
 public class ArrangeDrawDto {
 
-    private Long drawId;
+	private Long drawId;
 
-    private Long gameId;
+	private Long gameId;
 
-    private Long sessionId;
+	private Long sessionId;
 
-    private Integer sessionNo;
+	private Integer sessionNo;
 
-    private String sessionName;
+	private String sessionName;
 
-    private Long signId;
+	private Long signId;
 
-    private String signName;
+	private String signName;
 
-    private String signOrg;
+	private String signOrg;
 
-    private Long groupId;
+	private Long groupId;
 
-    private Long itemId;
+	private Long itemId;
 
-    private String itemName;
+	private String itemName;
 
-    private String groupName;
+	private String groupName;
 
-    private String teamName;
+	private String teamName;
 
-    private Integer sort;
+	private Integer sort;
 
 }

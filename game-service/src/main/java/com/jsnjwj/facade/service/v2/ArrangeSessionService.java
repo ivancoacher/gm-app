@@ -10,16 +10,16 @@ import java.util.List;
 
 public interface ArrangeSessionService {
 
-    ApiResponse<?> setSessionNum(GameGroupingSessionSetNumQuery query);
+	ApiResponse<?> setSessionNum(GameGroupingSessionSetNumQuery query);
 
-    ApiResponse<?> addSession(Long gameId);
+	ApiResponse<?> addSession(Long gameId);
 
-    ApiResponse<?> deleteSession(GameGroupingSessionSetQuery query);
+	ApiResponse<?> deleteSession(GameGroupingSessionSetQuery query);
 
-    ApiResponse<Boolean> saveSession(GameGroupingSessionSetQuery query);
+	ApiResponse<Boolean> saveSession(GameGroupingSessionSetQuery query);
 
-    ApiResponse<List<ArrangeSessionVo>> getSessions(Long gameId);
+	ApiResponse<List<ArrangeSessionVo>> getSessions(Long gameId);
 
-    ApiResponse<ArrangeSessionInfoDto> getSessionInfo(Long gameId);
+	ApiResponse<ArrangeSessionInfoDto> getSessionInfo(Long gameId);
 
 }

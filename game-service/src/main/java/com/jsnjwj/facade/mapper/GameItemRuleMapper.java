@@ -15,7 +15,7 @@ import java.util.List;
  */
 public interface GameItemRuleMapper extends BaseMapper<GameItemRule> {
 
-    List<GameItemRuleVo> selectItemRule(@Param("gameId") Long gameId, @Param("groupId") Long groupId,
-                                        @Param("itemId") Long itemId);
+	List<GameItemRuleVo> selectItemRule(@Param("gameId") Long gameId, @Param("groupId") Long groupId,
+			@Param("itemId") Long itemId);
 
 }

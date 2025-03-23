@@ -7,14 +7,14 @@ import lombok.Setter;
 @Setter
 public class ImportTeamDto {
 
-    private String teamName;
+	private String teamName;
 
-    private Long teamId;
+	private Long teamId;
 
-    private String coachName;
+	private String coachName;
 
-    private String leaderName;
+	private String leaderName;
 
-    private Long orgId;
+	private Long orgId;
 
 }

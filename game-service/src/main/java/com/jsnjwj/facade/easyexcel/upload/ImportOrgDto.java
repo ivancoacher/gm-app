@@ -7,8 +7,8 @@ import lombok.Setter;
 @Setter
 public class ImportOrgDto {
 
-    private String orgName;
+	private String orgName;
 
-    private Long orgId;
+	private Long orgId;
 
 }

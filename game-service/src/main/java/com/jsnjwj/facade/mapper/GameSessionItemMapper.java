@@ -15,12 +15,12 @@ import java.util.List;
  */
 public interface GameSessionItemMapper extends BaseMapper<GameSessionItemEntity> {
 
-    List<SessionItemVo> fetchBySessionId(@Param("gameId") Long gameId, @Param("sessionId") Long sessionId);
+	List<SessionItemVo> fetchBySessionId(@Param("gameId") Long gameId, @Param("sessionId") Long sessionId);
 
-    int checkSessionItemExist(@Param("gameId") Long gameId, @Param("sessionId") Long sessionId);
+	int checkSessionItemExist(@Param("gameId") Long gameId, @Param("sessionId") Long sessionId);
 
-    void saveBatch(@Param("list") List<GameSessionItemEntity> list);
+	void saveBatch(@Param("list") List<GameSessionItemEntity> list);
 
-    List<Long> selectArrangedSessionIds(@Param("gameId") Long gameId);
+	List<Long> selectArrangedSessionIds(@Param("gameId") Long gameId);
 
 }

@@ -12,17 +12,17 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class ArrangeAreaSessionManager {
 
-    private final ArrangeAreaSessionMapper arrangeAreaSessionMapper;
+	private final ArrangeAreaSessionMapper arrangeAreaSessionMapper;
 
-    public boolean checkSessionItemExist(Long gameId, Long sessionId) {
-        return arrangeAreaSessionMapper.checkSessionItemExist(gameId, sessionId) > 0;
-    }
+	public boolean checkSessionItemExist(Long gameId, Long sessionId) {
+		return arrangeAreaSessionMapper.checkSessionItemExist(gameId, sessionId) > 0;
+	}
 
-    public void deleteBySessionId(Long gameId, Long sessionId) {
-        LambdaQueryWrapper<ArrangeAreaSessionEntity> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        lambdaQueryWrapper.eq(ArrangeAreaSessionEntity::getGameId, gameId);
-        lambdaQueryWrapper.eq(Objects.nonNull(sessionId), ArrangeAreaSessionEntity::getSessionId, sessionId);
-        arrangeAreaSessionMapper.delete(lambdaQueryWrapper);
-    }
+	public void deleteBySessionId(Long gameId, Long sessionId) {
+		LambdaQueryWrapper<ArrangeAreaSessionEntity> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+		lambdaQueryWrapper.eq(ArrangeAreaSessionEntity::getGameId, gameId);
+		lambdaQueryWrapper.eq(Objects.nonNull(sessionId), ArrangeAreaSessionEntity::getSessionId, sessionId);
+		arrangeAreaSessionMapper.delete(lambdaQueryWrapper);
+	}
 
 }

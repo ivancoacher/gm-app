@@ -9,85 +9,85 @@ import java.util.List;
 @Data
 public class GameRuleSettingVo implements Serializable {
 
-    public List<GameRuleDetailVo> detailVoList;
+	public List<GameRuleDetailVo> detailVoList;
 
-    private Long id;
+	private Long id;
 
-    /**
-     *
-     */
-    private Long gameId;
+	/**
+	 *
+	 */
+	private Long gameId;
 
-    /**
-     *
-     */
-    private Long itemId;
+	/**
+	 *
+	 */
+	private Long itemId;
 
-    /**
-     *
-     */
-    private Integer judgeGroupNum;
+	/**
+	 *
+	 */
+	private Integer judgeGroupNum;
 
-    /**
-     *
-     */
-    private Integer scoreRule;
+	/**
+	 *
+	 */
+	private Integer scoreRule;
 
-    /**
-     *
-     */
-    private Date createdAt;
+	/**
+	 *
+	 */
+	private Date createdAt;
 
-    /**
-     *
-     */
-    private Date updatedAt;
+	/**
+	 *
+	 */
+	private Date updatedAt;
 
-    @Data
-    public static class GameRuleDetailVo {
+	@Data
+	public static class GameRuleDetailVo {
 
-        private Integer id;
+		private Integer id;
 
-        /**
-         *
-         */
-        private Long settingId;
+		/**
+		 *
+		 */
+		private Long settingId;
 
-        /**
-         *
-         */
-        private Integer num;
+		/**
+		 *
+		 */
+		private Integer num;
 
-        /**
-         *
-         */
-        private Integer scoreRatio;
+		/**
+		 *
+		 */
+		private Integer scoreRatio;
 
-        /**
-         *
-         */
-        private Integer scoreWeight;
+		/**
+		 *
+		 */
+		private Integer scoreWeight;
 
-        /**
-         *
-         */
-        private Integer extraType;
+		/**
+		 *
+		 */
+		private Integer extraType;
 
-        /**
-         *
-         */
-        private String extraName;
+		/**
+		 *
+		 */
+		private String extraName;
 
-        /**
-         *
-         */
-        private Date createdAt;
+		/**
+		 *
+		 */
+		private Date createdAt;
 
-        /**
-         *
-         */
-        private Date updatedAt;
+		/**
+		 *
+		 */
+		private Date updatedAt;
 
-    }
+	}
 
 }

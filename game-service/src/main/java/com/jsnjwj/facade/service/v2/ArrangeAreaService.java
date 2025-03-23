@@ -10,12 +10,12 @@ import java.util.List;
 
 public interface ArrangeAreaService {
 
-    ApiResponse<?> setAreaNum(GameGroupingSetNumQuery query);
+	ApiResponse<?> setAreaNum(GameGroupingSetNumQuery query);
 
-    ApiResponse<Boolean> saveArea(GameGroupingAreaSetQuery query);
+	ApiResponse<Boolean> saveArea(GameGroupingAreaSetQuery query);
 
-    ApiResponse<List<ArrangeAreaSessionDto>> getAreas(Long gameId);
+	ApiResponse<List<ArrangeAreaSessionDto>> getAreas(Long gameId);
 
-    ApiResponse<List<SessionChooseDto>> selectSessionList(GameGroupingAreaSetQuery query);
+	ApiResponse<List<SessionChooseDto>> selectSessionList(GameGroupingAreaSetQuery query);
 
 }

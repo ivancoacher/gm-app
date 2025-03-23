@@ -8,12 +8,12 @@ import java.util.List;
 @Data
 public class DrawDetailVo {
 
-    private String sessionName;
+	private String sessionName;
 
-    private Long sessionId;
+	private Long sessionId;
 
-    private Integer sessionNo;
+	private Integer sessionNo;
 
-    private List<ArrangeDrawDto> data;
+	private List<ArrangeDrawDto> data;
 
 }

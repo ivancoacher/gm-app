@@ -8,12 +8,12 @@ import java.util.List;
 @Data
 public class GameItemSaveQuery extends BaseRequest {
 
-    private String itemName;
+	private String itemName;
 
-    private List<Long> groupId;
+	private List<Long> groupId;
 
-    private String itemType;
+	private String itemType;
 
-    private Integer sort;
+	private Integer sort;
 
 }

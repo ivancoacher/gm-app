@@ -6,10 +6,10 @@ import lombok.Data;
 @Data
 public class GameGroupUpdateQuery extends BaseRequest {
 
-    private String groupName;
+	private String groupName;
 
-    private Integer sort;
+	private Integer sort;
 
-    private Long groupId;
+	private Long groupId;
 
 }

@@ -15,10 +15,10 @@ import java.util.List;
  */
 public interface GameAreaMapper extends BaseMapper<GameAreaEntity> {
 
-    void saveBatch(@Param("list") List<GameAreaEntity> list);
+	void saveBatch(@Param("list") List<GameAreaEntity> list);
 
-    List<ArrangeSessionVo> selectSession(@Param("gameId") Long gameId, @Param("areaId") Long areaId);
+	List<ArrangeSessionVo> selectSession(@Param("gameId") Long gameId, @Param("areaId") Long areaId);
 
-    List<ArrangeSessionVo> selectSessionExceptArea(@Param("gameId") Long gameId, @Param("areaId") Long areaId);
+	List<ArrangeSessionVo> selectSessionExceptArea(@Param("gameId") Long gameId, @Param("areaId") Long areaId);
 
 }

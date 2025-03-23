@@ -16,10 +16,10 @@ import java.util.List;
  */
 public interface GameDrawMapper extends BaseMapper<GameDrawEntity> {
 
-    void saveBatch(@Param("list") List<GameDrawEntity> list);
+	void saveBatch(@Param("list") List<GameDrawEntity> list);
 
-    List<SessionDrawDao> getBySessionNo(@Param("gameId") Long gameId, @Param("sessionNo") Integer sessionNo);
+	List<SessionDrawDao> getBySessionNo(@Param("gameId") Long gameId, @Param("sessionId") Long sessionId);
 
-    List<SessionDrawListDao> getSessionList(@Param("gameId") Long gameId);
+	List<SessionDrawListDao> getSessionList(@Param("gameId") Long gameId);
 
 }

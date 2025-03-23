@@ -16,34 +16,34 @@ import java.util.Date;
 @Data
 public class SignOrgEntity implements Serializable {
 
-    /**
-     *
-     */
-    @TableId(type = IdType.AUTO)
-    private Long id;
+	/**
+	 *
+	 */
+	@TableId(type = IdType.AUTO)
+	private Long id;
 
-    /**
-     *
-     */
-    private Long gameId;
+	/**
+	 *
+	 */
+	private Long gameId;
 
-    /**
-     *
-     */
-    private String orgName;
+	/**
+	 *
+	 */
+	private String orgName;
 
-    /**
-     *
-     */
-    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
+	/**
+	 *
+	 */
+	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
 
-    private Date createdAt;
+	private Date createdAt;
 
-    /**
-     *
-     */
-    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
+	/**
+	 *
+	 */
+	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
 
-    private Date updatedAt;
+	private Date updatedAt;
 
 }

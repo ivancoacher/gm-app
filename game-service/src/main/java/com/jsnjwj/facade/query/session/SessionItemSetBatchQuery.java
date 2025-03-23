@@ -10,8 +10,8 @@ import java.util.List;
 @Setter
 public class SessionItemSetBatchQuery {
 
-    private Long gameId;
+	private Long gameId;
 
-    private List<SessionItemSetQuery> data = new ArrayList<>();
+	private List<SessionItemSetQuery> data = new ArrayList<>();
 
 }

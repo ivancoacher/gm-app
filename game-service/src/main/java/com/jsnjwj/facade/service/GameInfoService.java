@@ -10,14 +10,14 @@ import com.jsnjwj.facade.vo.GameListVo;
 
 public interface GameInfoService {
 
-    ApiResponse<GameListVo> queryList(GameListQuery query);
+	ApiResponse<GameListVo> queryList(GameListQuery query);
 
-    ApiResponse<GamesEntity> fetchInfo(GameInfoQuery query);
+	ApiResponse<GamesEntity> fetchInfo(GameInfoQuery query);
 
-    ApiResponse<Boolean> update(GameModifyQuery query);
+	ApiResponse<Boolean> update(GameModifyQuery query);
 
-    ApiResponse<Boolean> save(GameAddQuery query);
+	ApiResponse<Boolean> save(GameAddQuery query);
 
-    ApiResponse<Boolean> changeStatus(GameModifyQuery query);
+	ApiResponse<Boolean> changeStatus(GameModifyQuery query);
 
 }

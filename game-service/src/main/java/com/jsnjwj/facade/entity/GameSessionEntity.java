@@ -10,24 +10,24 @@ import lombok.Data;
 @TableName(value = "tc_game_session")
 public class GameSessionEntity extends BaseEntity {
 
-    /**
-     * 赛事id
-     */
-    private Long gameId;
+	/**
+	 * 赛事id
+	 */
+	private Long gameId;
 
-    /**
-     * 场次名称
-     */
-    private String sessionName;
+	/**
+	 * 场次名称
+	 */
+	private String sessionName;
 
-    /**
-     * 状态
-     */
-    private Integer status;
+	/**
+	 * 状态
+	 */
+	private Integer status;
 
-    /**
-     *
-     */
-    private Integer sessionNo;
+	/**
+	 *
+	 */
+	private Integer sessionNo;
 
 }

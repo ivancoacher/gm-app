@@ -35,7 +35,7 @@
                  left join tc_game_session as s2 on s2.id = d.session_id
                  left join tc_game_item as i on i.id = s.item_id
                  left join tc_game_group as g on g.id = i.group_id
-        where d.session_no = #{sessionNo}
+        where d.session_id = #{sessionId}
           and d.game_id = #{gameId}
         order by d.sort
 

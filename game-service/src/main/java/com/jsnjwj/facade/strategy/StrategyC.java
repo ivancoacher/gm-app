@@ -9,13 +9,13 @@ import java.util.List;
  */
 public class StrategyC implements ScoreStrategy {
 
-    @Override
-    public BigDecimal getScore(List<BigDecimal> scores) {
-        if (scores.isEmpty())
-            return BigDecimal.ZERO; // 防止除零异常
+	@Override
+	public BigDecimal getScore(List<BigDecimal> scores) {
+		if (scores.isEmpty())
+			return BigDecimal.ZERO; // 防止除零异常
 
-        BigDecimal sum = scores.stream().reduce(BigDecimal.ZERO, BigDecimal::add);
-        return sum.divide(BigDecimal.valueOf(scores.size()), RoundingMode.HALF_UP);
-    }
+		BigDecimal sum = scores.stream().reduce(BigDecimal.ZERO, BigDecimal::add);
+		return sum.divide(BigDecimal.valueOf(scores.size()), RoundingMode.HALF_UP);
+	}
 
 }

@@ -7,13 +7,13 @@ import java.util.List;
 
 public interface SignArrangeSequenceService {
 
-    void syncArrangeRecord();
+	void syncArrangeRecord();
 
-    @Async
-    void syncArrangeRecord(GameItemEntity itemEntity);
+	@Async
+	void syncArrangeRecord(GameItemEntity itemEntity);
 
-    List<?> fetchList(Long gameId);
+	List<?> fetchList(Long gameId);
 
-    int update();
+	int update();
 
 }

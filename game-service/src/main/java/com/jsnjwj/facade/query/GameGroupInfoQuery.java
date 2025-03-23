@@ -8,6 +8,6 @@ import lombok.EqualsAndHashCode;
 @Data
 public class GameGroupInfoQuery extends BaseRequest {
 
-    private Long groupId;
+	private Long groupId;
 
 }

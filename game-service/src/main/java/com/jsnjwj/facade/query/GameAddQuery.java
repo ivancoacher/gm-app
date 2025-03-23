@@ -8,22 +8,22 @@ import lombok.EqualsAndHashCode;
 @Data
 public class GameAddQuery extends BaseRequest {
 
-    private String gameName;
+	private String gameName;
 
-    private Integer gameType;
+	private Integer gameType;
 
-    private String gameStartTime;
+	private String gameStartTime;
 
-    private String gameEndTime;
+	private String gameEndTime;
 
-    private String signStartTime;
+	private String signStartTime;
 
-    private String signEndTime;
+	private String signEndTime;
 
-    private Integer signType;
+	private Integer signType;
 
-    private String gameLocation;
+	private String gameLocation;
 
-    private Integer status;
+	private Integer status;
 
 }

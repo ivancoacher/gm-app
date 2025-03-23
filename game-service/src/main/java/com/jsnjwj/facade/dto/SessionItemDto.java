@@ -9,12 +9,12 @@ import java.util.List;
 @Data
 public class SessionItemDto {
 
-    private Long gameId;
+	private Long gameId;
 
-    private String sessionName;
+	private String sessionName;
 
-    private Long sessionId;
+	private Long sessionId;
 
-    private List<SessionItemVo> data = new ArrayList<>();
+	private List<SessionItemVo> data = new ArrayList<>();
 
 }

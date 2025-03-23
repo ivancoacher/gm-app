@@ -8,10 +8,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class MvcConfig implements WebMvcConfigurer {
 
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler(GlobalConstant.FILE_MAPPING_PATH)
-                .addResourceLocations("file:///" + GlobalConstant.FILE_REAL_PATH);
-    }
+	@Override
+	public void addResourceHandlers(ResourceHandlerRegistry registry) {
+		registry.addResourceHandler(GlobalConstant.FILE_MAPPING_PATH)
+			.addResourceLocations("file:///" + GlobalConstant.FILE_REAL_PATH);
+	}
 
 }

@@ -7,8 +7,8 @@ import lombok.Setter;
 @Setter
 public class RuleVo {
 
-    private Integer id;
+	private Integer id;
 
-    private String name;
+	private String name;
 
 }

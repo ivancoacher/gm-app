@@ -5,10 +5,10 @@ import org.springframework.scheduling.annotation.Async;
 
 public class SignArrangeServiceImpl implements SignArrangeService {
 
-    @Async
-    @Override
-    public void syncArrangeRecord() {
+	@Async
+	@Override
+	public void syncArrangeRecord() {
 
-    }
+	}
 
 }

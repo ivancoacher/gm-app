@@ -23,14 +23,26 @@ public class ArrangeDrawController {
 	private final DrawService drawService;
 
 	/**
-	 * 自动编排
+	 * 单场次随机抽签
 	 * @return
 	 */
-	@PostMapping("/system")
-	public ApiResponse<?> systemDraw(@RequestBody SystemDrawQuery query) {
+	@PostMapping("/system/single")
+	public ApiResponse<?> systemDrawSingle(@RequestBody SystemDrawQuery query) {
 		Long gameId = ThreadLocalUtil.getCurrentGameId();
 		query.setGameId(gameId);
-		return drawService.systemDraw(query);
+		return drawService.systemDrawSingle(query);
+	}
+
+	/**
+	 * 全部场次随机抽签
+	 * @param query
+	 * @return
+	 */
+	@PostMapping("/system/random")
+	public ApiResponse<?> systemDrawRandom(@RequestBody SystemDrawQuery query) {
+		Long gameId = ThreadLocalUtil.getCurrentGameId();
+		query.setGameId(gameId);
+		return drawService.systemDrawRandom(query);
 	}
 
 	@PostMapping("/list")

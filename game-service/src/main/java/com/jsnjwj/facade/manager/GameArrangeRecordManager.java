@@ -13,15 +13,15 @@ import java.util.List;
 @Service
 public class GameArrangeRecordManager {
 
-    @Resource
-    private SignArrangeRecordMapper tcsSignArrangeRecordMapper;
+	@Resource
+	private SignArrangeRecordMapper tcsSignArrangeRecordMapper;
 
-    private Integer updateRecord(SignArrangeRecordEntity record) {
-        return tcsSignArrangeRecordMapper.updateById(record);
-    }
+	private Integer updateRecord(SignArrangeRecordEntity record) {
+		return tcsSignArrangeRecordMapper.updateById(record);
+	}
 
-    private Integer saveBatchRecord(List<SignArrangeRecordEntity> list) {
-        return tcsSignArrangeRecordMapper.insertBatchSomeColumn(list);
-    }
+	private Integer saveBatchRecord(List<SignArrangeRecordEntity> list) {
+		return tcsSignArrangeRecordMapper.insertBatchSomeColumn(list);
+	}
 
 }

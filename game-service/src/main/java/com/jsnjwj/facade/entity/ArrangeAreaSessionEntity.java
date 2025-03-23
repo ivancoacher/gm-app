@@ -10,15 +10,15 @@ import lombok.Data;
 @TableName(value = "tc_game_area_session")
 public class ArrangeAreaSessionEntity extends BaseEntity {
 
-    /**
-     * 赛事id
-     */
-    private Long gameId;
+	/**
+	 * 赛事id
+	 */
+	private Long gameId;
 
-    private Long areaId;
+	private Long areaId;
 
-    private Integer areaNo;
+	private Integer areaNo;
 
-    private Long sessionId;
+	private Long sessionId;
 
 }

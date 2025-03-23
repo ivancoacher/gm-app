@@ -10,6 +10,6 @@ import java.util.List;
 @Data
 public class ManualDrawBatchQuery extends BaseRequest {
 
-    List<ManualDrawQuery> data;
+	List<ManualDrawQuery> data;
 
 }

@@ -12,6 +12,6 @@ import org.apache.ibatis.annotations.Param;
  */
 public interface ArrangeAreaSessionMapper extends BaseMapper<ArrangeAreaSessionEntity> {
 
-    int checkSessionItemExist(@Param("gameId") Long gameId, @Param("sessionId") Long sessionId);
+	int checkSessionItemExist(@Param("gameId") Long gameId, @Param("sessionId") Long sessionId);
 
 }
