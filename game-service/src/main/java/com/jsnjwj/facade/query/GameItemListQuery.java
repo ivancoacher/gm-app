@@ -1,7 +1,6 @@
 package com.jsnjwj.facade.query;
 
 import com.jsnjwj.common.request.BasePageRequest;
-import com.jsnjwj.common.request.BaseRequest;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -9,8 +8,8 @@ import lombok.EqualsAndHashCode;
 @Data
 public class GameItemListQuery extends BasePageRequest {
 
-	private Long groupId;
+    private Long groupId;
 
-	private String itemName;
+    private String itemName;
 
 }

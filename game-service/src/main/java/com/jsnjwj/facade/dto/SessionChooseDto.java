@@ -7,12 +7,12 @@ import lombok.Setter;
 @Setter
 public class SessionChooseDto {
 
-	private Long sessionId;
+    private Long sessionId;
 
-	private Long areaId;
+    private Long areaId;
 
-	private boolean disabled;
+    private boolean disabled;
 
-	private String sessionName;
+    private String sessionName;
 
 }

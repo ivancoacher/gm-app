@@ -13,24 +13,24 @@ import java.time.LocalDateTime;
 @Setter
 public class GameItemRuleVo implements Serializable {
 
-	private Long gameId;
+    private Long gameId;
 
-	private Integer ruleId;
+    private Integer ruleId;
 
-	private Long itemId;
+    private Long itemId;
 
-	private String ruleName;
+    private String ruleName;
 
-	private String itemName;
+    private String itemName;
 
-	private Long groupId;
+    private Long groupId;
 
-	private String groupName;
+    private String groupName;
 
-	private LocalDateTime createAt;
+    private LocalDateTime createAt;
 
-	private LocalDateTime updateAt;
+    private LocalDateTime updateAt;
 
-	private String itemType;
+    private String itemType;
 
 }

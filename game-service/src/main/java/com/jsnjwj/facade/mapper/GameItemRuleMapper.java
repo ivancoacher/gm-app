@@ -2,7 +2,6 @@ package com.jsnjwj.facade.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.jsnjwj.facade.entity.GameItemRule;
-import com.jsnjwj.facade.entity.GameRuleSetting;
 import com.jsnjwj.facade.vo.rule.GameItemRuleVo;
 import org.apache.ibatis.annotations.Param;
 
@@ -16,7 +15,7 @@ import java.util.List;
  */
 public interface GameItemRuleMapper extends BaseMapper<GameItemRule> {
 
-	List<GameItemRuleVo> selectItemRule(@Param("gameId") Long gameId, @Param("groupId") Long groupId,
-			@Param("itemId") Long itemId);
+    List<GameItemRuleVo> selectItemRule(@Param("gameId") Long gameId, @Param("groupId") Long groupId,
+                                        @Param("itemId") Long itemId);
 
 }

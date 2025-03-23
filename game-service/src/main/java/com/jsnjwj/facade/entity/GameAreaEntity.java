@@ -14,30 +14,30 @@ import java.io.Serializable;
 @TableName(value = "tc_game_area")
 public class GameAreaEntity implements Serializable {
 
-	/**
-	 *
-	 */
-	@TableId(type = IdType.AUTO)
-	private Long id;
+    /**
+     *
+     */
+    @TableId(type = IdType.AUTO)
+    private Long id;
 
-	/**
-	 *
-	 */
-	private Long gameId;
+    /**
+     *
+     */
+    private Long gameId;
 
-	/**
-	 *
-	 */
-	private String areaName;
+    /**
+     *
+     */
+    private String areaName;
 
-	/**
-	 *
-	 */
-	private Integer status;
+    /**
+     *
+     */
+    private Integer status;
 
-	/**
-	 *
-	 */
-	private Integer areaNo;
+    /**
+     *
+     */
+    private Integer areaNo;
 
 }

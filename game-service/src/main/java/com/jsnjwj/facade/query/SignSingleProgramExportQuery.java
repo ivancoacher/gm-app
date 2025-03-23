@@ -6,6 +6,6 @@ import lombok.Data;
 @Data
 public class SignSingleProgramExportQuery extends BaseRequest {
 
-	private String type;
+    private String type;
 
 }

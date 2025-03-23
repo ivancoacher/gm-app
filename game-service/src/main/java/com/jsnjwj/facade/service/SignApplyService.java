@@ -13,32 +13,32 @@ import java.util.List;
 
 public interface SignApplyService {
 
-	ApiResponse<?> fetchSinglePage(SignSingleListQuery query);
+    ApiResponse<?> fetchSinglePage(SignSingleListQuery query);
 
-	ApiResponse<?> fetchTeamPage(SignTeamListQuery query);
+    ApiResponse<?> fetchTeamPage(SignTeamListQuery query);
 
-	ApiResponse<?> fetchTeamData(SignTeamListQuery query);
+    ApiResponse<?> fetchTeamData(SignTeamListQuery query);
 
-	ApiResponse<?> updateTeam(SignTeamUpdateQuery query);
+    ApiResponse<?> updateTeam(SignTeamUpdateQuery query);
 
-	ApiResponse<?> deleteTeam(Long teamId);
+    ApiResponse<?> deleteTeam(Long teamId);
 
-	ApiResponse<?> fetchTeam(Long teamId);
+    ApiResponse<?> fetchTeam(Long teamId);
 
-	ApiResponse<?> importTeam(BaseRequest baseRequest, MultipartFile file) throws IOException;
+    ApiResponse<?> importTeam(BaseRequest baseRequest, MultipartFile file) throws IOException;
 
-	ApiResponse<?> exportTeamDemo(BaseRequest baseRequest, MultipartFile file) throws IOException;
+    ApiResponse<?> exportTeamDemo(BaseRequest baseRequest, MultipartFile file) throws IOException;
 
-	ApiResponse<?> importSingle(Integer importType, MultipartFile file);
+    ApiResponse<?> importSingle(Integer importType, MultipartFile file);
 
-	ApiResponse<?> exportSingleDemo(BaseRequest baseRequest, MultipartFile file);
+    ApiResponse<?> exportSingleDemo(BaseRequest baseRequest, MultipartFile file);
 
-	ApiResponse<?> signDelete(Long signId);
+    ApiResponse<?> signDelete(Long signId);
 
-	ApiResponse<?> signDeleteBatch(List<Long> signIds);
+    ApiResponse<?> signDeleteBatch(List<Long> signIds);
 
-	ApiResponse<?> signUpdate(SignSingleUpdateQuery request);
+    ApiResponse<?> signUpdate(SignSingleUpdateQuery request);
 
-	ApiResponse<?> getOrgList(Long gameId);
+    ApiResponse<?> getOrgList(Long gameId);
 
 }

@@ -5,24 +5,24 @@ import lombok.Data;
 @Data
 public class SignTeamDto {
 
-	private Long gameId;
+    private Long gameId;
 
-	private Long teamId;
+    private Long teamId;
 
-	private String teamName;
+    private String teamName;
 
-	private String leaderName;
+    private String leaderName;
 
-	private String leaderTel;
+    private String leaderTel;
 
-	private String coachName;
+    private String coachName;
 
-	private String coachTel;
+    private String coachTel;
 
-	private String remark;
+    private String remark;
 
-	private Long orgId;
+    private Long orgId;
 
-	private String orgName;
+    private String orgName;
 
 }

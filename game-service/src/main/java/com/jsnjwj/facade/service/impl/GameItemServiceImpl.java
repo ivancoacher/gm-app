@@ -26,110 +26,112 @@ import java.util.List;
 @RequiredArgsConstructor
 public class GameItemServiceImpl implements GameItemService {
 
-	private final GameItemManager gameItemManager;
+    private final GameItemManager gameItemManager;
 
-	private final SignApplyManager signApplyManager;
+    private final SignApplyManager signApplyManager;
 
-	/**
-	 * 分页查询
-	 * @return
-	 */
-	@Override
-	public ApiResponse<Page<ItemLabelVo>> fetchPages(GameItemListQuery query) {
+    /**
+     * 分页查询
+     *
+     * @return
+     */
+    @Override
+    public ApiResponse<Page<ItemLabelVo>> fetchPages(GameItemListQuery query) {
 
-		return ApiResponse.success(gameItemManager.fetchItemsPage(query));
-	}
+        return ApiResponse.success(gameItemManager.fetchItemsPage(query));
+    }
 
-	/**
-	 * 查询全部
-	 * @return
-	 */
-	@Override
-	public List<ItemLabelVo> fetchList(GameItemListQuery query) {
-		List<GameItemEntity> result = gameItemManager.fetchList(query);
+    /**
+     * 查询全部
+     *
+     * @return
+     */
+    @Override
+    public List<ItemLabelVo> fetchList(GameItemListQuery query) {
+        List<GameItemEntity> result = gameItemManager.fetchList(query);
 
-		List<ItemLabelVo> response = new ArrayList<>();
+        List<ItemLabelVo> response = new ArrayList<>();
 
-		result.forEach(item -> {
-			ItemLabelVo vo = new ItemLabelVo();
-			vo.setItemName(item.getItemName());
-			vo.setItemId(item.getId());
-			response.add(vo);
-		});
-		return response;
+        result.forEach(item -> {
+            ItemLabelVo vo = new ItemLabelVo();
+            vo.setItemName(item.getItemName());
+            vo.setItemId(item.getId());
+            response.add(vo);
+        });
+        return response;
 
-	}
+    }
 
-	@Override
-	public void importData(BaseRequest query, MultipartFile file) {
+    @Override
+    public void importData(BaseRequest query, MultipartFile file) {
 
-	}
+    }
 
-	@Override
-	public Boolean save(GameItemSaveQuery query) {
+    @Override
+    public Boolean save(GameItemSaveQuery query) {
 
-		if (CollUtil.isNotEmpty(query.getGroupId())) {
-			for (Long groupId : query.getGroupId()) {
-				GameItemEntity tcGameGroup = new GameItemEntity();
-				tcGameGroup.setGameId(query.getGameId());
-				tcGameGroup.setGroupId(groupId);
-				tcGameGroup.setItemName(query.getItemName());
-				tcGameGroup.setItemType(query.getItemType());
-				tcGameGroup.setSort(query.getSort());
-				gameItemManager.save(tcGameGroup);
-			}
-			return true;
-		}
-		return false;
+        if (CollUtil.isNotEmpty(query.getGroupId())) {
+            for (Long groupId : query.getGroupId()) {
+                GameItemEntity tcGameGroup = new GameItemEntity();
+                tcGameGroup.setGameId(query.getGameId());
+                tcGameGroup.setGroupId(groupId);
+                tcGameGroup.setItemName(query.getItemName());
+                tcGameGroup.setItemType(query.getItemType());
+                tcGameGroup.setSort(query.getSort());
+                gameItemManager.save(tcGameGroup);
+            }
+            return true;
+        }
+        return false;
 
-	}
+    }
 
-	@Override
-	public int update(GameItemUpdateQuery query) {
-		GameItemEntity tcGameGroup = new GameItemEntity();
-		tcGameGroup.setGroupId(query.getGroupId());
-		tcGameGroup.setSort(query.getSort());
-		tcGameGroup.setId(query.getId());
-		tcGameGroup.setItemName(query.getItemName());
-		tcGameGroup.setItemType(query.getItemType());
-		return gameItemManager.update(tcGameGroup);
-	}
+    @Override
+    public int update(GameItemUpdateQuery query) {
+        GameItemEntity tcGameGroup = new GameItemEntity();
+        tcGameGroup.setGroupId(query.getGroupId());
+        tcGameGroup.setSort(query.getSort());
+        tcGameGroup.setId(query.getId());
+        tcGameGroup.setItemName(query.getItemName());
+        tcGameGroup.setItemType(query.getItemType());
+        return gameItemManager.update(tcGameGroup);
+    }
 
-	@Override
-	public boolean updateBatch(GameItemBatchUpdateQuery request) {
-		for (ItemLabelVo query : request.getData()) {
-			GameItemEntity tcGameGroup = new GameItemEntity();
-			tcGameGroup.setGroupId(query.getGroupId());
-			tcGameGroup.setSort(query.getSort());
-			tcGameGroup.setId(query.getItemId());
-			tcGameGroup.setItemName(query.getItemName());
-			tcGameGroup.setItemType(query.getItemType());
-			gameItemManager.update(tcGameGroup);
+    @Override
+    public boolean updateBatch(GameItemBatchUpdateQuery request) {
+        for (ItemLabelVo query : request.getData()) {
+            GameItemEntity tcGameGroup = new GameItemEntity();
+            tcGameGroup.setGroupId(query.getGroupId());
+            tcGameGroup.setSort(query.getSort());
+            tcGameGroup.setId(query.getItemId());
+            tcGameGroup.setItemName(query.getItemName());
+            tcGameGroup.setItemType(query.getItemType());
+            gameItemManager.update(tcGameGroup);
 
-		}
-		return true;
-	}
+        }
+        return true;
+    }
 
-	@Override
-	public GameItemEntity fetchOne(Long itemId) {
+    @Override
+    public GameItemEntity fetchOne(Long itemId) {
 
-		return gameItemManager.fetchItemInfo(itemId);
-	}
+        return gameItemManager.fetchItemInfo(itemId);
+    }
 
-	@Override
-	public ApiResponse<?> delete(Long itemId) {
+    @Override
+    public ApiResponse<?> delete(Long itemId) {
 
-		Long gameId = ThreadLocalUtil.getCurrentGameId();
-		// 判断该组别下是否还有报名信息
-		List<SignSingleEntity> singleEntities = signApplyManager.getSingByItemId(gameId, itemId);
-		ApiResponse<Boolean> response = new ApiResponse<>();
-		if (CollUtil.isNotEmpty(singleEntities)) {
-			response.setData(false);
-			response.setMessage("请先删除该项目下所有报名信息");
-			return response;
-		}
-		int result = gameItemManager.delete(itemId);
-		return ApiResponse.success(result > 0);
-	}
+        Long gameId = ThreadLocalUtil.getCurrentGameId();
+        // 判断该组别下是否还有报名信息
+        List<SignSingleEntity> singleEntities = signApplyManager.getSingByItemId(gameId, itemId);
+        ApiResponse<Boolean> response = new ApiResponse<>();
+        if (CollUtil.isNotEmpty(singleEntities)) {
+            response.setData(false);
+            response.setMessage("请先删除该项目下所有报名信息");
+            return response;
+        }
+        int result = gameItemManager.delete(itemId);
+        return ApiResponse.success(result > 0);
+    }
 
 }

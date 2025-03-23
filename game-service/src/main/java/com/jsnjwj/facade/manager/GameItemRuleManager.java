@@ -18,46 +18,45 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class GameItemRuleManager {
 
-	private final GameRuleSettingMapper gameRuleSettingMapper;
+    private final GameRuleSettingMapper gameRuleSettingMapper;
 
-	private final GameItemRuleMapper gameItemRuleMapper;
+    private final GameItemRuleMapper gameItemRuleMapper;
 
-	public List<GameItemRuleVo> getGameItemRuleList(Long gameId) {
+    public List<GameItemRuleVo> getGameItemRuleList(Long gameId) {
 
-		return null;
-	}
+        return null;
+    }
 
-	public GameItemRule getGameItemRule(Long gameId, Long itemId) {
-		LambdaQueryWrapper<GameItemRule> queryWrapper = new LambdaQueryWrapper<>();
-		queryWrapper.eq(GameItemRule::getGameId, gameId);
-		queryWrapper.eq(GameItemRule::getItemId, itemId);
-		return gameItemRuleMapper.selectOne(queryWrapper);
-	}
+    public GameItemRule getGameItemRule(Long gameId, Long itemId) {
+        LambdaQueryWrapper<GameItemRule> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(GameItemRule::getGameId, gameId);
+        queryWrapper.eq(GameItemRule::getItemId, itemId);
+        return gameItemRuleMapper.selectOne(queryWrapper);
+    }
 
-	public int saveItemRule(GameItemRule gameItemRule) {
-		if (Objects.isNull(gameItemRule.getId())) {
-			return gameItemRuleMapper.insert(gameItemRule);
-		}
-		else {
-			return gameItemRuleMapper.updateById(gameItemRule);
-		}
-	}
+    public int saveItemRule(GameItemRule gameItemRule) {
+        if (Objects.isNull(gameItemRule.getId())) {
+            return gameItemRuleMapper.insert(gameItemRule);
+        } else {
+            return gameItemRuleMapper.updateById(gameItemRule);
+        }
+    }
 
-	public int setItemRuleBatch(Long gameId, List<Long> itemId) {
-		// GameItemRule gameRuleSetting = new GameItemRule();
-		// gameRuleSetting.setGameId(gameId);
-		// gameRuleSetting.setItemId();
-		// gameRuleSettingMapper.insert();
+    public int setItemRuleBatch(Long gameId, List<Long> itemId) {
+        // GameItemRule gameRuleSetting = new GameItemRule();
+        // gameRuleSetting.setGameId(gameId);
+        // gameRuleSetting.setItemId();
+        // gameRuleSettingMapper.insert();
 
-		return 1;
-	}
+        return 1;
+    }
 
-	public int setItemRule(Long gameId, Long itemId, Long ruleId) {
-		return 1;
-	}
+    public int setItemRule(Long gameId, Long itemId, Long ruleId) {
+        return 1;
+    }
 
-	public List<GameItemRuleVo> getItemRule(Long gameId, Long groupId, Long ruleId) {
-		return gameItemRuleMapper.selectItemRule(gameId, groupId, ruleId);
-	}
+    public List<GameItemRuleVo> getItemRule(Long gameId, Long groupId, Long ruleId) {
+        return gameItemRuleMapper.selectItemRule(gameId, groupId, ruleId);
+    }
 
 }

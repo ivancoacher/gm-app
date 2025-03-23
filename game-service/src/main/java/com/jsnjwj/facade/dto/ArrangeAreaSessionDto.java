@@ -10,14 +10,14 @@ import java.util.List;
 @Setter
 public class ArrangeAreaSessionDto {
 
-	private Integer areaNo;
+    private Integer areaNo;
 
-	private Long areaId;
+    private Long areaId;
 
-	private String areaName;
+    private String areaName;
 
-	private Long gameId;
+    private Long gameId;
 
-	private List<ArrangeSessionVo> sessionList = new ArrayList<>();
+    private List<ArrangeSessionVo> sessionList = new ArrayList<>();
 
 }

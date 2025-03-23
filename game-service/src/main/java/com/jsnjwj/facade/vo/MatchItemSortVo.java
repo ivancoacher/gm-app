@@ -7,10 +7,10 @@ import lombok.Setter;
 @Setter
 public class MatchItemSortVo {
 
-	private Long gameId;
+    private Long gameId;
 
-	private Integer sort;
+    private Integer sort;
 
-	private Long itemId;
+    private Long itemId;
 
 }

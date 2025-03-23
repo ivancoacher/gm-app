@@ -18,33 +18,34 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProjectServiceImpl implements ProjectService {
 
-	/**
-	 * 创建场次
-	 */
-	@Override
-	public boolean createMatchNumber(Long gameId) {
+    /**
+     * 创建场次
+     */
+    @Override
+    public boolean createMatchNumber(Long gameId) {
 
-		return true;
-	}
+        return true;
+    }
 
-	/**
-	 * 获取场次
-	 */
-	@Override
-	public List<MatchNumberVo> getMatchNumbers(Long gameId) {
+    /**
+     * 获取场次
+     */
+    @Override
+    public List<MatchNumberVo> getMatchNumbers(Long gameId) {
 
-		return new ArrayList<>();
-	}
+        return new ArrayList<>();
+    }
 
-	/**
-	 * 场次内-小项排序
-	 * @param gameId
-	 * @param itemSortVoList
-	 * @return
-	 */
-	@Override
-	public boolean sortMatch(Long gameId, List<MatchItemSortVo> itemSortVoList) {
-		return true;
-	}
+    /**
+     * 场次内-小项排序
+     *
+     * @param gameId
+     * @param itemSortVoList
+     * @return
+     */
+    @Override
+    public boolean sortMatch(Long gameId, List<MatchItemSortVo> itemSortVoList) {
+        return true;
+    }
 
 }

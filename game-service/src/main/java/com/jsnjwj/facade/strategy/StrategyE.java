@@ -10,18 +10,18 @@ import java.util.stream.Collectors;
  */
 public class StrategyE implements ScoreStrategy {
 
-	@Override
-	public BigDecimal getScore(List<BigDecimal> scores) {
-		if (scores.size() <= 4)
-			return BigDecimal.ZERO; // 不足以去掉两个最高和最低
+    @Override
+    public BigDecimal getScore(List<BigDecimal> scores) {
+        if (scores.size() <= 4)
+            return BigDecimal.ZERO; // 不足以去掉两个最高和最低
 
-		List<BigDecimal> sortedScores = scores.stream().sorted().collect(Collectors.toList());
+        List<BigDecimal> sortedScores = scores.stream().sorted().collect(Collectors.toList());
 
-		// 去掉两个最高和两个最低
-		List<BigDecimal> trimmedScores = sortedScores.subList(2, sortedScores.size() - 2);
+        // 去掉两个最高和两个最低
+        List<BigDecimal> trimmedScores = sortedScores.subList(2, sortedScores.size() - 2);
 
-		BigDecimal sum = trimmedScores.stream().reduce(BigDecimal.ZERO, BigDecimal::add);
-		return sum.divide(BigDecimal.valueOf(trimmedScores.size()), RoundingMode.HALF_UP);
-	}
+        BigDecimal sum = trimmedScores.stream().reduce(BigDecimal.ZERO, BigDecimal::add);
+        return sum.divide(BigDecimal.valueOf(trimmedScores.size()), RoundingMode.HALF_UP);
+    }
 
 }

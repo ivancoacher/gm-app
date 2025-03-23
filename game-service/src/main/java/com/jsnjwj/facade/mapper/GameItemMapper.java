@@ -5,11 +5,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsnjwj.facade.entity.GameItemEntity;
 import com.jsnjwj.facade.vo.ItemLabelVo;
-import com.jsnjwj.facade.vo.rule.GameItemRuleVo;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
-
-import java.util.List;
 
 /**
  * @author user
@@ -19,13 +16,13 @@ import java.util.List;
  */
 public interface GameItemMapper extends BaseMapper<GameItemEntity> {
 
-	String wrapperSql = "select i.item_type, i.id,i.item_name ,i.group_id ,g.group_name ,i.game_id,i.sort  "
-			+ "from tc_game_item as i left join tc_game_group as g on g.id = i.group_id ";
+    String wrapperSql = "select i.item_type, i.id,i.item_name ,i.group_id ,g.group_name ,i.game_id,i.sort  "
+            + "from tc_game_item as i left join tc_game_group as g on g.id = i.group_id ";
 
-	String sql = "select game_id as gameId,item_name as itemName,group_id as groupId,group_name as groupName,id as itemId,sort,item_type as itemType from ("
-			+ wrapperSql + ") as result ${ew.customSqlSegment}";
+    String sql = "select game_id as gameId,item_name as itemName,group_id as groupId,group_name as groupName,id as itemId,sort,item_type as itemType from ("
+            + wrapperSql + ") as result ${ew.customSqlSegment}";
 
-	@Select(sql)
-	Page<ItemLabelVo> selectByPage(Page page, @Param("ew") LambdaQueryWrapper lwrapper);
+    @Select(sql)
+    Page<ItemLabelVo> selectByPage(Page page, @Param("ew") LambdaQueryWrapper lwrapper);
 
 }

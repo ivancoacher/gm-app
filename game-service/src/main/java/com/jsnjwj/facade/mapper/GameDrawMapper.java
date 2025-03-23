@@ -3,9 +3,7 @@ package com.jsnjwj.facade.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.jsnjwj.facade.dao.SessionDrawDao;
 import com.jsnjwj.facade.dao.SessionDrawListDao;
-import com.jsnjwj.facade.entity.GameAreaEntity;
 import com.jsnjwj.facade.entity.GameDrawEntity;
-import com.jsnjwj.facade.entity.GameSessionEntity;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -18,10 +16,10 @@ import java.util.List;
  */
 public interface GameDrawMapper extends BaseMapper<GameDrawEntity> {
 
-	void saveBatch(@Param("list") List<GameDrawEntity> list);
+    void saveBatch(@Param("list") List<GameDrawEntity> list);
 
-	List<SessionDrawDao> getBySessionNo(@Param("gameId") Long gameId, @Param("sessionNo") Integer sessionNo);
+    List<SessionDrawDao> getBySessionNo(@Param("gameId") Long gameId, @Param("sessionNo") Integer sessionNo);
 
-	List<SessionDrawListDao> getSessionList(@Param("gameId") Long gameId);
+    List<SessionDrawListDao> getSessionList(@Param("gameId") Long gameId);
 
 }

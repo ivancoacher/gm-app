@@ -16,44 +16,44 @@ import java.util.Date;
 @Data
 public class GameGroupEntity implements Serializable {
 
-	/**
-	 *
-	 */
-	@TableId(type = IdType.AUTO)
-	private Long id;
+    /**
+     *
+     */
+    @TableId(type = IdType.AUTO)
+    private Long id;
 
-	/**
-	 *
-	 */
-	private Long gameId;
+    /**
+     *
+     */
+    private Long gameId;
 
-	/**
-	 *
-	 */
-	private String groupName;
+    /**
+     *
+     */
+    private String groupName;
 
-	/**
-	 *
-	 */
-	private Integer creatorId;
+    /**
+     *
+     */
+    private Integer creatorId;
 
-	/**
-	 *
-	 */
-	private Integer sort;
+    /**
+     *
+     */
+    private Integer sort;
 
-	/**
-	 *
-	 */
-	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
+    /**
+     *
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
 
-	private Date createTime;
+    private Date createTime;
 
-	/**
-	 *
-	 */
-	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
+    /**
+     *
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
 
-	private Date updateTime;
+    private Date updateTime;
 
 }

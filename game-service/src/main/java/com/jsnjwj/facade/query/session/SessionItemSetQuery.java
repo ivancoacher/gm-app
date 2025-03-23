@@ -10,20 +10,20 @@ import java.util.List;
 @Setter
 public class SessionItemSetQuery {
 
-	private Long gameId;
+    private Long gameId;
 
-	private Long sessionId;
+    private Long sessionId;
 
-	private List<SessionItemSetData> data = new ArrayList<>();
+    private List<SessionItemSetData> data = new ArrayList<>();
 
-	@Getter
-	@Setter
-	public static class SessionItemSetData {
+    @Getter
+    @Setter
+    public static class SessionItemSetData {
 
-		private Long itemId;
+        private Long itemId;
 
-		private Integer sort;
+        private Integer sort;
 
-	}
+    }
 
 }

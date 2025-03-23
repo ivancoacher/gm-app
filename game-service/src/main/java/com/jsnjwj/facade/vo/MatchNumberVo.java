@@ -7,10 +7,10 @@ import lombok.Setter;
 @Setter
 public class MatchNumberVo {
 
-	private Long gameId;
+    private Long gameId;
 
-	private Long number;
+    private Long number;
 
-	private String numberStr;
+    private String numberStr;
 
 }

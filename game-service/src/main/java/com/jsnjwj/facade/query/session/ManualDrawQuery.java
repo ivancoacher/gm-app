@@ -12,23 +12,23 @@ import java.util.List;
 @Data
 public class ManualDrawQuery extends BaseRequest {
 
-	private List<ManualDrawData> data;
+    private List<ManualDrawData> data;
 
-	private Integer sessionNo;
+    private Integer sessionNo;
 
-	private Long sessionId;
+    private Long sessionId;
 
-	@Getter
-	@Setter
-	public static class ManualDrawData {
+    @Getter
+    @Setter
+    public static class ManualDrawData {
 
-		/**
-		 * 兼容不按场次编排的情况
-		 */
-		private Long drawId;
+        /**
+         * 兼容不按场次编排的情况
+         */
+        private Long drawId;
 
-		private Integer sort;
+        private Integer sort;
 
-	}
+    }
 
 }

@@ -8,9 +8,9 @@ import java.util.List;
  */
 public class StrategyD implements ScoreStrategy {
 
-	@Override
-	public BigDecimal getScore(List<BigDecimal> scores) {
-		return scores.stream().reduce(BigDecimal.ZERO, BigDecimal::add);
-	}
+    @Override
+    public BigDecimal getScore(List<BigDecimal> scores) {
+        return scores.stream().reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
 
 }

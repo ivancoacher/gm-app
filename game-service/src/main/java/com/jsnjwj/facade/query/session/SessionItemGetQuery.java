@@ -7,12 +7,12 @@ import lombok.Setter;
 @Setter
 public class SessionItemGetQuery {
 
-	private Long gameId;
+    private Long gameId;
 
-	private Long sessionId;
+    private Long sessionId;
 
-	private Long groupId;
+    private Long groupId;
 
-	private Long itemId;
+    private Long itemId;
 
 }

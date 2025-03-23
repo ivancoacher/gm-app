@@ -10,14 +10,14 @@ import java.util.List;
 @Setter
 public class ScoreContext {
 
-	private ScoreStrategy strategy;
+    private ScoreStrategy strategy;
 
-	public void setStrategy(ScoreStrategy strategy) {
-		this.strategy = strategy;
-	}
+    public void setStrategy(ScoreStrategy strategy) {
+        this.strategy = strategy;
+    }
 
-	public BigDecimal executeStrategy(List<BigDecimal> scores) {
-		return strategy.getScore(scores);
-	}
+    public BigDecimal executeStrategy(List<BigDecimal> scores) {
+        return strategy.getScore(scores);
+    }
 
 }

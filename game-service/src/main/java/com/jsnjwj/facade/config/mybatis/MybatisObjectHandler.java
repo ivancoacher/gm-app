@@ -9,20 +9,20 @@ import org.springframework.stereotype.Component;
 @Component
 public class MybatisObjectHandler implements MetaObjectHandler {
 
-	/**
-	 * 创建和修改填充当前登录用户id
-	 */
-	@Override
-	public void insertFill(MetaObject metaObject) {
-		// TODO document why this method is empty
-	}
+    /**
+     * 创建和修改填充当前登录用户id
+     */
+    @Override
+    public void insertFill(MetaObject metaObject) {
+        // TODO document why this method is empty
+    }
 
-	/**
-	 * 创建和修改填充当前登录用户id
-	 */
-	@Override
-	public void updateFill(MetaObject metaObject) {
-		// TODO document why this method is empty
-	}
+    /**
+     * 创建和修改填充当前登录用户id
+     */
+    @Override
+    public void updateFill(MetaObject metaObject) {
+        // TODO document why this method is empty
+    }
 
 }

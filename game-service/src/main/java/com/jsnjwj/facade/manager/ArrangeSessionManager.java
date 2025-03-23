@@ -13,51 +13,50 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class ArrangeSessionManager {
 
-	private final GameSessionMapper gameSessionMapper;
+    private final GameSessionMapper gameSessionMapper;
 
-	public void deleteById(Long gameId, Long sessionId) {
-		LambdaQueryWrapper<GameSessionEntity> queryWrapper = new LambdaQueryWrapper<>();
-		queryWrapper.eq(GameSessionEntity::getId, sessionId);
-		queryWrapper.eq(GameSessionEntity::getGameId, gameId);
-		gameSessionMapper.delete(queryWrapper);
-	}
+    public void deleteById(Long gameId, Long sessionId) {
+        LambdaQueryWrapper<GameSessionEntity> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(GameSessionEntity::getId, sessionId);
+        queryWrapper.eq(GameSessionEntity::getGameId, gameId);
+        gameSessionMapper.delete(queryWrapper);
+    }
 
-	public int saveSession(GameSessionEntity query) {
-		if (Objects.nonNull(query.getId())) {
-			return gameSessionMapper.updateById(query);
-		}
-		else {
-			return gameSessionMapper.insert(query);
-		}
-	}
+    public int saveSession(GameSessionEntity query) {
+        if (Objects.nonNull(query.getId())) {
+            return gameSessionMapper.updateById(query);
+        } else {
+            return gameSessionMapper.insert(query);
+        }
+    }
 
-	public GameSessionEntity getBySessionId(Long sessionId) {
-		LambdaQueryWrapper<GameSessionEntity> query = new LambdaQueryWrapper<>();
-		query.eq(GameSessionEntity::getId, sessionId);
-		return gameSessionMapper.selectOne(query);
-	}
+    public GameSessionEntity getBySessionId(Long sessionId) {
+        LambdaQueryWrapper<GameSessionEntity> query = new LambdaQueryWrapper<>();
+        query.eq(GameSessionEntity::getId, sessionId);
+        return gameSessionMapper.selectOne(query);
+    }
 
-	public GameSessionEntity getBySessionNo(Integer sessionNo) {
-		LambdaQueryWrapper<GameSessionEntity> query = new LambdaQueryWrapper<>();
-		query.eq(GameSessionEntity::getSessionNo, sessionNo);
-		return gameSessionMapper.selectOne(query);
-	}
+    public GameSessionEntity getBySessionNo(Integer sessionNo) {
+        LambdaQueryWrapper<GameSessionEntity> query = new LambdaQueryWrapper<>();
+        query.eq(GameSessionEntity::getSessionNo, sessionNo);
+        return gameSessionMapper.selectOne(query);
+    }
 
-	public void saveSessionBatch(List<GameSessionEntity> list) {
-		gameSessionMapper.saveBatch(list);
-	}
+    public void saveSessionBatch(List<GameSessionEntity> list) {
+        gameSessionMapper.saveBatch(list);
+    }
 
-	public List<GameSessionEntity> getListByGameId(Long gameId) {
-		LambdaQueryWrapper<GameSessionEntity> queryWrapper = new LambdaQueryWrapper<>();
-		queryWrapper.eq(GameSessionEntity::getGameId, gameId);
-		queryWrapper.orderByAsc(GameSessionEntity::getSessionNo);
-		return gameSessionMapper.selectList(queryWrapper);
-	}
+    public List<GameSessionEntity> getListByGameId(Long gameId) {
+        LambdaQueryWrapper<GameSessionEntity> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(GameSessionEntity::getGameId, gameId);
+        queryWrapper.orderByAsc(GameSessionEntity::getSessionNo);
+        return gameSessionMapper.selectList(queryWrapper);
+    }
 
-	public void resetCourt(Long gameId) {
-		LambdaQueryWrapper<GameSessionEntity> wrapper = new LambdaQueryWrapper<>();
-		wrapper.eq(GameSessionEntity::getGameId, gameId);
-		gameSessionMapper.delete(wrapper);
-	}
+    public void resetCourt(Long gameId) {
+        LambdaQueryWrapper<GameSessionEntity> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(GameSessionEntity::getGameId, gameId);
+        gameSessionMapper.delete(wrapper);
+    }
 
 }

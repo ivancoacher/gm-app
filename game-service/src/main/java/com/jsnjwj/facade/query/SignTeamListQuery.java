@@ -8,16 +8,16 @@ import lombok.EqualsAndHashCode;
 @Data
 public class SignTeamListQuery extends BaseRequest {
 
-	private Long groupId;
+    private Long groupId;
 
-	private String title;
+    private String title;
 
-	private Integer page = 1;
+    private Integer page = 1;
 
-	private Integer limit = 10;
+    private Integer limit = 10;
 
-	private Long teamId;
+    private Long teamId;
 
-	private Long orgId;
+    private Long orgId;
 
 }

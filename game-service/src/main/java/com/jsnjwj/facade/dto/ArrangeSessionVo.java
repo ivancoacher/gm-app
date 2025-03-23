@@ -11,20 +11,33 @@ import java.util.List;
 @Setter
 public class ArrangeSessionVo {
 
-	private Long sessionId;
+    private Long sessionId;
 
-	private String sessionName;
+    private String sessionName;
 
-	private Integer sessionNo;
+    private Integer sessionNo;
 
-	/**
-	 * 已排项目列表
-	 */
-	private List<SessionItemVo> itemList = new ArrayList<>();
+    /**
+     * 已排项目列表
+     */
+    private List<SessionItemVo> itemList = new ArrayList<>();
 
-	/**
-	 * 已排项目数量
-	 */
-	private Integer itemNum = 0;
+    /**
+     * 已排项目数量
+     */
+    private Integer itemNum = 0;
+
+    /**
+     * 抽签规则
+     */
+    private SessionSettingVo sessionSetting;
+
+    @Getter
+    @Setter
+    public static class SessionSettingVo {
+        private List<Integer> orgRange;
+        private List<Integer> teamRange;
+        private List<Integer> singleRange;
+    }
 
 }
