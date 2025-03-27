@@ -217,6 +217,44 @@ public class ArrangeSessionServiceImpl implements ArrangeSessionService {
 				titleCell5.setCellStyle(titleCellStyle);
 
 				i++;
+				// 查询该场次项目编排信息
+				List<SessionItemVo> sessionItemVoList = arrangeSessionItemManager.fetchBySessionId(gameId, sessionEntity.getId());
+				Font contentFont = workbook.createFont();
+				contentFont.setFontName("Arial");
+				contentFont.setFontHeightInPoints((short) 11);
+				CellStyle contentCellStyle = workbook.createCellStyle();
+				contentCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				contentCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				contentCellStyle.setWrapText(true); // 设置自动换行
+				contentCellStyle.setFont(contentFont);
+				for (SessionItemVo sessionItemVo : sessionItemVoList){
+					Row contentRow = sheet.createRow(i);
+
+					Cell contentCell1 = contentRow.createCell(0);
+					contentCell1.setCellValue(sessionItemVo.getSort());
+					contentCell1.setCellStyle(contentCellStyle);
+
+
+					Cell contentCell2 = titleItemRow.createCell(1);
+					contentCell2.setCellValue("参赛选手");
+					contentCell2.setCellStyle(contentCellStyle);
+
+					Cell contentCell3 = titleItemRow.createCell(2);
+					contentCell3.setCellValue("队名");
+					contentCell3.setCellStyle(contentCellStyle);
+
+					Cell contentCell4 = titleItemRow.createCell(3);
+					contentCell4.setCellValue("单位");
+					contentCell4.setCellStyle(contentCellStyle);
+
+					Cell contentCell5 = titleItemRow.createCell(4);
+					contentCell5.setCellValue("项目");
+					contentCell5.setCellStyle(contentCellStyle);
+					i++;
+				}
+				i++;
+
+
 			}
 
 			//
