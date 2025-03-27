@@ -14,6 +14,8 @@ public interface ArrangeSessionService {
 
 	ApiResponse<?> addSession(Long gameId);
 
+	ApiResponse<?> exportSession(Long gameId);
+
 	ApiResponse<?> deleteSession(GameGroupingSessionSetQuery query);
 
 	ApiResponse<Boolean> saveSession(GameGroupingSessionSetQuery query);

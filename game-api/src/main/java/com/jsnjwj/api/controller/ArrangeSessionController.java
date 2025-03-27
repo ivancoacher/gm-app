@@ -66,6 +66,15 @@ public class ArrangeSessionController {
 	}
 
 	/**
+	 * 导出场次秩序表
+	 * @return
+	 */
+	@PostMapping("/export")
+	public ApiResponse<?> export() {
+		return arrangeSessionService.exportSession(ThreadLocalUtil.getCurrentGameId());
+	}
+
+	/**
 	 * 删除场次
 	 * @param query
 	 * @return
