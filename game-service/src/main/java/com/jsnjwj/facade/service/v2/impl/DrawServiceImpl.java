@@ -183,9 +183,7 @@ public class DrawServiceImpl implements DrawService {
 
 			if (CollectionUtil.isEmpty(result)) {
 				// 查询这个场次下所有项目对应的报名用户
-				List<ArrangeDrawDto> drawList = new ArrayList<>();
-
-				drawDetailVo.setData(new ArrayList<>());
+                drawDetailVo.setData(new ArrayList<>());
 			}
 			else {
 				drawDetailVo.setData(result.stream().map(item -> {

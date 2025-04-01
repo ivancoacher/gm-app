@@ -229,14 +229,15 @@ public class SingleImportListener extends AnalysisEventListener<ImportSingleUplo
 			}
 
 		}
+
+		// 如果是集体项目则设置队伍编号
 		singleUploadDto.setTeamId(String.valueOf(teamId));
 
 		// 更新team-item关联表
 		if (!signApplyManager.checkItemTeamExist(this.gameId,itemId, teamId)) {
+			// 不存在该关联关系，则新增
 			signApplyManager.saveTeamItem(this.gameId,groupId,itemId,teamId);
 		}
-
-
 	}
 
 }

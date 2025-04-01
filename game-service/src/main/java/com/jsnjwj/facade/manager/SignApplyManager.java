@@ -43,17 +43,19 @@ public class SignApplyManager {
 		QueryWrapper<GameItemEntity> itemQuery = new QueryWrapper<>();
 		QueryWrapper<SignSingleEntity> signQuery = new QueryWrapper<>();
 		QueryWrapper<SignOrgEntity> orgQuery = new QueryWrapper<>();
+		QueryWrapper<SignItemTeamEntity> itemTeamQuery = new QueryWrapper<>();
 		teamQuery.eq("game_id", gameId);
 		groupQuery.eq("game_id", gameId);
 		itemQuery.eq("game_id", gameId);
 		signQuery.eq("game_id", gameId);
 		orgQuery.eq("game_id", gameId);
+		itemTeamQuery.eq("game_id", gameId);
 		signTeamMapper.delete(teamQuery);
 		gameGroupMapper.delete(groupQuery);
 		gameItemMapper.delete(itemQuery);
 		signSingleMapper.delete(signQuery);
 		signOrgMapper.delete(orgQuery);
-
+		signItemTeamMapper.delete(itemTeamQuery);
 	}
 
 	public List<SignSingleDto> fetchSignSinglePage(SignSingleListQuery query) {
