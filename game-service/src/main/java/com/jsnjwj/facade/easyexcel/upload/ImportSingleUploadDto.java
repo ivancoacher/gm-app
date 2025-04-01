@@ -20,13 +20,13 @@ public class ImportSingleUploadDto {
 	private String name;
 
 	/**
-	 *
+	 * 年龄
 	 */
 	@ExcelProperty(value = "年龄")
 	private String age;
 
 	/**
-	 *
+	 * 性别
 	 */
 	@ExcelProperty(value = "性别")
 	private String sex;
@@ -79,6 +79,9 @@ public class ImportSingleUploadDto {
 	 */
 	private String teamId;
 
+	/**
+	 * 单位id
+	 */
 	private String orgId;
 
 	public Long getOrgId() {
@@ -89,29 +92,17 @@ public class ImportSingleUploadDto {
 		return StringUtils.isNotBlank(groupId) ? Long.parseLong(groupId) : 0L;
 	}
 
-	// public void setGroupId(Long groupId){
-	// if (!Objects.isNull(groupId)){
-	// this.groupId = String.valueOf(groupId);
-	// }
-	// }
-
 	public Long getItemId() {
 		return StringUtils.isNotBlank(itemId) ? Long.parseLong(itemId) : 0L;
 	}
 
-	// public void setItemId(Long itemId){
-	// if (!Objects.isNull(groupId)){
-	// this.itemId = String.valueOf(itemId);
-	// }
-	// }
 	public Long getTeamId() {
 		return StringUtils.isNotBlank(teamId) ? Long.parseLong(teamId) : 0L;
 	}
 
-	// public void setTeamId(Long teamId){
-	// if (!Objects.isNull(teamId)){
-	// this.teamId = String.valueOf(teamId);
-	// }
-	// }
+	public String getTeamName(){
+		return teamName.trim();
+	}
 
+	private String remark;
 }

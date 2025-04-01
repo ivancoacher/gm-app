@@ -9,6 +9,10 @@ public class ImportTeamDto {
 
 	private String teamName;
 
+	private Long groupId;
+
+	private Long itemId;
+
 	private Long teamId;
 
 	private String coachName;

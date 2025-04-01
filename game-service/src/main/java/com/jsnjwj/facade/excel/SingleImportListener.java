@@ -109,7 +109,7 @@ public class SingleImportListener extends AnalysisEventListener<ImportSingleUplo
 		String groupName = singleUploadDto.getGroupName();
 		Long groupId;
 		// 从缓存中获取组别
-		ImportGroupDto group = groupMap.get(groupName);
+		ImportGroupDto group = groupMap.getOrDefault(groupName,null);
 		if (group == null) {
 			if (!signApplyManager.checkGroupExist(this.gameId, groupName)) {
 				groupId = signApplyManager.saveGroup(this.gameId, groupName);
@@ -171,19 +171,25 @@ public class SingleImportListener extends AnalysisEventListener<ImportSingleUplo
 			return;
 		}
 		Long teamId;
+		Long orgId = singleUploadDto.getOrgId();
+		Long groupId = singleUploadDto.getGroupId();
+		Long itemId = singleUploadDto.getItemId();
 		// 从缓存中获取组别
 		ImportTeamDto teamDto = teamMap.getOrDefault(teamName, null);
-		if (teamDto == null) {
-			if (!signApplyManager.checkTeamExist(this.gameId, teamName)) {
+		if (teamDto == null || !Objects.equals(teamDto.getOrgId(), orgId)) {
+			if (!signApplyManager.checkTeamExist(this.gameId, orgId, teamName)) {
 				teamId = signApplyManager.saveTeamByImport(this.gameId, singleUploadDto);
 			}
 			else {
-				SignTeamEntity teamEntity = signApplyManager.getTeamEntity(gameId, teamName);
+				SignTeamEntity teamEntity = signApplyManager.getTeamEntity(gameId, orgId,teamName);
 
 				teamId = teamEntity.getId();
 			}
 			teamDto = new ImportTeamDto();
 			teamDto.setTeamId(teamId);
+			teamDto.setOrgId(singleUploadDto.getOrgId());
+			teamDto.setGroupId(singleUploadDto.getGroupId());
+			teamDto.setItemId(singleUploadDto.getItemId());
 			teamDto.setTeamName(teamName);
 			teamDto.setCoachName(singleUploadDto.getCoachName());
 			teamDto.setLeaderName(singleUploadDto.getLeaderName());
@@ -215,7 +221,7 @@ public class SingleImportListener extends AnalysisEventListener<ImportSingleUplo
 				}
 			}
 			if (isUpdate) {
-				SignTeamEntity teamEntity = signApplyManager.getTeamEntity(gameId, teamName);
+				SignTeamEntity teamEntity = signApplyManager.getTeamEntity(gameId, orgId, teamName);
 				teamEntity.setLeaderName(teamDto.getLeaderName());
 				teamEntity.setCoachName(teamDto.getCoachName());
 
@@ -224,6 +230,12 @@ public class SingleImportListener extends AnalysisEventListener<ImportSingleUplo
 
 		}
 		singleUploadDto.setTeamId(String.valueOf(teamId));
+
+		// 更新team-item关联表
+		if (!signApplyManager.checkItemTeamExist(this.gameId,itemId, teamId)) {
+			signApplyManager.saveTeamItem(this.gameId,groupId,itemId,teamId);
+		}
+
 
 	}
 
