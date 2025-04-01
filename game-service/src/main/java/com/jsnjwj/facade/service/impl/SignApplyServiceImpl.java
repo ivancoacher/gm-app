@@ -161,6 +161,12 @@ public class SignApplyServiceImpl implements SignApplyService {
 		return null;
 	}
 
+	/**
+	 * 导入报名信息
+	 * @param importType
+	 * @param file
+	 * @return
+	 */
 	@Override
 	public ApiResponse<?> importSingle(Integer importType, MultipartFile file) {
 

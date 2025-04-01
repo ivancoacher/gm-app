@@ -33,6 +33,8 @@ public class SignApplyManager {
 
 	private final GameGroupMapper gameGroupMapper;
 
+	private final SignItemTeamMapper signItemTeamMapper;
+
 	private final GameItemMapper gameItemMapper;
 
 	public void cleanSignData(Long gameId) {
@@ -41,17 +43,19 @@ public class SignApplyManager {
 		QueryWrapper<GameItemEntity> itemQuery = new QueryWrapper<>();
 		QueryWrapper<SignSingleEntity> signQuery = new QueryWrapper<>();
 		QueryWrapper<SignOrgEntity> orgQuery = new QueryWrapper<>();
+		QueryWrapper<SignItemTeamEntity> itemTeamQuery = new QueryWrapper<>();
 		teamQuery.eq("game_id", gameId);
 		groupQuery.eq("game_id", gameId);
 		itemQuery.eq("game_id", gameId);
 		signQuery.eq("game_id", gameId);
 		orgQuery.eq("game_id", gameId);
+		itemTeamQuery.eq("game_id", gameId);
 		signTeamMapper.delete(teamQuery);
 		gameGroupMapper.delete(groupQuery);
 		gameItemMapper.delete(itemQuery);
 		signSingleMapper.delete(signQuery);
 		signOrgMapper.delete(orgQuery);
-
+		signItemTeamMapper.delete(itemTeamQuery);
 	}
 
 	public List<SignSingleDto> fetchSignSinglePage(SignSingleListQuery query) {
@@ -243,23 +247,32 @@ public class SignApplyManager {
 		return signTeamMapper.exists(queryWrapper);
 	}
 
+	public boolean checkTeamExist(Long gameId, Long orgId, String teamName) {
+		LambdaQueryWrapper<SignTeamEntity> queryWrapper = new LambdaQueryWrapper<>();
+		queryWrapper.eq(SignTeamEntity::getGameId, gameId);
+		queryWrapper.eq(SignTeamEntity::getOrgId, orgId);
+		queryWrapper.eq(SignTeamEntity::getTeamName, teamName);
+		return signTeamMapper.exists(queryWrapper);
+	}
+
 	public Long saveTeamByImport(Long gameId, ImportSingleUploadDto singleUploadDto) {
 		SignTeamEntity teamEntity = new SignTeamEntity();
 		teamEntity.setGameId(gameId);
+		teamEntity.setOrgId(singleUploadDto.getOrgId());
 		teamEntity.setTeamName(singleUploadDto.getTeamName());
 		teamEntity.setCoachName(singleUploadDto.getCoachName());
 		teamEntity.setCoachTel(singleUploadDto.getCoachPhone());
 		teamEntity.setLeaderName(singleUploadDto.getLeaderName());
 		teamEntity.setLeaderTel(singleUploadDto.getLeaderPhone());
-		teamEntity.setOrgId(singleUploadDto.getOrgId());
-
+		teamEntity.setRemark(singleUploadDto.getRemark());
 		signTeamMapper.insert(teamEntity);
 		return teamEntity.getId();
 	}
 
-	public SignTeamEntity getTeamEntity(Long gameId, String teamName) {
+	public SignTeamEntity getTeamEntity(Long gameId, Long orgId, String teamName) {
 		LambdaQueryWrapper<SignTeamEntity> queryWrapper = new LambdaQueryWrapper<>();
 		queryWrapper.eq(SignTeamEntity::getGameId, gameId);
+		queryWrapper.eq(SignTeamEntity::getOrgId, orgId);
 		queryWrapper.eq(SignTeamEntity::getTeamName, teamName);
 		queryWrapper.last("limit 1");
 		return signTeamMapper.selectOne(queryWrapper);
@@ -541,4 +554,27 @@ public class SignApplyManager {
 
 	}
 
+	/**
+	 * 校验项目-队伍对应关系
+	 * @param gameId
+	 * @param itemId
+	 * @param teamId
+	 * @return
+	 */
+	public boolean checkItemTeamExist(Long gameId, Long itemId, Long teamId) {
+		LambdaQueryWrapper<SignItemTeamEntity> queryWrapper = new LambdaQueryWrapper<>();
+		queryWrapper.eq(SignItemTeamEntity::getGameId, gameId);
+		queryWrapper.eq(SignItemTeamEntity::getItemId, itemId);
+		queryWrapper.eq(SignItemTeamEntity::getTeamId, teamId);
+		return signItemTeamMapper.exists(queryWrapper);
+	}
+
+	public void saveTeamItem(Long gameId, Long groupId, Long itemId, Long teamId){
+		SignItemTeamEntity itemTeamEntity = new SignItemTeamEntity();
+		itemTeamEntity.setGameId(gameId);
+		itemTeamEntity.setGroupId(groupId);
+		itemTeamEntity.setItemId(itemId);
+		itemTeamEntity.setTeamId(teamId);
+		signItemTeamMapper.insert(itemTeamEntity);
+	}
 }
