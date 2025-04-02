@@ -15,6 +15,6 @@ public class GameItemUpdateQuery {
 
 	private Integer sort;
 
-	private String itemType;
+	private Integer itemType;
 
 }

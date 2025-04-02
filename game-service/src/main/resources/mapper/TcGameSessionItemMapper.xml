@@ -13,7 +13,9 @@
         </foreach>
     </insert>
     <select id="fetchBySessionId" resultType="com.jsnjwj.facade.vo.session.SessionItemVo">
-        select i.item_name as itemName,i.id as itemId,s.session_id as sessionId,s.sort ,g.group_name as groupName
+        select i.item_name as itemName,i.id as itemId,
+               s.session_id as sessionId,s.sort ,g.group_name as groupName
+        ,i.item_type as itemType
         from tc_game_session_item as s
         left join tc_game_item as i on i.id = s.item_id
         left join tc_game_group as g on g.id = i.group_id

@@ -61,7 +61,7 @@ public class DrawServiceImpl implements DrawService {
 	public ApiResponse<?> systemDrawSingle(SystemDrawQuery query) {
 		// 判断抽签分组类型
 		// 按场次抽签
-		drawCoreService.drawBySessionId(query.getSessionId());
+		drawCoreService.drawBySessionId(query.getGameId(),query.getSessionId());
 		return ApiResponse.success(true);
 	}
 
@@ -78,7 +78,7 @@ public class DrawServiceImpl implements DrawService {
 			return ApiResponse.error("请先创建场次");
 		}
 		sessionList.forEach(session -> {
-			drawCoreService.drawBySessionId(session.getId());
+			drawCoreService.drawBySessionId(session.getGameId(),session.getId());
 		});
 
 		return ApiResponse.success(true);

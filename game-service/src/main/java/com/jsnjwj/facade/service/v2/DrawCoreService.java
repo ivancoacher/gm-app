@@ -7,6 +7,6 @@ import com.jsnjwj.facade.query.session.SystemDrawQuery;
 
 public interface DrawCoreService {
 
-	void drawBySessionId(Long sessionId);
+	void drawBySessionId(Long gameId, Long sessionId);
 
 }

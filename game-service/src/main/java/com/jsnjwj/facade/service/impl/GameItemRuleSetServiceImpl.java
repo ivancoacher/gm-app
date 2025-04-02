@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsnjwj.common.response.ApiResponse;
 import com.jsnjwj.facade.entity.GameItemEntity;
 import com.jsnjwj.facade.entity.GameItemRule;
+import com.jsnjwj.facade.enums.ItemTypeEnum;
 import com.jsnjwj.facade.enums.SettingRuleEnum;
 import com.jsnjwj.facade.manager.GameGroupManager;
 import com.jsnjwj.facade.manager.GameItemManager;
@@ -77,7 +78,7 @@ public class GameItemRuleSetServiceImpl implements GameItemRuleSetService {
 			ruleVo.setGameId(item.getGameId());
 			ruleVo.setItemName(item.getItemName());
 			ruleVo.setGroupName(item.getGroupName());
-			ruleVo.setItemType(item.getItemType());
+			ruleVo.setItemType(ItemTypeEnum.getNameByType(item.getItemType()));
 			ruleVo.setItemId(item.getItemId());
 			ruleVo.setGroupId(item.getGroupId());
 			return ruleVo;

@@ -99,4 +99,10 @@ public class SignSingleEntity implements Serializable {
 	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
 	private Date updateTime;
 
+	/**
+	 * 报名方式
+	 * 1；集体
+	 * 2：个人
+	 */
+	private Integer signType;
 }

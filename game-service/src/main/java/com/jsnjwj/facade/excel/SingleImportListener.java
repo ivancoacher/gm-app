@@ -10,6 +10,7 @@ import com.jsnjwj.facade.entity.GameGroupEntity;
 import com.jsnjwj.facade.entity.GameItemEntity;
 import com.jsnjwj.facade.entity.SignOrgEntity;
 import com.jsnjwj.facade.entity.SignTeamEntity;
+import com.jsnjwj.facade.enums.ItemTypeEnum;
 import com.jsnjwj.facade.manager.SignApplyManager;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -143,7 +144,7 @@ public class SingleImportListener extends AnalysisEventListener<ImportSingleUplo
 		ImportItemDto itemDto = itemMap.getOrDefault(groupName + itemName, null);
 		if (itemDto == null) {
 			if (!signApplyManager.checkItemExist(this.gameId, groupId, itemName)) {
-				itemId = signApplyManager.saveItem(this.gameId, groupId, itemName, singleUploadDto.getItemType());
+				itemId = signApplyManager.saveItem(this.gameId, groupId, itemName, ItemTypeEnum.getTypeByName(singleUploadDto.getItemType()));
 			}
 			else {
 				GameItemEntity itemEntity = signApplyManager.getItemEntity(gameId, groupId, itemName);
@@ -174,6 +175,8 @@ public class SingleImportListener extends AnalysisEventListener<ImportSingleUplo
 		Long orgId = singleUploadDto.getOrgId();
 		Long groupId = singleUploadDto.getGroupId();
 		Long itemId = singleUploadDto.getItemId();
+		// 获取项目类型
+		Integer itemType = ItemTypeEnum.getTypeByName(singleUploadDto.getItemType());
 		// 从缓存中获取组别
 		ImportTeamDto teamDto = teamMap.getOrDefault(teamName, null);
 		if (teamDto == null || !Objects.equals(teamDto.getOrgId(), orgId)) {
@@ -188,8 +191,6 @@ public class SingleImportListener extends AnalysisEventListener<ImportSingleUplo
 			teamDto = new ImportTeamDto();
 			teamDto.setTeamId(teamId);
 			teamDto.setOrgId(singleUploadDto.getOrgId());
-			teamDto.setGroupId(singleUploadDto.getGroupId());
-			teamDto.setItemId(singleUploadDto.getItemId());
 			teamDto.setTeamName(teamName);
 			teamDto.setCoachName(singleUploadDto.getCoachName());
 			teamDto.setLeaderName(singleUploadDto.getLeaderName());
@@ -231,7 +232,11 @@ public class SingleImportListener extends AnalysisEventListener<ImportSingleUplo
 		}
 
 		// 如果是集体项目则设置队伍编号
-		singleUploadDto.setTeamId(String.valueOf(teamId));
+		if (ItemTypeEnum.TYPE_TEAM.getType().equals(itemType)){
+			singleUploadDto.setTeamId(String.valueOf(teamId));
+		}else{
+			singleUploadDto.setTeamId(null);
+		}
 
 		// 更新team-item关联表
 		if (!signApplyManager.checkItemTeamExist(this.gameId,itemId, teamId)) {

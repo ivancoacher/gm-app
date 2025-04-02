@@ -10,6 +10,7 @@ import com.jsnjwj.facade.dto.SignSingleDto;
 import com.jsnjwj.facade.easyexcel.upload.ImportSingleUploadDto;
 import com.jsnjwj.facade.easyexcel.upload.ImportTeamUploadDto;
 import com.jsnjwj.facade.entity.*;
+import com.jsnjwj.facade.enums.ItemTypeEnum;
 import com.jsnjwj.facade.mapper.*;
 import com.jsnjwj.facade.query.SignSingleListQuery;
 import com.jsnjwj.facade.query.SignTeamListQuery;
@@ -159,7 +160,7 @@ public class SignApplyManager {
 				signSingle.setCardNum(d.getCardNum());
 				signSingle.setOrgName(d.getOrgName());
 				signSingle.setOrgId(d.getOrgId());
-
+				signSingle.setSignType(ItemTypeEnum.getTypeByName(d.getItemType()));
 				datas.add(signSingle);
 			});
 		}
@@ -221,7 +222,7 @@ public class SignApplyManager {
 		return gameItemMapper.exists(queryWrapper);
 	}
 
-	public Long saveItem(Long gameId, Long groupId, String itemName, String itemType) {
+	public Long saveItem(Long gameId, Long groupId, String itemName, Integer itemType) {
 		GameItemEntity itemEntity = new GameItemEntity();
 		itemEntity.setItemName(itemName);
 		itemEntity.setGroupId(groupId);

@@ -4,6 +4,8 @@ import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.util.StringUtils;
 import lombok.Data;
 
+import java.util.Objects;
+
 @Data
 public class ImportSingleUploadDto {
 
@@ -97,11 +99,11 @@ public class ImportSingleUploadDto {
 	}
 
 	public Long getTeamId() {
-		return StringUtils.isNotBlank(teamId) ? Long.parseLong(teamId) : 0L;
+		return Objects.nonNull(teamId) ? Long.parseLong(teamId) : 0L;
 	}
 
 	public String getTeamName(){
-		return teamName.trim();
+		return Objects.nonNull(teamName)?teamName.trim():"";
 	}
 
 	private String remark;

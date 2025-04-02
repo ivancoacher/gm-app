@@ -33,9 +33,8 @@ public class SignTeamEntity implements Serializable {
 	 */
 	private Long gameId;
 
-	/**
-	 *
-	 */
+	private Long orgId;
+
 	@ExcelProperty("队伍名称")
 	private String teamName;
 
@@ -77,7 +76,4 @@ public class SignTeamEntity implements Serializable {
 	 */
 	@JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
 	private Date updateTime;
-
-	private Long orgId;
-
 }

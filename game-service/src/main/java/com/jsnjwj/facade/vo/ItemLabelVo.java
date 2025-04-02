@@ -1,5 +1,6 @@
 package com.jsnjwj.facade.vo;
 
+import com.jsnjwj.facade.enums.ItemTypeEnum;
 import lombok.Data;
 
 @Data
@@ -17,6 +18,12 @@ public class ItemLabelVo {
 
 	private Integer sort;
 
-	private String itemType;
+	private Integer itemType;
 
+	private String itemTypeName;
+
+	public String getItemTypeName() {
+
+		return ItemTypeEnum.getNameByType(itemType);
+	}
 }

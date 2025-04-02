@@ -41,7 +41,7 @@ public class GameItemEntity implements Serializable {
 	 * 1：集体项目
 	 * 2：个人项目
 	 */
-	private String itemType;
+	private Integer itemType;
 
 	/**
 	 *

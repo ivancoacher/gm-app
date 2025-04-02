@@ -12,7 +12,7 @@ public class GameItemSaveQuery extends BaseRequest {
 
 	private List<Long> groupId;
 
-	private String itemType;
+	private Integer itemType;
 
 	private Integer sort;
 
