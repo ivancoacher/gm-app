@@ -14,4 +14,5 @@ public class SessionUnit {
 
     private List<SessionItemVo> itemList;
 
+    private Long gameId;
 }

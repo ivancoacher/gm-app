@@ -11,6 +11,8 @@ public class SignSingleDto {
 
 	private Long teamId;
 
+	private Long orgId;
+
 	private Long gameId;
 
 	private String teamName;

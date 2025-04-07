@@ -1,13 +1,16 @@
 package com.jsnjwj.facade.service.v2.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.jsnjwj.facade.dto.SignSingleDto;
+import com.jsnjwj.facade.dto.SignTeamDto;
 import com.jsnjwj.facade.dto.draw.DrawResultUnit;
 import com.jsnjwj.facade.dto.draw.SessionUnit;
 import com.jsnjwj.facade.entity.*;
 import com.jsnjwj.facade.enums.ItemTypeEnum;
 import com.jsnjwj.facade.manager.*;
+import com.jsnjwj.facade.mapper.GameDrawMapper;
 import com.jsnjwj.facade.service.v2.DrawCoreService;
 import com.jsnjwj.facade.vo.GameItemVo;
 import com.jsnjwj.facade.vo.session.SessionItemVo;
@@ -35,6 +38,8 @@ public class DrawCoreServiceImpl implements DrawCoreService {
 
 	private final ArrangeDrawManager drawManager;
 	private final GameItemManager gameItemManager;
+	private final GameDrawMapper gameDrawMapper;
+	private final ArrangeDrawManager arrangeDrawManager;
 //
 //	@Override
 //	public void drawBySessionId(Long sessionId) {
@@ -230,9 +235,16 @@ public class DrawCoreServiceImpl implements DrawCoreService {
 	@Override
 	public void drawBySessionId(Long gameId, Long sessionId) {
 		SessionUnit sessionUnit = new SessionUnit();
+		sessionUnit.setGameId(gameId);
 		sessionUnit.setSessionId(sessionId);
 		List<SessionItemVo> sessionItemVoList = sessionItemManager.fetchBySessionId(gameId,sessionId);
 		if (CollectionUtil.isNotEmpty(sessionItemVoList)){
+			// 先清除该场次所有抽签结果
+			 LambdaQueryWrapper<GameDrawEntity> queryWrapper = new LambdaQueryWrapper<>();
+			 queryWrapper.eq(GameDrawEntity::getGameId, gameId);
+			 queryWrapper.eq(GameDrawEntity::getSessionId, sessionId);
+			 gameDrawMapper.delete(queryWrapper);
+
 			sessionItemVoList.forEach(itemVo -> {
 				List<SignSingleEntity> singleList = signApplyManager.getApplyByItem(gameId, itemVo.getItemId());
 
@@ -241,16 +253,50 @@ public class DrawCoreServiceImpl implements DrawCoreService {
 					signSingleDto.setApplyId(player.getId());
 					return signSingleDto;
 				}).collect(Collectors.toList()));
+				List<SignItemTeamEntity> teamList = signApplyManager.getTeamByItem(gameId, itemVo.getItemId());
+
+				itemVo.setTeamList(teamList.stream().map(player -> {
+					SignTeamDto signSingleDto = new SignTeamDto();
+					signSingleDto.setTeamId(player.getTeamId());
+					return signSingleDto;
+				}).collect(Collectors.toList()));
 			});
 		}
-		sessionUnit.setItemList(sessionItemManager.fetchBySessionId(gameId,sessionId));
-		drawSession(sessionUnit);
+		sessionUnit.setItemList(sessionItemVoList);
+		List<DrawResultUnit> result = drawSession(sessionUnit);
 
+
+		if (CollectionUtil.isNotEmpty(result)){
+			List<GameDrawEntity> gameDrawEntityList = new ArrayList<>();
+			result.forEach(drawResultUnit -> {
+				GameDrawEntity gameDrawEntity = new GameDrawEntity();
+				gameDrawEntity.setGameId(gameId);
+				gameDrawEntity.setSessionId(sessionId);
+				gameDrawEntity.setSort(drawResultUnit.getOrder());
+				gameDrawEntity.setItemId(drawResultUnit.getProject().getItemId());
+				if (Objects.equals(drawResultUnit.getProject().getItemType(), ItemTypeEnum.TYPE_SINGLE.getType())){
+					gameDrawEntity.setSignId(drawResultUnit.getPlayer().getApplyId());
+					gameDrawEntity.setDrawType(ItemTypeEnum.TYPE_SINGLE.getType());
+				}else{
+					gameDrawEntity.setTeamId(drawResultUnit.getTeam().getTeamId());
+					gameDrawEntity.setDrawType(ItemTypeEnum.TYPE_TEAM.getType());
+
+				}
+				gameDrawEntityList.add(gameDrawEntity);
+
+			});
+
+			arrangeDrawManager.saveBatch(gameDrawEntityList);
+		}
+
+
+		log.info("抽签结果{}", JSON.toJSONString(result));
 	}
 
 
 	public List<DrawResultUnit> drawSession(SessionUnit session) {
 		List<DrawResultUnit> results = new ArrayList<>();
+		Long sessionId = session.getSessionId();
 		int currentOrder = 1;
 
 		// 获取所有个人项目和团队项目
@@ -261,33 +307,57 @@ public class DrawCoreServiceImpl implements DrawCoreService {
 		List<SessionItemVo> teamProjects = session.getItemList().stream()
 				.filter(p -> Objects.equals(p.getItemType(), ItemTypeEnum.TYPE_TEAM.getType()))
 				.collect(Collectors.toList());
-
-		// 处理个人项目
-		for (SessionItemVo project : individualProjects) {
-			List<SignSingleDto> players = project.getSingleList();
-			List<DrawResultUnit> projectResults = drawIndividualProject(project, players, currentOrder);
-			results.addAll(projectResults);
-			currentOrder += projectResults.size();
+		GameSessionSettingEntity settingEntity = sessionManager.getSettingBySessionId(session.getGameId(), sessionId);
+		if (Objects.isNull(settingEntity)) {
+			settingEntity = new GameSessionSettingEntity();
 		}
 
-		// 处理团队项目
-		for (SessionItemVo project : teamProjects) {
-			List<Team> teams = project.getTeams();
-			List<DrawResult> projectResults = drawTeamProject(project, teams, currentOrder);
-			results.addAll(projectResults);
-			currentOrder += projectResults.size();
+		// 获取间隔范围
+		int orgRangeMin = settingEntity.getOrgMin();
+		int orgRangeMax = settingEntity.getOrgMax();
+		int teamRangeMin = settingEntity.getTeamMin();
+		int teamRangeMax = settingEntity.getTeamMax();
+		int singleRangeMin = settingEntity.getSingleMin();
+		int singleRangeMax = settingEntity.getSingleMax();
+
+		// 交替处理个人项目和团队项目
+		Iterator<SessionItemVo> individualIterator = individualProjects.iterator();
+		Iterator<SessionItemVo> teamIterator = teamProjects.iterator();
+
+		while (individualIterator.hasNext() || teamIterator.hasNext()) {
+			if (individualIterator.hasNext()) {
+				SessionItemVo project = individualIterator.next();
+				List<SignSingleDto> players = project.getSingleList();
+				List<DrawResultUnit> projectResults = drawIndividualProject(project, players, currentOrder, singleRangeMin, singleRangeMax, teamRangeMin, teamRangeMax, orgRangeMin, orgRangeMax);
+				results.addAll(projectResults);
+				currentOrder += projectResults.size();
+			}
+
+			if (teamIterator.hasNext()) {
+				SessionItemVo project = teamIterator.next();
+				List<SignTeamDto> teams = project.getTeamList();
+				List<DrawResultUnit> projectResults = drawTeamProject(project, teams, currentOrder, teamRangeMin, teamRangeMax, orgRangeMin, orgRangeMax);
+				results.addAll(projectResults);
+				currentOrder += projectResults.size();
+			}
 		}
 
 		return results;
 	}
 
-	private List<DrawResultUnit> drawIndividualProject(SessionItemVo project, List<SignSingleDto> players, int startOrder) {
+	private List<DrawResultUnit> drawIndividualProject(SessionItemVo project, List<SignSingleDto> players, int startOrder, int singleRangeMin, int singleRangeMax, int teamRangeMin, int teamRangeMax, int orgRangeMin, int orgRangeMax) {
 		List<DrawResultUnit> results = new ArrayList<>();
 		List<SignSingleDto> remainingPlayers = new ArrayList<>(players);
 		int currentOrder = startOrder;
 
+		Map<Long, Integer> orgLastIndex = new HashMap<>(); // 记录每个组织最后出现的索引
+		Map<Long, Integer> playerLastIndex = new HashMap<>(); // 记录每个选手最后出现的索引
+
+		// 1. 随机打乱参与人员
+		Collections.shuffle(remainingPlayers, new Random());
+
 		while (!remainingPlayers.isEmpty()) {
-			SignSingleDto selectedPlayer = findValidPlayer(remainingPlayers, results);
+			SignSingleDto selectedPlayer = findValidPlayer(remainingPlayers, results, orgLastIndex, playerLastIndex, singleRangeMin, singleRangeMax, teamRangeMin, teamRangeMax, orgRangeMin, orgRangeMax);
 			if (selectedPlayer == null) {
 				// 如果没有找到符合条件的选手，说明无法满足所有间隔要求
 				// 这种情况下，我们选择第一个未排序的选手
@@ -301,18 +371,26 @@ public class DrawCoreServiceImpl implements DrawCoreService {
 			results.add(result);
 
 			remainingPlayers.remove(selectedPlayer);
+			orgLastIndex.put(selectedPlayer.getOrgId(), currentOrder - 1);
+			playerLastIndex.put(selectedPlayer.getApplyId(), currentOrder - 1);
 		}
 
 		return results;
 	}
 
-	private List<DrawResultUnit> drawTeamProject(SessionItemVo project, List<Team> teams, int startOrder) {
+	private List<DrawResultUnit> drawTeamProject(SessionItemVo project, List<SignTeamDto> teams, int startOrder, int teamRangeMin, int teamRangeMax, int orgRangeMin, int orgRangeMax) {
 		List<DrawResultUnit> results = new ArrayList<>();
-		List<Team> remainingTeams = new ArrayList<>(teams);
+		List<SignTeamDto> remainingTeams = new ArrayList<>(teams);
 		int currentOrder = startOrder;
 
+		Map<Long, Integer> orgLastIndex = new HashMap<>(); // 记录每个组织最后出现的索引
+		Map<Long, Integer> teamLastIndex = new HashMap<>(); // 记录每个队伍最后出现的索引
+
+		// 1. 随机打乱参与队伍
+		Collections.shuffle(remainingTeams, new Random());
+
 		while (!remainingTeams.isEmpty()) {
-			Team selectedTeam = findValidTeam(remainingTeams, results);
+			SignTeamDto selectedTeam = findValidTeam(remainingTeams, results, orgLastIndex, teamLastIndex, teamRangeMin, teamRangeMax, orgRangeMin, orgRangeMax);
 			if (selectedTeam == null) {
 				// 如果没有找到符合条件的队伍，说明无法满足所有间隔要求
 				// 这种情况下，我们选择第一个未排序的队伍
@@ -326,84 +404,78 @@ public class DrawCoreServiceImpl implements DrawCoreService {
 			results.add(result);
 
 			remainingTeams.remove(selectedTeam);
+			orgLastIndex.put(selectedTeam.getOrgId(), currentOrder - 1);
+			teamLastIndex.put(selectedTeam.getTeamId(), currentOrder - 1);
 		}
 
 		return results;
 	}
 
-	private Player findValidPlayer(List<Player> remainingPlayers, List<DrawResultUnit> existingResults) {
-		for (Player player : remainingPlayers) {
-			if (isValidPlayerPlacement(player, existingResults)) {
+	private SignSingleDto findValidPlayer(List<SignSingleDto> remainingPlayers, List<DrawResultUnit> existingResults, Map<Long, Integer> orgLastIndex, Map<Long, Integer> playerLastIndex, int singleRangeMin, int singleRangeMax, int teamRangeMin, int teamRangeMax, int orgRangeMin, int orgRangeMax) {
+		for (SignSingleDto player : remainingPlayers) {
+			if (isValidPlayerPlacement(player, existingResults, orgLastIndex, playerLastIndex, singleRangeMin, singleRangeMax, teamRangeMin, teamRangeMax, orgRangeMin, orgRangeMax)) {
 				return player;
 			}
 		}
 		return null;
 	}
 
-	private Team findValidTeam(List<Team> remainingTeams, List<DrawResultUnit> existingResults) {
-		for (Team team : remainingTeams) {
-			if (isValidTeamPlacement(team, existingResults)) {
+	private SignTeamDto findValidTeam(List<SignTeamDto> remainingTeams, List<DrawResultUnit> existingResults, Map<Long, Integer> orgLastIndex, Map<Long, Integer> teamLastIndex, int teamRangeMin, int teamRangeMax, int orgRangeMin, int orgRangeMax) {
+		for (SignTeamDto team : remainingTeams) {
+			if (isValidTeamPlacement(team, existingResults, orgLastIndex, teamLastIndex, teamRangeMin, teamRangeMax, orgRangeMin, orgRangeMax)) {
 				return team;
 			}
 		}
 		return null;
 	}
 
-	private boolean isValidPlayerPlacement(Player player, List<DrawResultUnit> existingResults) {
+	private boolean isValidPlayerPlacement(SignSingleDto player, List<DrawResultUnit> existingResults, Map<Long, Integer> orgLastIndex, Map<Long, Integer> playerLastIndex, int singleRangeMin, int singleRangeMax, int teamRangeMin, int teamRangeMax, int orgRangeMin, int orgRangeMax) {
 		if (existingResults.isEmpty()) {
 			return true;
 		}
 
-		// 检查组织间隔
-		boolean hasOrganizationConflict = existingResults.stream()
-				.filter(r -> r.getPlayer() != null)
-				.map(r -> r.getPlayer().getOrganization())
-				.filter(org -> org.equals(player.getOrganization()))
-				.count() > 0;
+		int lastIndex = existingResults.size() - 1;
 
-		if (hasOrganizationConflict) {
-			return false;
+		// 检查组织间隔
+		if (orgLastIndex.containsKey(player.getOrgId())) {
+			int lastOrgIndex = orgLastIndex.get(player.getOrgId());
+			if (lastIndex - lastOrgIndex < orgRangeMin || lastIndex - lastOrgIndex > orgRangeMax) {
+				return false;
+			}
 		}
 
 		// 检查选手间隔
-		boolean hasPlayerConflict = existingResults.stream()
-				.filter(r -> r.getPlayer() != null)
-				.map(r -> r.getPlayer().getId())
-				.filter(id -> id.equals(player.getId()))
-				.count() > 0;
-
-		if (hasPlayerConflict) {
-			return false;
+		if (playerLastIndex.containsKey(player.getApplyId())) {
+			int lastPlayerIndex = playerLastIndex.get(player.getApplyId());
+			if (lastIndex - lastPlayerIndex < singleRangeMin || lastIndex - lastPlayerIndex > singleRangeMax) {
+				return false;
+			}
 		}
 
 		return true;
 	}
 
-	private boolean isValidTeamPlacement(Team team, List<DrawResultUnit> existingResults) {
+	private boolean isValidTeamPlacement(SignTeamDto team, List<DrawResultUnit> existingResults, Map<Long, Integer> orgLastIndex, Map<Long, Integer> teamLastIndex, int teamRangeMin, int teamRangeMax, int orgRangeMin, int orgRangeMax) {
 		if (existingResults.isEmpty()) {
 			return true;
 		}
 
-		// 检查组织间隔
-		boolean hasOrganizationConflict = existingResults.stream()
-				.filter(r -> r.getTeam() != null)
-				.map(r -> r.getTeam().getOrganization())
-				.filter(org -> org.equals(team.getOrganization()))
-				.count() > 0;
+		int lastIndex = existingResults.size() - 1;
 
-		if (hasOrganizationConflict) {
-			return false;
+		// 检查组织间隔
+		if (orgLastIndex.containsKey(team.getOrgId())) {
+			int lastOrgIndex = orgLastIndex.get(team.getOrgId());
+			if (lastIndex - lastOrgIndex < orgRangeMin || lastIndex - lastOrgIndex > orgRangeMax) {
+				return false;
+			}
 		}
 
 		// 检查队伍间隔
-		boolean hasTeamConflict = existingResults.stream()
-				.filter(r -> r.getTeam() != null)
-				.map(r -> r.getTeam().getId())
-				.filter(id -> id.equals(team.getId()))
-				.count() > 0;
-
-		if (hasTeamConflict) {
-			return false;
+		if (teamLastIndex.containsKey(team.getTeamId())) {
+			int lastTeamIndex = teamLastIndex.get(team.getTeamId());
+			if (lastIndex - lastTeamIndex < teamRangeMin || lastIndex - lastTeamIndex > teamRangeMax) {
+				return false;
+			}
 		}
 
 		return true;

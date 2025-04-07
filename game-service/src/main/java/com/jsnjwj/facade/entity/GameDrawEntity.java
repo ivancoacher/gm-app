@@ -15,6 +15,8 @@ public class GameDrawEntity extends BaseEntity {
 	 */
 	private Long gameId;
 
+	private Long itemId;
+
 	/**
 	 * 场次名称
 	 */
@@ -28,8 +30,11 @@ public class GameDrawEntity extends BaseEntity {
 	/**
 	 * 报名id
 	 */
-	private Long signId;
+	private Long signId = 0L;
+
+	private Long teamId = 0L;
 
 	private Integer sort;
 
+	private Integer drawType = 0;
 }

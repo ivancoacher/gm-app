@@ -31,6 +31,8 @@ public class SessionDrawDao {
 
 	private String groupName;
 
+	private Long teamId;
+
 	private String teamName;
 
 	private Integer sort;
@@ -39,6 +41,6 @@ public class SessionDrawDao {
 	 * 1：集体项目
 	 * 2：个人项目
 	 */
-	private Integer itemType;
+	private Integer drawType;
 
 }
