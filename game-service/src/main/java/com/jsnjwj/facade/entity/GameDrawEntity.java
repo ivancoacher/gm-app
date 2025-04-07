@@ -37,4 +37,5 @@ public class GameDrawEntity extends BaseEntity {
 	private Integer sort;
 
 	private Integer drawType = 0;
+
 }

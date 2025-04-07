@@ -10,20 +10,20 @@ import lombok.Setter;
 @Setter
 public class DrawResultUnit {
 
-    private Long sessionId;
+	private Long sessionId;
 
-    private Long itemId;
+	private Long itemId;
 
-    private Long teamId;
+	private Long teamId;
 
-    private Long signId;
+	private Long signId;
 
-    private SessionItemVo project;
+	private SessionItemVo project;
 
-    private SignSingleDto player;
+	private SignSingleDto player;
 
-    private SignTeamDto team;
+	private SignTeamDto team;
 
-    private Integer order;
+	private Integer order;
 
 }

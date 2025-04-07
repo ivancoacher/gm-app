@@ -32,4 +32,5 @@ public class SignItemTeamEntity implements Serializable {
 	private Long itemId;
 
 	private Long teamId;
+
 }

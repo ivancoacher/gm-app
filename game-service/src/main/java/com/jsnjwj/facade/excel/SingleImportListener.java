@@ -110,7 +110,7 @@ public class SingleImportListener extends AnalysisEventListener<ImportSingleUplo
 		String groupName = singleUploadDto.getGroupName();
 		Long groupId;
 		// 从缓存中获取组别
-		ImportGroupDto group = groupMap.getOrDefault(groupName,null);
+		ImportGroupDto group = groupMap.getOrDefault(groupName, null);
 		if (group == null) {
 			if (!signApplyManager.checkGroupExist(this.gameId, groupName)) {
 				groupId = signApplyManager.saveGroup(this.gameId, groupName);
@@ -144,7 +144,8 @@ public class SingleImportListener extends AnalysisEventListener<ImportSingleUplo
 		ImportItemDto itemDto = itemMap.getOrDefault(groupName + itemName, null);
 		if (itemDto == null) {
 			if (!signApplyManager.checkItemExist(this.gameId, groupId, itemName)) {
-				itemId = signApplyManager.saveItem(this.gameId, groupId, itemName, ItemTypeEnum.getTypeByName(singleUploadDto.getItemType()));
+				itemId = signApplyManager.saveItem(this.gameId, groupId, itemName,
+						ItemTypeEnum.getTypeByName(singleUploadDto.getItemType()));
 			}
 			else {
 				GameItemEntity itemEntity = signApplyManager.getItemEntity(gameId, groupId, itemName);
@@ -184,7 +185,7 @@ public class SingleImportListener extends AnalysisEventListener<ImportSingleUplo
 				teamId = signApplyManager.saveTeamByImport(this.gameId, singleUploadDto);
 			}
 			else {
-				SignTeamEntity teamEntity = signApplyManager.getTeamEntity(gameId, orgId,teamName);
+				SignTeamEntity teamEntity = signApplyManager.getTeamEntity(gameId, orgId, teamName);
 
 				teamId = teamEntity.getId();
 			}
@@ -232,16 +233,17 @@ public class SingleImportListener extends AnalysisEventListener<ImportSingleUplo
 		}
 
 		// 如果是集体项目则设置队伍编号
-		if (ItemTypeEnum.TYPE_TEAM.getType().equals(itemType)){
+		if (ItemTypeEnum.TYPE_TEAM.getType().equals(itemType)) {
 			singleUploadDto.setTeamId(String.valueOf(teamId));
-		}else{
+		}
+		else {
 			singleUploadDto.setTeamId(null);
 		}
 
 		// 更新team-item关联表
-		if (!signApplyManager.checkItemTeamExist(this.gameId,itemId, teamId)) {
+		if (!signApplyManager.checkItemTeamExist(this.gameId, itemId, teamId)) {
 			// 不存在该关联关系，则新增
-			signApplyManager.saveTeamItem(this.gameId,groupId,itemId,teamId);
+			signApplyManager.saveTeamItem(this.gameId, groupId, itemId, teamId);
 		}
 	}
 

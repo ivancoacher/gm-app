@@ -26,4 +26,5 @@ public class ItemLabelVo {
 
 		return ItemTypeEnum.getNameByType(itemType);
 	}
+
 }

@@ -10,6 +10,8 @@ import java.util.List;
 @Setter
 public class DrawUnit {
 
-    protected Long orgId;          // 组织ID
-    protected List<SignSingleEntity> players; // 选手列表
+	protected Long orgId; // 组织ID
+
+	protected List<SignSingleEntity> players; // 选手列表
+
 }

@@ -38,8 +38,7 @@ public class SessionDrawDao {
 	private Integer sort;
 
 	/**
-	 * 1：集体项目
-	 * 2：个人项目
+	 * 1：集体项目 2：个人项目
 	 */
 	private Integer drawType;
 

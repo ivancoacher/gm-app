@@ -102,9 +102,10 @@ public class ImportSingleUploadDto {
 		return Objects.nonNull(teamId) ? Long.parseLong(teamId) : 0L;
 	}
 
-	public String getTeamName(){
-		return Objects.nonNull(teamName)?teamName.trim():"";
+	public String getTeamName() {
+		return Objects.nonNull(teamName) ? teamName.trim() : "";
 	}
 
 	private String remark;
+
 }

@@ -335,6 +335,7 @@ public class SignApplyManager {
 		wrapper.eq(SignSingleEntity::getItemId, itemId);
 		return signSingleMapper.selectList(wrapper);
 	}
+
 	public List<SignItemTeamEntity> getTeamByItem(Long gameId, Long itemId) {
 		LambdaQueryWrapper<SignItemTeamEntity> wrapper = new LambdaQueryWrapper<>();
 		wrapper.eq(SignItemTeamEntity::getGameId, gameId);
@@ -576,7 +577,7 @@ public class SignApplyManager {
 		return signItemTeamMapper.exists(queryWrapper);
 	}
 
-	public void saveTeamItem(Long gameId, Long groupId, Long itemId, Long teamId){
+	public void saveTeamItem(Long gameId, Long groupId, Long itemId, Long teamId) {
 		SignItemTeamEntity itemTeamEntity = new SignItemTeamEntity();
 		itemTeamEntity.setGameId(gameId);
 		itemTeamEntity.setGroupId(groupId);
@@ -584,4 +585,5 @@ public class SignApplyManager {
 		itemTeamEntity.setTeamId(teamId);
 		signItemTeamMapper.insert(itemTeamEntity);
 	}
+
 }

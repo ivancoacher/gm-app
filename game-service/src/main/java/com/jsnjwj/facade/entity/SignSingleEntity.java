@@ -100,9 +100,8 @@ public class SignSingleEntity implements Serializable {
 	private Date updateTime;
 
 	/**
-	 * 报名方式
-	 * 1；集体
-	 * 2：个人
+	 * 报名方式 1；集体 2：个人
 	 */
 	private Integer signType;
+
 }

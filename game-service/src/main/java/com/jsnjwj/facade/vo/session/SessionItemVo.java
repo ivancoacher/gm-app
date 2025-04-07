@@ -28,5 +28,4 @@ public class SessionItemVo {
 
 	private List<SignTeamDto> teamList = new ArrayList<>();
 
-
 }

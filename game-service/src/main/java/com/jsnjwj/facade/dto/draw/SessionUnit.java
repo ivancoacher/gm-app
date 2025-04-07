@@ -10,9 +10,10 @@ import java.util.List;
 @Setter
 public class SessionUnit {
 
-    private Long sessionId;
+	private Long sessionId;
 
-    private List<SessionItemVo> itemList;
+	private List<SessionItemVo> itemList;
 
-    private Long gameId;
+	private Long gameId;
+
 }

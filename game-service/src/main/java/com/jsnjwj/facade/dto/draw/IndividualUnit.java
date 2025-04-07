@@ -6,10 +6,12 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class IndividualUnit extends DrawUnit{
-    private Long playerId;
+public class IndividualUnit extends DrawUnit {
 
-    public IndividualUnit(SignSingleEntity player) {
-        super();
-    }
+	private Long playerId;
+
+	public IndividualUnit(SignSingleEntity player) {
+		super();
+	}
+
 }
