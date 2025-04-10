@@ -22,14 +22,14 @@ public class GameSessionSettingEntity extends BaseEntity {
 
 	private Integer orgMin = 0;
 
-	private Integer orgMax = 5;
+	private Integer orgMax = 0;
 
 	private Integer teamMin = 0;
 
-	private Integer teamMax = 5;
+	private Integer teamMax = 0;
 
 	private Integer singleMin = 0;
 
-	private Integer singleMax = 5;
+	private Integer singleMax = 0;
 
 }

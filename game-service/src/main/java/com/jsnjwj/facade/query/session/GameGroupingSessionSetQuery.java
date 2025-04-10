@@ -28,11 +28,11 @@ public class GameGroupingSessionSetQuery extends BaseRequest {
 	@Setter
 	public static class SessionSettingVo {
 
-		private List<Integer> orgRange = Arrays.asList(3, 5);
+		private List<Integer> orgRange = Arrays.asList(0, 0);
 
-		private List<Integer> teamRange = Arrays.asList(3, 5);
+		private List<Integer> teamRange = Arrays.asList(0, 0);
 
-		private List<Integer> singleRange = Arrays.asList(3, 5);
+		private List<Integer> singleRange = Arrays.asList(0, 0);
 
 	}
 
