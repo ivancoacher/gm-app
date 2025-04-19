@@ -2,6 +2,7 @@ package com.jsnjwj.facade.manager;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.jsnjwj.facade.dto.ArrangeSessionVo;
+import com.jsnjwj.facade.entity.ArrangeAreaSessionEntity;
 import com.jsnjwj.facade.entity.GameAreaEntity;
 import com.jsnjwj.facade.entity.GameAreaItemEntity;
 import com.jsnjwj.facade.mapper.GameAreaItemMapper;

@@ -21,4 +21,6 @@ public class ArrangeAreaSessionEntity extends BaseEntity {
 
 	private Long sessionId;
 
+	private Integer sort = 0;
+
 }

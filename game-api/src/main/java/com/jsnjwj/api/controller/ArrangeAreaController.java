@@ -2,10 +2,12 @@ package com.jsnjwj.api.controller;
 
 import com.jsnjwj.common.response.ApiResponse;
 import com.jsnjwj.common.utils.ThreadLocalUtil;
+import com.jsnjwj.facade.dto.AreaSessionDto;
 import com.jsnjwj.facade.dto.ArrangeAreaSessionDto;
 import com.jsnjwj.facade.dto.SessionChooseDto;
 import com.jsnjwj.facade.query.GameGroupingAreaSetQuery;
 import com.jsnjwj.facade.query.GameGroupingSetNumQuery;
+import com.jsnjwj.facade.query.ManualDrawAreaSessionBatchQuery;
 import com.jsnjwj.facade.service.v2.ArrangeAreaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -54,10 +56,34 @@ public class ArrangeAreaController {
 		return arrangeAreaService.saveArea(query);
 	}
 
+	/**
+	 * 可选择场次
+	 * @param query
+	 * @return
+	 */
 	@PostMapping("/session/select")
-	public ApiResponse<List<SessionChooseDto>> selectSession(@RequestBody GameGroupingAreaSetQuery query) {
+	public ApiResponse<List<AreaSessionDto>> selectSession(@RequestBody GameGroupingAreaSetQuery query) {
 		query.setGameId(ThreadLocalUtil.getCurrentGameId());
 		return arrangeAreaService.selectSessionList(query);
+	}
+
+	@PostMapping("/session/unSelect")
+	public ApiResponse<AreaSessionDto> selectUnSession(@RequestBody GameGroupingAreaSetQuery query) {
+		query.setGameId(ThreadLocalUtil.getCurrentGameId());
+		return arrangeAreaService.selectUnSessionList(query);
+	}
+
+	@PostMapping("/session/random")
+	public ApiResponse<Boolean> arrangeRandom() {
+		ManualDrawAreaSessionBatchQuery query = new ManualDrawAreaSessionBatchQuery();
+		query.setGameId(ThreadLocalUtil.getCurrentGameId());
+		return arrangeAreaService.arrangeSessionRandom(query);
+	}
+
+	@PostMapping("/session/save")
+	public ApiResponse<Boolean> arrangeSave(@RequestBody ManualDrawAreaSessionBatchQuery query) {
+		query.setGameId(ThreadLocalUtil.getCurrentGameId());
+		return arrangeAreaService.arrangeSessionSave(query);
 	}
 
 }

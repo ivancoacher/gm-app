@@ -3,6 +3,13 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jsnjwj.facade.mapper.ArrangeAreaSessionMapper">
+    <insert id="saveBatch">
+        insert into tc_game_area_session(game_id,area_id,session_id,sort)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.gameId},#{item.areaId},#{item.sessionId},#{item.sort})
+        </foreach>
+    </insert>
 
 
     <select id="checkSessionItemExist" resultType="java.lang.Integer">
@@ -16,4 +23,13 @@
             </if>
         </where>
     </select>
+    <select id="selectSessionByAreaId" resultType="com.jsnjwj.facade.vo.AreaSessionVo">
+        select a.area_id as areaId,a.session_id as sessionId,s.session_name as sessionName,a.sort from
+            tc_game_area_session as a
+            left join tc_game_session as s on a.session_id = s.id
+        where a.game_id = #{gameId} and a.area_id = #{areaId}
+        order by a.sort
+    </select>
+
+
 </mapper>

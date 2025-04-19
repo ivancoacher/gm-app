@@ -1,25 +1,30 @@
 package com.jsnjwj.facade.service.v2.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.jsnjwj.common.response.ApiResponse;
 import com.jsnjwj.facade.dao.SessionDrawListDao;
+import com.jsnjwj.facade.dto.AreaSessionDto;
 import com.jsnjwj.facade.dto.ArrangeAreaSessionDto;
 import com.jsnjwj.facade.dto.ArrangeSessionVo;
 import com.jsnjwj.facade.dto.SessionChooseDto;
-import com.jsnjwj.facade.entity.ArrangeAreaSessionEntity;
-import com.jsnjwj.facade.entity.GameAreaEntity;
-import com.jsnjwj.facade.entity.GameSessionEntity;
+import com.jsnjwj.facade.entity.*;
 import com.jsnjwj.facade.manager.*;
 import com.jsnjwj.facade.mapper.ArrangeAreaSessionMapper;
+import com.jsnjwj.facade.mapper.GameAreaMapper;
+import com.jsnjwj.facade.mapper.GameSessionMapper;
 import com.jsnjwj.facade.query.GameGroupingAreaSetQuery;
 import com.jsnjwj.facade.query.GameGroupingSetNumQuery;
+import com.jsnjwj.facade.query.ManualDrawAreaSessionBatchQuery;
 import com.jsnjwj.facade.service.v2.ArrangeAreaService;
+import com.jsnjwj.facade.vo.AreaSessionVo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 /**
@@ -34,13 +39,15 @@ public class ArrangeAreaServiceImpl implements ArrangeAreaService {
 
 	private final GameAreaManager gameAreaManager;
 
-	private final ArrangeSessionManager arrangeSessionManager;
+	private final ArrangeAreaSessionManager arrangeAreaSessionManager;
 
 	private final ArrangeSessionItemManager arrangeSessionItemManager;
 
 	private final ArrangeAreaSessionMapper arrangeAreaSessionMapper;
 
-	private final ArrangeDrawManager arrangeDrawManager;
+	private final GameSessionMapper gameSessionMapper;
+
+	private final GameAreaMapper gameAreaMapper;
 
 	@Override
 	public ApiResponse<?> setAreaNum(GameGroupingSetNumQuery query) {
@@ -117,58 +124,181 @@ public class ArrangeAreaServiceImpl implements ArrangeAreaService {
 	 * @return
 	 */
 	@Override
-	public ApiResponse<List<SessionChooseDto>> selectSessionList(GameGroupingAreaSetQuery query) {
+	public ApiResponse<List<AreaSessionDto>> selectSessionList(GameGroupingAreaSetQuery query) {
 		// 1.获取已设置的场次(不包含默认场次)
-		List<GameSessionEntity> gameSessionEntities = arrangeSessionManager.getListByGameId(query.getGameId());
-		Map<Long, GameSessionEntity> gameSessionEntityMap = gameSessionEntities.stream()
-			.collect(Collectors.toMap(GameSessionEntity::getId, session -> session));
-
-		List<Long> sessionIds = new ArrayList<>();
-
-		if (CollectionUtil.isNotEmpty(gameSessionEntities)) {
-			List<Long> chosenSessionIds = gameSessionEntities.stream()
-				.filter(Objects::nonNull)
-				.map(GameSessionEntity::getId)
-				.collect(Collectors.toList());
-			sessionIds.addAll(chosenSessionIds);
-		}
-
-		// 2.获取已分组过的场次（包含默认场次）
-		List<SessionDrawListDao> sessionVoList = arrangeDrawManager.getSessionList(query.getGameId());
-		if (CollectionUtil.isNotEmpty(sessionVoList)) {
-			sessionIds
-				.addAll(sessionVoList.stream().map(SessionDrawListDao::getSessionId).collect(Collectors.toList()));
-		}
-
-		List<SessionChooseDto> response = new ArrayList<>();
-		if (CollectionUtil.isEmpty(sessionIds)) {
+		List<AreaSessionDto> response = new ArrayList<>();
+		// 2.获取所有场地
+		List<GameAreaEntity> areaEntities = gameGroupingManager.getCourts(query.getGameId());
+		if (CollectionUtil.isEmpty(areaEntities)){
 			return ApiResponse.success(response);
 		}
 
-		// 查询当前场地已排场次
-		List<ArrangeSessionVo> selectedSession = gameAreaManager.selectSessionExceptArea(query.getGameId(),
-				query.getAreaId());
-		Map<Long, ArrangeSessionVo> selectedSessionMap = selectedSession.stream()
-			.collect(Collectors.toMap(ArrangeSessionVo::getSessionId, session -> session));
+		response = areaEntities.stream().map(item->{
 
-		response = sessionIds.stream().distinct().map(session -> {
-			SessionChooseDto dto = new SessionChooseDto();
-			dto.setAreaId(query.getAreaId());
+			AreaSessionDto areaSessionDto = new AreaSessionDto();
+			areaSessionDto.setAreaName(item.getAreaName());
+			areaSessionDto.setAreaId(item.getId());
+			// 3.查询每个场地已排场次
+			List<AreaSessionVo> arrangeAreaSessionEntities = arrangeAreaSessionManager.getSessionByAreaId(query.getGameId(),item.getId());
+			if (CollectionUtil.isNotEmpty(arrangeAreaSessionEntities)){
+				areaSessionDto.setData(arrangeAreaSessionEntities);
+			}
 
-			if (session == 0L) {
-				dto.setSessionName("默认场次");
-				dto.setSessionId(0L);
-			}
-			else {
-				dto.setSessionId(session);
-				dto.setSessionName(gameSessionEntityMap.get(session).getSessionName());
-			}
-			// dto.setDisabled(true);
-			//
-			dto.setDisabled(selectedSessionMap.containsKey(session));
-			return dto;
+			return areaSessionDto;
 		}).collect(Collectors.toList());
+
+
+
 		return ApiResponse.success(response);
+	}
+
+	@Override
+	public ApiResponse<AreaSessionDto> selectUnSessionList(GameGroupingAreaSetQuery query) {
+		AreaSessionDto result = new AreaSessionDto();
+
+		result.setGameId(query.getGameId());
+		result.setAreaName("未排场次");
+
+		// 查询已排场地场次
+
+		List<ArrangeAreaSessionEntity> arrangedSessionIds = arrangeAreaSessionManager.selectArrangedSession(query.getGameId());
+
+		LambdaQueryWrapper<GameSessionEntity> listQuery = new LambdaQueryWrapper<>();
+		listQuery.eq(GameSessionEntity::getGameId, query.getGameId());
+		if (CollectionUtil.isNotEmpty(arrangedSessionIds)){
+			listQuery.notIn(GameSessionEntity::getId, arrangedSessionIds.stream().map(ArrangeAreaSessionEntity::getSessionId).collect(Collectors.toList()));
+		}
+		List<GameSessionEntity> list = gameSessionMapper.selectList(listQuery);
+		result.setData(list.stream().map(item->{
+			AreaSessionVo areaSessionVo = new AreaSessionVo();
+			areaSessionVo.setSessionId(item.getId());
+			areaSessionVo.setSessionName(item.getSessionName());
+			return areaSessionVo;
+		}).collect(Collectors.toList()));
+		return ApiResponse.success(result);
+
+	}
+
+	/**
+	 * 场地-场次 随机分组
+	 * @param query
+	 * @return
+	 */
+	@Override
+	public ApiResponse<Boolean> arrangeSessionRandom(ManualDrawAreaSessionBatchQuery query) {
+		Long gameId = query.getGameId();
+		List<GameAreaEntity> areaEntities = gameAreaMapper.selectList(
+				new LambdaQueryWrapper<GameAreaEntity>().eq(GameAreaEntity::getGameId, query.getGameId()));
+		if (CollectionUtil.isEmpty(areaEntities)) {
+			return ApiResponse.error("请先设置场地");
+		}
+		// 清空所有场次项目
+		arrangeAreaSessionManager.deleteBySessionId(query.getGameId(), null);
+		LambdaQueryWrapper<GameSessionEntity> queryWrapper = new LambdaQueryWrapper<>();
+		queryWrapper.eq(GameSessionEntity::getGameId, gameId);
+		List<GameSessionEntity> sessionList = gameSessionMapper.selectList(queryWrapper);
+		if (CollectionUtil.isEmpty(sessionList)) {
+			return ApiResponse.error("请先设置场次");
+		}
+
+		Map<Long, List<GameSessionEntity>> allocateResult = allocateAllProjects(sessionList, areaEntities);
+		log.info("分配结果：{}", JSON.toJSONString(allocateResult));
+		if (Objects.isNull(allocateResult)) {
+			return ApiResponse.error("随机分配失败");
+		}
+		List<ArrangeAreaSessionEntity> result = new ArrayList<>();
+		allocateResult.forEach((areaId, itemEntities) -> {
+			AtomicInteger sort = new AtomicInteger();
+			itemEntities.forEach(item -> {
+				sort.getAndIncrement();
+				ArrangeAreaSessionEntity gameSessionItemEntity = new ArrangeAreaSessionEntity();
+				gameSessionItemEntity.setGameId(query.getGameId());
+				gameSessionItemEntity.setAreaId(areaId);
+				gameSessionItemEntity.setSessionId(item.getId());
+				gameSessionItemEntity.setSort(sort.get());
+				gameSessionItemEntity.setCreatedAt(new Date());
+				result.add(gameSessionItemEntity);
+			});
+		});
+		arrangeAreaSessionMapper.saveBatch(result);
+
+		return ApiResponse.success(true);
+	}
+
+	@Override
+	public ApiResponse<Boolean> arrangeSessionSave(ManualDrawAreaSessionBatchQuery query) {
+		Long gameId = query.getGameId();
+		List<ArrangeAreaSessionEntity> result = new ArrayList<>();
+		if (CollectionUtil.isNotEmpty(query.getData())) {
+			query.getData().forEach(session -> {
+				Long areaId = session.getAreaId();
+				arrangeAreaSessionManager.deleteByAreaId(gameId, areaId);
+
+				session.getData().forEach(item -> {
+					ArrangeAreaSessionEntity gameSessionItemEntity = new ArrangeAreaSessionEntity();
+					gameSessionItemEntity.setGameId(gameId);
+					gameSessionItemEntity.setAreaId(areaId);
+					gameSessionItemEntity.setSessionId(item.getSessionId());
+					gameSessionItemEntity.setSort(item.getSort());
+					gameSessionItemEntity.setCreatedAt(new Date());
+					result.add(gameSessionItemEntity);
+				});
+			});
+			if (CollectionUtil.isNotEmpty(result)) {
+				arrangeAreaSessionMapper.saveBatch(result);
+			}
+		}
+
+		return ApiResponse.success(true);
+	}
+
+	public Map<Long, List<GameSessionEntity>> allocateAllProjects(List<GameSessionEntity> sessions,
+															   List<GameAreaEntity> areas) {
+		// 验证输入参数
+		if (areas == null || areas.isEmpty()) {
+			throw new IllegalArgumentException("场次列表不能为空");
+		}
+		if (sessions == null || sessions.isEmpty()) {
+			throw new IllegalArgumentException("项目列表不能为空");
+		}
+
+		// 创建sessionId到项目列表的映射
+		Map<Long, List<GameSessionEntity>> allocation = new HashMap<>();
+		for (GameAreaEntity session : areas) {
+			allocation.put(session.getId(), new ArrayList<>());
+		}
+
+		// 复制项目列表并随机打乱
+		List<GameSessionEntity> shuffledProjects = new ArrayList<>(sessions);
+		Collections.shuffle(shuffledProjects, new Random());
+
+		// 计算基本每个场次应该分配的项目数量和剩余项目数
+		int sessionCount = areas.size();
+		int baseProjectsPerSession = shuffledProjects.size() / sessionCount;
+		int remainingProjects = shuffledProjects.size() % sessionCount;
+
+		// 分配项目到场次
+		int projectIndex = 0;
+		for (GameAreaEntity session : areas) {
+			Long sessionId = session.getId();
+
+			// 分配基本数量的项目
+			for (int i = 0; i < baseProjectsPerSession; i++) {
+				if (projectIndex < shuffledProjects.size()) {
+					allocation.get(sessionId).add(shuffledProjects.get(projectIndex++));
+				}
+			}
+
+			// 如果有剩余项目，额外分配一个
+			if (remainingProjects > 0) {
+				if (projectIndex < shuffledProjects.size()) {
+					allocation.get(sessionId).add(shuffledProjects.get(projectIndex++));
+				}
+				remainingProjects--;
+			}
+		}
+
+		return allocation;
 	}
 
 }
