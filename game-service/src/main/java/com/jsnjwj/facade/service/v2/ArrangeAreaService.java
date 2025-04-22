@@ -25,4 +25,5 @@ public interface ArrangeAreaService {
 	ApiResponse<Boolean> arrangeSessionRandom(ManualDrawAreaSessionBatchQuery query);
 
 	ApiResponse<Boolean> arrangeSessionSave(ManualDrawAreaSessionBatchQuery query);
+
 }

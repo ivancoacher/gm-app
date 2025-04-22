@@ -36,7 +36,7 @@ public class ArrangeAreaSessionManager {
 	}
 
 	public List<AreaSessionVo> getSessionByAreaId(Long gameId, Long areaId) {
-		return arrangeAreaSessionMapper.selectSessionByAreaId(gameId,areaId);
+		return arrangeAreaSessionMapper.selectSessionByAreaId(gameId, areaId);
 	}
 
 	/**
@@ -44,11 +44,12 @@ public class ArrangeAreaSessionManager {
 	 * @param gameId
 	 * @return
 	 */
-	public List<ArrangeAreaSessionEntity> selectArrangedSession(Long gameId){
+	public List<ArrangeAreaSessionEntity> selectArrangedSession(Long gameId) {
 
 		LambdaQueryWrapper<ArrangeAreaSessionEntity> queryWrapper = new LambdaQueryWrapper<>();
 		queryWrapper.select(ArrangeAreaSessionEntity::getSessionId);
 		queryWrapper.eq(ArrangeAreaSessionEntity::getGameId, gameId);
 		return arrangeAreaSessionMapper.selectList(queryWrapper);
 	}
+
 }

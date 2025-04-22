@@ -44,6 +44,9 @@ public class AccessTokenInterceptor implements HandlerInterceptor {
 		if (uri.contains("/auth/login") || uri.contains("/auth/register") || uri.contains("/file")) {
 			return true;
 		}
+		if (uri.contains("vote")) {
+			return true;
+		}
 
 		/** Token 验证 */
 		String token = request.getHeader(jwtConfig.getHeader());

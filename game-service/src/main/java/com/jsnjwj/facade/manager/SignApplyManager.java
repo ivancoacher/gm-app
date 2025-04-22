@@ -260,6 +260,7 @@ public class SignApplyManager {
 		SignTeamEntity teamEntity = new SignTeamEntity();
 		teamEntity.setGameId(gameId);
 		teamEntity.setOrgId(singleUploadDto.getOrgId());
+		teamEntity.setOrgName(singleUploadDto.getOrgName());
 		teamEntity.setTeamName(singleUploadDto.getTeamName());
 		teamEntity.setCoachName(singleUploadDto.getCoachName());
 		teamEntity.setCoachTel(singleUploadDto.getCoachPhone());

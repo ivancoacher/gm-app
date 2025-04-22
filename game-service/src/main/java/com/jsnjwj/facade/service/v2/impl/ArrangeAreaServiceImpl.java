@@ -129,25 +129,24 @@ public class ArrangeAreaServiceImpl implements ArrangeAreaService {
 		List<AreaSessionDto> response = new ArrayList<>();
 		// 2.获取所有场地
 		List<GameAreaEntity> areaEntities = gameGroupingManager.getCourts(query.getGameId());
-		if (CollectionUtil.isEmpty(areaEntities)){
+		if (CollectionUtil.isEmpty(areaEntities)) {
 			return ApiResponse.success(response);
 		}
 
-		response = areaEntities.stream().map(item->{
+		response = areaEntities.stream().map(item -> {
 
 			AreaSessionDto areaSessionDto = new AreaSessionDto();
 			areaSessionDto.setAreaName(item.getAreaName());
 			areaSessionDto.setAreaId(item.getId());
 			// 3.查询每个场地已排场次
-			List<AreaSessionVo> arrangeAreaSessionEntities = arrangeAreaSessionManager.getSessionByAreaId(query.getGameId(),item.getId());
-			if (CollectionUtil.isNotEmpty(arrangeAreaSessionEntities)){
+			List<AreaSessionVo> arrangeAreaSessionEntities = arrangeAreaSessionManager
+				.getSessionByAreaId(query.getGameId(), item.getId());
+			if (CollectionUtil.isNotEmpty(arrangeAreaSessionEntities)) {
 				areaSessionDto.setData(arrangeAreaSessionEntities);
 			}
 
 			return areaSessionDto;
 		}).collect(Collectors.toList());
-
-
 
 		return ApiResponse.success(response);
 	}
@@ -161,15 +160,19 @@ public class ArrangeAreaServiceImpl implements ArrangeAreaService {
 
 		// 查询已排场地场次
 
-		List<ArrangeAreaSessionEntity> arrangedSessionIds = arrangeAreaSessionManager.selectArrangedSession(query.getGameId());
+		List<ArrangeAreaSessionEntity> arrangedSessionIds = arrangeAreaSessionManager
+			.selectArrangedSession(query.getGameId());
 
 		LambdaQueryWrapper<GameSessionEntity> listQuery = new LambdaQueryWrapper<>();
 		listQuery.eq(GameSessionEntity::getGameId, query.getGameId());
-		if (CollectionUtil.isNotEmpty(arrangedSessionIds)){
-			listQuery.notIn(GameSessionEntity::getId, arrangedSessionIds.stream().map(ArrangeAreaSessionEntity::getSessionId).collect(Collectors.toList()));
+		if (CollectionUtil.isNotEmpty(arrangedSessionIds)) {
+			listQuery.notIn(GameSessionEntity::getId,
+					arrangedSessionIds.stream()
+						.map(ArrangeAreaSessionEntity::getSessionId)
+						.collect(Collectors.toList()));
 		}
 		List<GameSessionEntity> list = gameSessionMapper.selectList(listQuery);
-		result.setData(list.stream().map(item->{
+		result.setData(list.stream().map(item -> {
 			AreaSessionVo areaSessionVo = new AreaSessionVo();
 			areaSessionVo.setSessionId(item.getId());
 			areaSessionVo.setSessionName(item.getSessionName());
@@ -187,8 +190,8 @@ public class ArrangeAreaServiceImpl implements ArrangeAreaService {
 	@Override
 	public ApiResponse<Boolean> arrangeSessionRandom(ManualDrawAreaSessionBatchQuery query) {
 		Long gameId = query.getGameId();
-		List<GameAreaEntity> areaEntities = gameAreaMapper.selectList(
-				new LambdaQueryWrapper<GameAreaEntity>().eq(GameAreaEntity::getGameId, query.getGameId()));
+		List<GameAreaEntity> areaEntities = gameAreaMapper
+			.selectList(new LambdaQueryWrapper<GameAreaEntity>().eq(GameAreaEntity::getGameId, query.getGameId()));
 		if (CollectionUtil.isEmpty(areaEntities)) {
 			return ApiResponse.error("请先设置场地");
 		}
@@ -253,7 +256,7 @@ public class ArrangeAreaServiceImpl implements ArrangeAreaService {
 	}
 
 	public Map<Long, List<GameSessionEntity>> allocateAllProjects(List<GameSessionEntity> sessions,
-															   List<GameAreaEntity> areas) {
+			List<GameAreaEntity> areas) {
 		// 验证输入参数
 		if (areas == null || areas.isEmpty()) {
 			throw new IllegalArgumentException("场次列表不能为空");

@@ -6,14 +6,15 @@ import lombok.Setter;
 @Getter
 @Setter
 public class AreaSessionVo {
-    private Long gameId;
 
-    private Long areaId;
+	private Long gameId;
 
-    private String sessionName;
+	private Long areaId;
 
-    private Long sessionId;
+	private String sessionName;
 
-    private Integer sort;
+	private Long sessionId;
+
+	private Integer sort;
 
 }

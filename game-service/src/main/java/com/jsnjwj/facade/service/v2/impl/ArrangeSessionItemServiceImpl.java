@@ -80,7 +80,7 @@ public class ArrangeSessionItemServiceImpl implements ArrangeSessionItemService 
 				SessionItemVo vo = new SessionItemVo();
 				vo.setGroupName(groupLabelVoMap.get(item.getGroupId()).getGroupName());
 				vo.setItemId(item.getId());
-				vo.setSessionId(0);
+				vo.setSessionId(0L);
 				vo.setItemName(item.getItemName());
 				return vo;
 			}).collect(Collectors.toList());

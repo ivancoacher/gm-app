@@ -2,15 +2,11 @@ package com.jsnjwj.api.controller;
 
 import com.jsnjwj.common.response.ApiResponse;
 import com.jsnjwj.common.utils.ThreadLocalUtil;
-import com.jsnjwj.facade.entity.GameSessionEntity;
 import com.jsnjwj.facade.query.session.*;
-import com.jsnjwj.facade.service.v2.ArrangeSessionItemService;
-import com.jsnjwj.facade.service.v2.ArrangeSessionService;
+import com.jsnjwj.facade.service.v2.ArrangeDrawExportService;
 import com.jsnjwj.facade.service.v2.DrawService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * 抽签分组
@@ -21,6 +17,8 @@ import java.util.List;
 public class ArrangeDrawController {
 
 	private final DrawService drawService;
+
+	private final ArrangeDrawExportService arrangeDrawExportService;
 
 	/**
 	 * 单场次随机抽签
@@ -97,6 +95,24 @@ public class ArrangeDrawController {
 	public ApiResponse<?> manualDrawBatch(@RequestBody ManualDrawBatchQuery query) {
 		query.setGameId(ThreadLocalUtil.getCurrentGameId());
 		return drawService.manualDrawBatch(query);
+	}
+
+	/**
+	 * 导出场次秩序表
+	 * @return
+	 */
+	@PostMapping("/exportSession")
+	public ApiResponse<?> exportSession() {
+		return arrangeDrawExportService.exportSession(ThreadLocalUtil.getCurrentGameId());
+	}
+
+	/**
+	 * 导出场地-场次秩序表
+	 * @return
+	 */
+	@PostMapping("/exportAreaSession")
+	public ApiResponse<?> exportAreaSession() {
+		return arrangeDrawExportService.exportAreaSession(ThreadLocalUtil.getCurrentGameId());
 	}
 
 }

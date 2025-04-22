@@ -20,4 +20,5 @@ public interface ArrangeAreaSessionMapper extends BaseMapper<ArrangeAreaSessionE
 	int saveBatch(@Param("list") List<ArrangeAreaSessionEntity> list);
 
 	List<AreaSessionVo> selectSessionByAreaId(@Param("gameId") Long gameId, @Param("areaId") Long areaId);
+
 }

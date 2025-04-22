@@ -18,7 +18,7 @@ public class SessionItemVo {
 
 	private Long itemId;
 
-	private Integer sessionId;
+	private Long sessionId;
 
 	private Integer sort;
 

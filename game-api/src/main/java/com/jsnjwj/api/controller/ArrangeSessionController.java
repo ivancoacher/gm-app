@@ -6,6 +6,7 @@ import com.jsnjwj.facade.dto.ArrangeSessionInfoDto;
 import com.jsnjwj.facade.dto.ArrangeSessionVo;
 import com.jsnjwj.facade.entity.GameSessionEntity;
 import com.jsnjwj.facade.query.session.*;
+import com.jsnjwj.facade.service.v2.ArrangeDrawExportService;
 import com.jsnjwj.facade.service.v2.ArrangeSessionItemService;
 import com.jsnjwj.facade.service.v2.ArrangeSessionService;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,8 @@ import java.util.List;
 public class ArrangeSessionController {
 
 	private final ArrangeSessionService arrangeSessionService;
+
+	private final ArrangeDrawExportService arrangeDrawExportService;
 
 	private final ArrangeSessionItemService arrangeSessionItemService;
 
@@ -63,15 +66,6 @@ public class ArrangeSessionController {
 	@PostMapping("/add")
 	public ApiResponse<?> addSession() {
 		return arrangeSessionService.addSession(ThreadLocalUtil.getCurrentGameId());
-	}
-
-	/**
-	 * 导出场次秩序表
-	 * @return
-	 */
-	@PostMapping("/export")
-	public ApiResponse<?> export() {
-		return arrangeSessionService.exportSession(ThreadLocalUtil.getCurrentGameId());
 	}
 
 	/**

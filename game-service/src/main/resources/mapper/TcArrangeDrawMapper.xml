@@ -5,16 +5,18 @@
 <mapper namespace="com.jsnjwj.facade.mapper.GameDrawMapper">
 
     <sql id="Base_Column_List">
-        id,game_id,area_name,
+        id
+        ,game_id,area_name,
         status,area_no
     </sql>
 
     <insert id="saveBatch">
         INSERT INTO `tc_game_draw` (`game_id`,`item_id`, `session_id`, `session_no`, `sign_id`,
-                                    `team_id`,`draw_type`,`sort`,  `created_at`)
+        `team_id`,`draw_type`,`sort`, `created_at`)
         VALUES
         <foreach collection="list" item="entity" separator=",">
-            (#{entity.gameId},#{entity.itemId},#{entity.sessionId},#{entity.sessionNo},#{entity.signId},#{entity.teamId},#{entity.drawType},#{entity.sort}, #{entity.createdAt})
+            (#{entity.gameId},#{entity.itemId},#{entity.sessionId},#{entity.sessionNo},#{entity.signId},#{entity.teamId},#{entity.drawType},#{entity.sort},
+            #{entity.createdAt})
         </foreach>
     </insert>
     <select id="getBySessionNo" resultType="com.jsnjwj.facade.dao.SessionDrawDao">
@@ -31,7 +33,11 @@
                i.item_name     as itemName,
                t.team_name     as teamName,
                d.team_id       as teamId,
-               d.sort          as sort
+               d.sort          as sort,
+               CASE
+                   WHEN d.draw_type = 2 THEN s.org_name
+                   ELSE t.org_name
+                   END as orgName
         from tc_game_draw as d
                  left join tc_sign_single as s on s.id = d.sign_id
                  left join tc_sign_team as t on t.id = d.team_id and t.game_id = d.game_id
@@ -44,12 +50,12 @@
 
     </select>
     <select id="getSessionList" resultType="com.jsnjwj.facade.dao.SessionDrawListDao">
-        select if (s2.id is null, s.session_id, 0) as sessionId,
-               if (s2.session_name is null, "默认场次",s2.session_name) as sessionName,
-               if (s2.session_no is null, 0, s2.session_no) as sessionNo,
-               s.game_id as gameId
-               from tc_game_draw s
-        left join tc_game_session s2 on s2.id = s.session_id
+        select if(s2.id is null, s.session_id, 0)                       as sessionId,
+               if(s2.session_name is null, "默认场次", s2.session_name) as sessionName,
+               if(s2.session_no is null, 0, s2.session_no)              as sessionNo,
+               s.game_id                                                as gameId
+        from tc_game_draw s
+                 left join tc_game_session s2 on s2.id = s.session_id
         where s.game_id = #{gameId}
         group by s.session_no
     </select>
