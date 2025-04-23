@@ -23,10 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 @Slf4j
 @RestController
@@ -138,7 +135,8 @@ public class VoteController {
 
 		if (!StringUtils.isEmpty(data)) {
 			String[] list = data.split("=");
-			if (com.baomidou.mybatisplus.core.toolkit.StringUtils.isNotBlank(list[0])) {
+
+			if (Objects.nonNull(list[0]) && com.baomidou.mybatisplus.core.toolkit.StringUtils.isNotBlank(list[0])) {
 				VoteDetailEntity voteDetailEntity = new VoteDetailEntity();
 				voteDetailEntity.setSchoolId(Long.parseLong(list[0]));
 				voteDetailEntity.setType(1);
@@ -149,17 +147,20 @@ public class VoteController {
 				voteSchoolEntity.setVoteNum(voteSchoolEntity.getVoteNum() + 1);
 				voteSchoolMapper.updateById(voteSchoolEntity);
 			}
-			if (com.baomidou.mybatisplus.core.toolkit.StringUtils.isNotBlank(list[1])) {
-				VoteDetailEntity voteDetailEntity = new VoteDetailEntity();
-				voteDetailEntity.setSchoolId(Long.parseLong(list[1]));
-				voteDetailEntity.setOpenid(openid);
-				voteDetailEntity.setType(2);
-				voteDetailMapper.insert(voteDetailEntity);
+			if (Arrays.stream(list).count() > 1 && Objects.nonNull(list[1])
+					&& com.baomidou.mybatisplus.core.toolkit.StringUtils.isNotBlank(list[1])) {
+				if (!"undefined".equals(list[1])) {
+					VoteDetailEntity voteDetailEntity = new VoteDetailEntity();
+					voteDetailEntity.setSchoolId(Long.parseLong(list[1]));
+					voteDetailEntity.setOpenid(openid);
+					voteDetailEntity.setType(2);
+					voteDetailMapper.insert(voteDetailEntity);
 
-				VoteSchoolEntity voteSchoolEntity = voteSchoolMapper.selectById(Long.parseLong(list[1]));
-				voteSchoolEntity.setVoteNum(voteSchoolEntity.getVoteNum() + 1);
-				voteSchoolMapper.updateById(voteSchoolEntity);
+					VoteSchoolEntity voteSchoolEntity = voteSchoolMapper.selectById(Long.parseLong(list[1]));
+					voteSchoolEntity.setVoteNum(voteSchoolEntity.getVoteNum() + 1);
+					voteSchoolMapper.updateById(voteSchoolEntity);
 
+				}
 			}
 
 		}
