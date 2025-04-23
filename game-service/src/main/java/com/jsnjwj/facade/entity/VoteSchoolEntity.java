@@ -35,6 +35,6 @@ public class VoteSchoolEntity implements Serializable {
 	/**
 	 * 票数
 	 */
-	private Integer voteNum;
+	private Long voteNum;
 
 }

@@ -3,6 +3,7 @@ package com.jsnjwj.api.controller;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.jsnjwj.api.utils.WeixinCheckoutUtil;
 import com.jsnjwj.common.response.ApiResponse;
 import com.jsnjwj.facade.entity.VoteDetailEntity;
 import com.jsnjwj.facade.entity.VoteSchoolEntity;
@@ -10,9 +11,18 @@ import com.jsnjwj.facade.mapper.VoteDetailMapper;
 import com.jsnjwj.facade.mapper.VoteSchoolMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +37,51 @@ public class VoteController {
 	private final VoteSchoolMapper voteSchoolMapper;
 
 	private final VoteDetailMapper voteDetailMapper;
+
+	private final RestTemplate restTemplate;
+
+	@GetMapping("/checkToken")
+	public String checkToken(HttpServletRequest request, HttpServletResponse response) {
+		// 微信加密签名，signature结合了开发者填写的token参数和请求中的timestamp参数、nonce参数。
+		String signature = request.getParameter("signature");
+		// 时间戳
+		String timestamp = request.getParameter("timestamp");
+		// 随机数
+		String nonce = request.getParameter("nonce");
+		// 随机字符串
+		String echostr = request.getParameter("echostr");
+
+		PrintWriter out = null;
+		try {
+			out = response.getWriter();
+			// 通过检验signature对请求进行校验，若校验成功则原样返回echostr，否则接入失败
+			if (WeixinCheckoutUtil.checkSignature(signature, timestamp, nonce)) {
+				out.print(echostr);
+			}
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+		finally {
+			out.close();
+			out = null;
+		}
+		return null;
+	}
+
+	@GetMapping("/getOpenId")
+	public Object getOpenId(@RequestParam(value = "code", required = true) String code) {
+		log.info("getOpenId request:{}", code);
+		String url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=wx1134ab48a212a028&secret=a5646f0f9f8875948bdc93f91d7088b7&code="
+				+ code + "&grant_type=authorization_code";
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+		headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+		HttpEntity<Object> entity = new HttpEntity<>(null, headers);
+		String result = restTemplate.exchange(url, HttpMethod.GET, null, String.class).getBody();
+		log.info("getOpenId response:{}", JSON.toJSONString(result));
+		return ApiResponse.success(JSON.parseObject(result, Map.class));
+	}
 
 	@GetMapping("/list")
 	public ApiResponse<?> list(@RequestParam(value = "area", required = false) Integer area) {
@@ -45,10 +100,20 @@ public class VoteController {
 		StringBuffer data = new StringBuffer();
 		data.append("1_");
 		schoolEntities.forEach(schoolEntity -> {
+			LambdaQueryWrapper<VoteDetailEntity> query1 = new LambdaQueryWrapper<>();
+			query1.eq(VoteDetailEntity::getSchoolId, schoolEntity.getId());
+			query1.eq(VoteDetailEntity::getType, 1);
+			Long count = voteDetailMapper.selectCount(query1);
+			schoolEntity.setVoteNum(count);
 			data.append(schoolEntity.getId()).append(",").append(schoolEntity.getVoteNum()).append(";");
 		});
 		data.append(":2_");
 		schoolEntities.forEach(schoolEntity -> {
+			LambdaQueryWrapper<VoteDetailEntity> query2 = new LambdaQueryWrapper<>();
+			query2.eq(VoteDetailEntity::getSchoolId, schoolEntity.getId());
+			query2.eq(VoteDetailEntity::getType, 2);
+			Long count = voteDetailMapper.selectCount(query2);
+			schoolEntity.setVoteNum(count);
 			data.append(schoolEntity.getId()).append(",").append(schoolEntity.getVoteNum()).append(";");
 		});
 		result.put("data", data.toString());
@@ -56,14 +121,28 @@ public class VoteController {
 	}
 
 	@PostMapping("/do")
-	public ApiResponse vote(@RequestParam String data) {
+	public ApiResponse vote(@RequestParam String data, @RequestParam String openid) {
 		log.info("vote request:{}", JSON.toJSONString(data));
+
+		if (!StringUtils.isEmpty(openid)) {
+			// 判断用户是否已经投票
+			LambdaQueryWrapper<VoteDetailEntity> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+			lambdaQueryWrapper.eq(VoteDetailEntity::getOpenid, openid);
+			lambdaQueryWrapper.last("limit 1");
+			VoteDetailEntity result = voteDetailMapper.selectOne(lambdaQueryWrapper);
+			if (Objects.nonNull(result)) {
+				return ApiResponse.error("您已投票");
+			}
+
+		}
+
 		if (!StringUtils.isEmpty(data)) {
 			String[] list = data.split("=");
 			if (com.baomidou.mybatisplus.core.toolkit.StringUtils.isNotBlank(list[0])) {
 				VoteDetailEntity voteDetailEntity = new VoteDetailEntity();
 				voteDetailEntity.setSchoolId(Long.parseLong(list[0]));
 				voteDetailEntity.setType(1);
+				voteDetailEntity.setOpenid(openid);
 				voteDetailMapper.insert(voteDetailEntity);
 
 				VoteSchoolEntity voteSchoolEntity = voteSchoolMapper.selectById(Long.parseLong(list[0]));
@@ -73,6 +152,7 @@ public class VoteController {
 			if (com.baomidou.mybatisplus.core.toolkit.StringUtils.isNotBlank(list[1])) {
 				VoteDetailEntity voteDetailEntity = new VoteDetailEntity();
 				voteDetailEntity.setSchoolId(Long.parseLong(list[1]));
+				voteDetailEntity.setOpenid(openid);
 				voteDetailEntity.setType(2);
 				voteDetailMapper.insert(voteDetailEntity);
 
