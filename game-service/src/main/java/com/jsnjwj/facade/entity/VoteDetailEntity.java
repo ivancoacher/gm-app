@@ -26,4 +26,6 @@ public class VoteDetailEntity implements Serializable {
 
 	private Integer type;
 
+	private String openid;
+
 }
