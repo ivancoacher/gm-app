@@ -67,14 +67,9 @@ public class DrawServiceImpl implements DrawService {
 
 	@Override
 	public ApiResponse<?> systemDrawRandom(SystemDrawQuery query) {
-		// 判断抽签分组类型
-		Long gameId = query.getGameId();
-		List<GameDrawEntity> result = new ArrayList<>();
-		// 查询所有场次
+        // 查询所有场次
 		List<GameSessionEntity> sessionList = sessionManager.getListByGameId(query.getGameId());
-		Map<Long, Integer> sessionMap = sessionList.stream()
-			.collect(Collectors.toMap(GameSessionEntity::getId, GameSessionEntity::getSessionNo));
-		if (CollectionUtil.isEmpty(sessionList)) {
+        if (CollectionUtil.isEmpty(sessionList)) {
 			return ApiResponse.error("请先创建场次");
 		}
 		sessionList.forEach(session -> {

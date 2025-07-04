@@ -37,7 +37,7 @@
                CASE
                    WHEN d.draw_type = 2 THEN s.org_name
                    ELSE t.org_name
-                   END as orgName
+                   END as signOrg
         from tc_game_draw as d
                  left join tc_sign_single as s on s.id = d.sign_id
                  left join tc_sign_team as t on t.id = d.team_id and t.game_id = d.game_id

@@ -200,8 +200,7 @@ public class ArrangeSessionServiceImpl implements ArrangeSessionService {
 
 				arrangeSessionVo.setItemNum(sessionItemList.size());
 
-				arrangeSessionVo
-					.setItemList(sessionItemList.size() > 3 ? sessionItemList.subList(0, 3) : sessionItemList);
+				arrangeSessionVo.setItemList(sessionItemList);
 
 			}
 

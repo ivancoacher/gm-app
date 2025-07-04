@@ -8,16 +8,13 @@ import com.aliyun.oss.model.PutObjectResult;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.jsnjwj.common.response.ApiResponse;
 import com.jsnjwj.facade.dao.SessionDrawDao;
-import com.jsnjwj.facade.entity.ArrangeAreaSessionEntity;
 import com.jsnjwj.facade.entity.GameAreaEntity;
 import com.jsnjwj.facade.entity.GameSessionEntity;
 import com.jsnjwj.facade.entity.SignSingleEntity;
-import com.jsnjwj.facade.enums.DrawTypeEnum;
 import com.jsnjwj.facade.enums.ItemTypeEnum;
 import com.jsnjwj.facade.manager.ArrangeAreaSessionManager;
 import com.jsnjwj.facade.manager.ArrangeSessionItemManager;
 import com.jsnjwj.facade.manager.ArrangeSessionManager;
-import com.jsnjwj.facade.mapper.ArrangeAreaSessionMapper;
 import com.jsnjwj.facade.mapper.GameAreaMapper;
 import com.jsnjwj.facade.mapper.GameDrawMapper;
 import com.jsnjwj.facade.mapper.SignSingleMapper;
@@ -36,7 +33,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -76,36 +74,45 @@ public class ArrangeDrawExportServiceImpl implements ArrangeDrawExportService {
 			}
 			if (CollectionUtil.isNotEmpty(sessionEntityList)) {
 				Workbook workbook = new XSSFWorkbook();
+				int i = 0;
+
+				// 标题样式
+				Font titleFont = workbook.createFont();
+				titleFont.setFontName("Arial");
+				titleFont.setFontHeightInPoints((short) 12);
+				titleFont.setBold(true);
+				CellStyle titleCellStyle = workbook.createCellStyle();
+				titleCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				titleCellStyle.setFont(titleFont);
+				titleCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				titleCellStyle.setWrapText(true); // 设置自动换行
+
+				// 正文样式
+				Font contentFont = workbook.createFont();
+				contentFont.setFontName("Arial");
+				contentFont.setFontHeightInPoints((short) 11);
+				CellStyle contentCellStyle = workbook.createCellStyle();
+				contentCellStyle.setAlignment(HorizontalAlignment.CENTER);
+				contentCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+				contentCellStyle.setWrapText(true); // 设置自动换行
+				contentCellStyle.setFont(contentFont);
 
 				for (GameSessionEntity sessionEntity : sessionEntityList) {
 					// 创建工作簿
 					Sheet sheet = workbook.createSheet(sessionEntity.getSessionName());
 
 					// 创建行
-					Row row = sheet.createRow(0);
-
-					// 设置字体样式
-					Font font = workbook.createFont();
-					font.setFontName("Arial");
-					font.setFontHeightInPoints((short) 12);
-					font.setBold(true);
-					// 设置单元格样式
-					CellStyle cellStyle = workbook.createCellStyle();
-					cellStyle.setAlignment(HorizontalAlignment.CENTER);
-					cellStyle.setFont(font);
+					Row row = sheet.createRow(i);
 
 					// 设置行间距为1倍
 					row.setHeightInPoints(16);
 
-					// 设置垂直对齐方式为垂直居中
-					cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
-					cellStyle.setWrapText(true); // 设置自动换行
-
 					// 创建场次名
 					Cell cell = row.createCell(0);
 					cell.setCellValue(sessionEntity.getSessionName());
-					cell.setCellStyle(cellStyle);
-					addMergedRegion(sheet, 0, 0, 0, 4);
+					cell.setCellStyle(titleCellStyle);
+
+					addMergedRegion(sheet, i, i, 0, 4);
 
 					// 设置单元格宽度
 					sheet.setColumnWidth(0, 12 * 256); // 设置列宽度
@@ -120,137 +127,82 @@ public class ArrangeDrawExportServiceImpl implements ArrangeDrawExportService {
 					printSetup.setFitWidth((short) 1); // 将 Fit Width 设置为 1
 					printSetup.setFitHeight((short) 0); // 将 Fit Width 设置为 1
 					sheet.setFitToPage(true);
+
 					// 新增空白行
-					int i = 1;
+					i++;
 
-					Font contentFont = workbook.createFont();
-					contentFont.setFontName("Arial");
-					contentFont.setFontHeightInPoints((short) 11);
-					CellStyle contentCellStyle = workbook.createCellStyle();
-					contentCellStyle.setAlignment(HorizontalAlignment.CENTER);
-					contentCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
-					contentCellStyle.setWrapText(true); // 设置自动换行
-					contentCellStyle.setFont(contentFont);
-
-					// 查询该场次内所有项目
-					List<SessionItemVo> sessionItemList = arrangeSessionItemManager.fetchBySessionId(gameId,
-							sessionEntity.getId());
-					if (CollectionUtil.isNotEmpty(sessionItemList)) {
-
-						// 查询每个项目内的所有报名信息
-						List<SessionDrawDao> itemEntities = gameDrawMapper.getBySessionNo(gameId,
-								sessionEntity.getId());
-
-						for (SessionItemVo sessionItemVo : sessionItemList) {
-							Row itemRow = sheet.createRow(i);
-							itemRow.setHeightInPoints(24);
-							Font groupFont = workbook.createFont();
-							groupFont.setFontName("Arial");
-							groupFont.setFontHeightInPoints((short) 12);
-							groupFont.setBold(true);
-							CellStyle itemCellStyle = workbook.createCellStyle();
-							itemCellStyle.setAlignment(HorizontalAlignment.CENTER);
-							itemCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
-							itemCellStyle.setWrapText(true); // 设置自动换行
-							itemCellStyle.setFont(groupFont);
-
-							Font titleFont = workbook.createFont();
-							titleFont.setFontName("Arial");
-							titleFont.setFontHeightInPoints((short) 12);
-							titleFont.setBold(true);
-
-							CellStyle titleCellStyle = workbook.createCellStyle();
-							titleCellStyle.setAlignment(HorizontalAlignment.CENTER);
-							titleCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
-							titleCellStyle.setWrapText(true); // 设置自动换行
-							titleCellStyle.setFont(titleFont);
-
-							Cell itemCell = itemRow.createCell(0);
-							itemCell.setCellValue(sessionItemVo.getGroupName() + " " + sessionItemVo.getItemName());
-							itemCell.setCellStyle(itemCellStyle);
-
-							addMergedRegion(sheet, i, i, 0, 4);
-
-							i++;
-							Row titleItemRow = sheet.createRow(i);
-
-							Cell titleCell1 = titleItemRow.createCell(0);
-							titleCell1.setCellValue("出场编号");
-							titleCell1.setCellStyle(titleCellStyle);
-
-							Cell titleCell2 = titleItemRow.createCell(1);
-							titleCell2.setCellValue("参赛选手");
-							titleCell2.setCellStyle(titleCellStyle);
-
-							Cell titleCell3 = titleItemRow.createCell(2);
-							titleCell3.setCellValue("队名");
-							titleCell3.setCellStyle(titleCellStyle);
-
-							Cell titleCell4 = titleItemRow.createCell(3);
-							titleCell4.setCellValue("单位");
-							titleCell4.setCellStyle(titleCellStyle);
-
-							Cell titleCell5 = titleItemRow.createCell(4);
-							titleCell5.setCellValue("项目");
-							titleCell5.setCellStyle(titleCellStyle);
-
-							i++;
-
-							for (SessionDrawDao sessionDrawDao : itemEntities) {
-								if (!Objects.equals(sessionDrawDao.getSessionId(), sessionItemVo.getSessionId())) {
-									continue;
-								}
-
-								if (!Objects.equals(sessionDrawDao.getItemId(), sessionItemVo.getItemId())) {
-									continue;
-								}
-
-								Row contentRow = sheet.createRow(i);
-
-								Cell contentCell1 = contentRow.createCell(0);
-								contentCell1.setCellValue(sessionDrawDao.getSort());
-								contentCell1.setCellStyle(contentCellStyle);
-
-								Cell contentCell2 = contentRow.createCell(1);
-
-								if (Objects.equals(sessionDrawDao.getDrawType(), ItemTypeEnum.TYPE_SINGLE.getType())) {
-									contentCell2.setCellValue(sessionDrawDao.getSignName());
-								}
-								else {
-									// 根据队伍获取所有参赛选手
-									Long teamId = sessionDrawDao.getTeamId();
-									List<SignSingleEntity> signSingleEntities = signSingleMapper
-										.selectList(new LambdaQueryWrapper<SignSingleEntity>()
-											.eq(SignSingleEntity::getTeamId, teamId));
-									String teamMates = signSingleEntities.stream()
-										.map(SignSingleEntity::getName)
-										.collect(Collectors.joining(","));
-									contentCell2.setCellValue(teamMates);
-								}
-
-								contentCell2.setCellStyle(contentCellStyle);
-
-								Cell contentCell3 = contentRow.createCell(2);
-								contentCell3.setCellValue(sessionDrawDao.getTeamName());
-								contentCell3.setCellStyle(contentCellStyle);
-
-								Cell contentCell4 = contentRow.createCell(3);
-								contentCell4.setCellValue(sessionDrawDao.getSignOrg());
-								contentCell4.setCellStyle(contentCellStyle);
-
-								Cell contentCell5 = contentRow.createCell(4);
-								contentCell5
-									.setCellValue(sessionDrawDao.getGroupName() + " " + sessionDrawDao.getItemName());
-								contentCell5.setCellStyle(contentCellStyle);
-								i++;
-							}
-							i++;
-						}
+					// 查询每个项目内的所有报名信息
+					List<SessionDrawDao> sessionItemVo = gameDrawMapper.getBySessionNo(gameId, sessionEntity.getId());
+					if (CollectionUtil.isEmpty(sessionItemVo)) {
+						continue;
 					}
+					Row titleItemRow = sheet.createRow(i);
+					i++;
+					Row itemRow = sheet.createRow(i);
+					itemRow.setHeightInPoints(24);
 
-				}
-				try (FileOutputStream fileOut = new FileOutputStream(filePath)) {
-					workbook.write(fileOut);
+					Cell titleCell1 = titleItemRow.createCell(0);
+					titleCell1.setCellValue("出场编号");
+					titleCell1.setCellStyle(titleCellStyle);
+
+					Cell titleCell2 = titleItemRow.createCell(1);
+					titleCell2.setCellValue("参赛选手");
+					titleCell2.setCellStyle(titleCellStyle);
+
+					Cell titleCell3 = titleItemRow.createCell(2);
+					titleCell3.setCellValue("队名");
+					titleCell3.setCellStyle(titleCellStyle);
+
+					Cell titleCell4 = titleItemRow.createCell(3);
+					titleCell4.setCellValue("单位");
+					titleCell4.setCellStyle(titleCellStyle);
+
+					Cell titleCell5 = titleItemRow.createCell(4);
+					titleCell5.setCellValue("项目");
+					titleCell5.setCellStyle(titleCellStyle);
+
+					i++;
+					for (SessionDrawDao sessionDrawDao : sessionItemVo) {
+						Row contentRow = sheet.createRow(i);
+
+						Cell contentCell1 = contentRow.createCell(0);
+						contentCell1.setCellValue(sessionDrawDao.getSort());
+						contentCell1.setCellStyle(contentCellStyle);
+
+						Cell contentCell2 = contentRow.createCell(1);
+
+						if (Objects.equals(sessionDrawDao.getDrawType(), ItemTypeEnum.TYPE_SINGLE.getType())) {
+							contentCell2.setCellValue(sessionDrawDao.getSignName());
+						}
+						else {
+							// 根据队伍获取所有参赛选手
+							Long teamId = sessionDrawDao.getTeamId();
+							List<SignSingleEntity> signSingleEntities = signSingleMapper.selectList(
+									new LambdaQueryWrapper<SignSingleEntity>().eq(SignSingleEntity::getTeamId, teamId));
+							String teamMates = signSingleEntities.stream()
+								.map(SignSingleEntity::getName)
+								.collect(Collectors.joining(","));
+							contentCell2.setCellValue(teamMates);
+						}
+
+						contentCell2.setCellStyle(contentCellStyle);
+
+						Cell contentCell3 = contentRow.createCell(2);
+						contentCell3.setCellValue(sessionDrawDao.getTeamName());
+						contentCell3.setCellStyle(contentCellStyle);
+
+						Cell contentCell4 = contentRow.createCell(3);
+						contentCell4.setCellValue(sessionDrawDao.getSignOrg());
+						contentCell4.setCellStyle(contentCellStyle);
+
+						Cell contentCell5 = contentRow.createCell(4);
+						contentCell5.setCellValue(sessionDrawDao.getGroupName() + " " + sessionDrawDao.getItemName());
+						contentCell5.setCellStyle(contentCellStyle);
+						i++;
+					}
+					try (FileOutputStream fileOut = new FileOutputStream(filePath)) {
+						workbook.write(fileOut);
+					}
 				}
 			}
 
