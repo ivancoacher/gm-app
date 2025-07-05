@@ -3,6 +3,7 @@ package com.jsnjwj.facade.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.EasyExcelFactory;
+import com.alibaba.excel.util.ListUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jsnjwj.common.request.BaseRequest;
 import com.jsnjwj.common.response.ApiResponse;
@@ -25,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -187,6 +189,21 @@ public class SignApplyServiceImpl implements SignApplyService {
 		}
 
 		return ApiResponse.success();
+	}
+
+	@Override
+	public void importExample(HttpServletResponse response) throws IOException {
+		// 设置响应头，触发浏览器下载行为
+		response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+		response.setCharacterEncoding("utf-8");
+		response.setHeader("Content-disposition", "attachment;filename=下载模板.xlsx");
+
+		// 使用 EasyExcel 写入空数据以生成模板
+		EasyExcel.write(response.getOutputStream(), ImportSingleUploadDto.class)
+			.autoCloseStream(true) // 自动关闭流
+			.head(ImportSingleUploadDto.class)
+			.sheet("Sheet1")
+			.doWrite(ListUtils.newArrayList());
 	}
 
 	@Override

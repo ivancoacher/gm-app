@@ -8,6 +8,7 @@ import com.jsnjwj.facade.query.SignTeamListQuery;
 import com.jsnjwj.facade.query.SignTeamUpdateQuery;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
@@ -30,6 +31,8 @@ public interface SignApplyService {
 	ApiResponse<?> exportTeamDemo(BaseRequest baseRequest, MultipartFile file) throws IOException;
 
 	ApiResponse<?> importSingle(Integer importType, MultipartFile file);
+
+	void importExample(HttpServletResponse response) throws IOException;
 
 	ApiResponse<?> exportSingleDemo(BaseRequest baseRequest, MultipartFile file);
 

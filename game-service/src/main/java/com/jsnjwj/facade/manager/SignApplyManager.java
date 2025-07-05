@@ -507,6 +507,7 @@ public class SignApplyManager {
 		queryWrapper.set(SignSingleEntity::getName, signSingleEntity.getName());
 		queryWrapper.set(SignSingleEntity::getAge, signSingleEntity.getAge());
 		queryWrapper.set(SignSingleEntity::getSex, signSingleEntity.getSex());
+		queryWrapper.set(SignSingleEntity::getTeamId, signSingleEntity.getTeamId());
 		queryWrapper.eq(SignSingleEntity::getName, signSingle.getName());
 		queryWrapper.eq(SignSingleEntity::getOrgName, signSingleEntity.getOrgName());
 		return signSingleMapper.update(null, queryWrapper);

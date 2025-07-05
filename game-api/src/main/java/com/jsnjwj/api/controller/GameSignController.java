@@ -13,6 +13,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -36,6 +38,11 @@ public class GameSignController {
 	public ApiResponse<?> singleImport(@RequestParam("importType") Integer importType,
 			@RequestParam("file") MultipartFile sourceFile) {
 		return signApplyService.importSingle(importType, sourceFile);
+	}
+
+	@GetMapping("/single/importExample")
+	public void importExample(HttpServletResponse response) throws IOException {
+		signApplyService.importExample(response);
 	}
 
 	/**

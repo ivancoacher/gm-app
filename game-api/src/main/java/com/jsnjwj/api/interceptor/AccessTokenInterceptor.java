@@ -48,6 +48,10 @@ public class AccessTokenInterceptor implements HandlerInterceptor {
 			return true;
 		}
 
+		if (uri.contains("single/importExample")) {
+			return true;
+		}
+
 		/** Token 验证 */
 		String token = request.getHeader(jwtConfig.getHeader());
 		if (null == token || StringUtils.isEmpty(token)) {

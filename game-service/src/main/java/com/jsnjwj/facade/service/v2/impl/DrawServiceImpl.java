@@ -67,9 +67,9 @@ public class DrawServiceImpl implements DrawService {
 
 	@Override
 	public ApiResponse<?> systemDrawRandom(SystemDrawQuery query) {
-        // 查询所有场次
+		// 查询所有场次
 		List<GameSessionEntity> sessionList = sessionManager.getListByGameId(query.getGameId());
-        if (CollectionUtil.isEmpty(sessionList)) {
+		if (CollectionUtil.isEmpty(sessionList)) {
 			return ApiResponse.error("请先创建场次");
 		}
 		sessionList.forEach(session -> {

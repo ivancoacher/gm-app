@@ -69,22 +69,22 @@ public class ImportSingleUploadDto {
 	/**
 	 * 组别编号
 	 */
-	private String groupId;
+	private transient String groupId;
 
 	/**
 	 * 项目编号
 	 */
-	private String itemId;
+	private transient String itemId;
 
 	/**
 	 * 队伍编号
 	 */
-	private String teamId;
+	private transient String teamId;
 
 	/**
 	 * 单位id
 	 */
-	private String orgId;
+	private transient String orgId;
 
 	public Long getOrgId() {
 		return StringUtils.isNotBlank(orgId) ? Long.parseLong(orgId) : 0L;
