@@ -11,6 +11,7 @@ import com.jsnjwj.common.utils.ThreadLocalUtil;
 import com.jsnjwj.facade.dto.SignSingleDto;
 import com.jsnjwj.facade.dto.SignTeamDto;
 import com.jsnjwj.facade.easyexcel.upload.ImportSingleUploadDto;
+import com.jsnjwj.facade.easyexcel.upload.ImportSingleUploadExampleDto;
 import com.jsnjwj.facade.easyexcel.upload.ImportTeamUploadDto;
 import com.jsnjwj.facade.entity.*;
 import com.jsnjwj.facade.excel.SingleImportListener;
@@ -199,9 +200,9 @@ public class SignApplyServiceImpl implements SignApplyService {
 		response.setHeader("Content-disposition", "attachment;filename=下载模板.xlsx");
 
 		// 使用 EasyExcel 写入空数据以生成模板
-		EasyExcel.write(response.getOutputStream(), ImportSingleUploadDto.class)
+		EasyExcel.write(response.getOutputStream(), ImportSingleUploadExampleDto.class)
 			.autoCloseStream(true) // 自动关闭流
-			.head(ImportSingleUploadDto.class)
+			.head(ImportSingleUploadExampleDto.class)
 			.sheet("Sheet1")
 			.doWrite(ListUtils.newArrayList());
 	}

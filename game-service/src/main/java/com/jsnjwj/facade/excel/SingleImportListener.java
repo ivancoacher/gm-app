@@ -233,13 +233,15 @@ public class SingleImportListener extends AnalysisEventListener<ImportSingleUplo
 		}
 
 		// 如果是集体项目则设置队伍编号
-		if (ItemTypeEnum.TYPE_TEAM.getType().equals(itemType)) {
-			singleUploadDto.setTeamId(String.valueOf(teamId));
-		}
-		else {
-			singleUploadDto.setTeamId(null);
-		}
+		// if (ItemTypeEnum.TYPE_TEAM.getType().equals(itemType)) {
+		// singleUploadDto.setTeamId(String.valueOf(teamId));
+		// }
+		// else {
+		// singleUploadDto.setTeamId(null);
+		// }
+		singleUploadDto.setTeamId(String.valueOf(teamId));
 
+		log.info("====teamId: {}", teamId);
 		// 更新team-item关联表
 		if (!signApplyManager.checkItemTeamExist(this.gameId, itemId, teamId)) {
 			// 不存在该关联关系，则新增
